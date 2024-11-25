@@ -1,0 +1,50 @@
+<!doctype html>
+<html class="light" lang="en"
+
+      th:fragment="parent(content,title)"
+      xmlns:th="http://www.thymeleaf.org" xmlns:data="http://www.w3.org/1999/xhtml"
+      xmlns:data-th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/output.css}"/>
+    <script th:src = "@{/js/flowbite.min.js}"> </script>
+
+    <title th:replace ="${title}">BasePage</title>
+</head>
+<body class="dark:bg-gray-900 dark:text-white h-screen">
+
+<div  th:unless="${loggedInUser}">
+    <div th:replace="~{navbar ::navbar}"></div>
+
+</div>
+
+
+
+
+
+<!--<div>-->
+<!--    &lt;!&ndash; Public Navbar &ndash;&gt;-->
+<!--    <div th:if="${isPublicPage}" th:replace="~{navbar :: navbar}"></div>-->
+
+<!--    &lt;!&ndash; User-Specific Navbar and Sidebar &ndash;&gt;-->
+<!--    <div th:if="${!isPublicPage}" th:replace="~{user/user_nav :: user-nav}"></div>-->
+<!--    <div th:if="${!isPublicPage}" th:replace="~{user/user_nav :: sidebar}"></div>-->
+<!--</div>-->
+<!--<div th:if="${loggedInUser}">-->
+<!--    <div th:replace="~{user/sidebar ::sidebar}"></div>-->
+
+<!--</div>-->
+
+<div class="">
+    <section data-th-replace="${content}"></section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script data-th-src = "@{/js/admin.js}"></script>
+<script th:src = "@{/js/script.js}"> </script>
+<script data-th-src="@{'/js/contact.js'}"></script>
+
+</body>
+</html>
