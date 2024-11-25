@@ -1,22 +1,12 @@
+
 /** @type {import('tailwindcss').Config} */
-export default {
-  content: ["./src/main/resources/**/*.{html,js}"
-  ],
+module.exports = {
+  content: ["./src/**/*.{html,js}","./node_modules/flowbite/**/*.js"],
   theme: {
     extend: {},
   },
-  plugins: [
-  ],
+  plugins: [require('flowbite/plugin')],
   darkMode: "selector",
-}
-
-module.exports = {
-  plugins: [
-    require('flowbite/plugin')
-  ],
-  content: [
-    "./node_modules/flowbite/**/*.js","./src/main/resources/**/*.{html,js}",
-  ]
 }
 
 
