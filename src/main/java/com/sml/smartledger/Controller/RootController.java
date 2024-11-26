@@ -26,9 +26,6 @@ public class RootController {
         String userName = Helper.getEmailOfLoggedInUser(authentication);
         logger.info("USERNAME: " + userName);
         User user = userService.getUserByEmail(userName);
-
-
         model.addAttribute("loggedInUser", user);
-
     }
 }
