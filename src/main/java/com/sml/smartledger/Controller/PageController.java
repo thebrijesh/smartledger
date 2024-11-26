@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -55,7 +56,10 @@ public class PageController {
     }
 
     @RequestMapping("/signup")
-    public String register(Model model) {
+    public String register(Model model,Authentication authentication) {
+        if (authentication != null) {
+            return "redirect:/users/dashboard";
+        }
         model.addAttribute("isPublicPage", true);
         UserForm userForm = new UserForm();
         model.addAttribute("userForm", userForm);
@@ -63,8 +67,10 @@ public class PageController {
     }
 
     @RequestMapping("/login")
-    public String login(Model model) {
-        model.addAttribute("isPublicPage", true);
+    public String login(Authentication authentication) {
+        if (authentication != null) {
+            return "redirect:/users/dashboard";
+        }
         return "login";
     }
 

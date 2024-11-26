@@ -27,8 +27,7 @@ public class RootController {
         logger.info("USERNAME: " + userName);
         User user = userService.getUserByEmail(userName);
 
-        System.out.println(user.getName());
-        System.out.println(user.getEmail());
+
         model.addAttribute("loggedInUser", user);
 
     }
