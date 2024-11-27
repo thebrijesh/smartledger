@@ -22,8 +22,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class PageController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public PageController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/")
     public String homes(Model model) {

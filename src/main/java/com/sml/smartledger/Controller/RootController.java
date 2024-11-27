@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 @ControllerAdvice
 public class RootController {
 
-    Logger logger = Logger.getLogger(UserController.class.getName());
+    Logger logger = Logger.getLogger(RootController.class.getName());
     @Autowired
     private UserService userService;
     @ModelAttribute
