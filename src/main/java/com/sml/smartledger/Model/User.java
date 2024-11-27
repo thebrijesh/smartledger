@@ -1,5 +1,6 @@
 package com.sml.smartledger.Model;
 
+import com.sml.smartledger.Model.business.Business;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,7 +13,6 @@ import java.util.List;
 
 
 @Entity(name = "user")
-@Table(name = "users")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -21,9 +21,9 @@ import java.util.List;
 public class User implements UserDetails {
 
     @Id
-    private String userId;
-    @Column(name = "user_name", nullable = false)
+    private String id;
 
+    @Column(name = "user_name", nullable = false)
     private String name;
     @Column(unique = true, nullable = false)
     private String email;
@@ -49,6 +49,9 @@ public class User implements UserDetails {
 
     @ElementCollection(fetch = FetchType.EAGER)
     List<String> roleList = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL)
+    List<Business> businessList;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<SimpleGrantedAuthority> simpleGrantedAuthorities = roleList.stream().map(SimpleGrantedAuthority::new).toList();

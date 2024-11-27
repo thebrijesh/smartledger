@@ -40,7 +40,7 @@ public class OAuthAuthenticationSuccessHandler implements AuthenticationSuccessH
         var oauth2AuthenicationToken = (OAuth2AuthenticationToken) authentication;
         String authorizedClientRegistrationId = oauth2AuthenicationToken.getAuthorizedClientRegistrationId();
         User user = new User();
-        user.setUserId(UUID.randomUUID().toString());
+        user.setId(UUID.randomUUID().toString());
         user.setRoleList(List.of(AppConstants.DEFAULT_ROLE));
         user.setEmailVerified(true);
         user.setEnabled(true);

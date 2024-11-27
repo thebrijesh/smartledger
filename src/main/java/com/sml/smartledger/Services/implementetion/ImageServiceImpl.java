@@ -1,9 +1,10 @@
-package com.sml.smartledger.Services;
+package com.sml.smartledger.Services.implementetion;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 
 import com.sml.smartledger.Helper.AppConstants;
+import com.sml.smartledger.Services.interfaces.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
