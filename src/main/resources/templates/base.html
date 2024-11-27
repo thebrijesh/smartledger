@@ -14,7 +14,9 @@
     <title th:replace="${title}">BasePage</title>
 </head>
 <body class="dark:bg-gray-900 dark:text-white h-screen">
-<div th:replace="~{sidebar ::sidebar}"></div>
+<div th:if="${loggedInUser}">
+    <div th:replace="~{sidebar ::sidebar}" ></div>
+</div>
 <div  th:unless="${loggedInUser}">
     <div th:replace="~{navbar ::navbar}"></div>
 
