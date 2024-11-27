@@ -54,6 +54,10 @@ public class User implements UserDetails {
 
     @OneToMany(cascade = CascadeType.ALL)
     List<Business> businessList;
+
+    @OneToOne
+    Business selectedBusiness;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<SimpleGrantedAuthority> simpleGrantedAuthorities = roleList.stream().map(SimpleGrantedAuthority::new).toList();

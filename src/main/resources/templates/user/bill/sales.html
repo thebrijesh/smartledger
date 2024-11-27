@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en" th:replace ="~{base ::parent(~{::#content},~{::title})}">
+<head>
+    <title>Sale Bills</title>
+</head>
+<body>
+<div id="content" class="h-screen bg-gray-50">
+    <div class="sm:pl-64">
+
+        <div class="flex flex-col md:flex-row h-full">
+            <!-- Left Panel -->
+            <div class="w-full md:w-1/3 bg-white border-r shadow-md p-4">
+                <!-- Summary -->
+                <div class="mb-4">
+                    <div class="text-sm font-semibold text-gray-500">TRANSACTIONS SUMMARY</div>
+                    <div class="flex justify-between mt-2">
+                        <div>
+                            <p class="text-lg font-bold">₹1,14,476</p>
+                            <p class="text-sm text-green-600">Sales</p>
+                        </div>
+                        <div>
+                            <p class="text-lg font-bold">₹2,759</p>
+                            <p class="text-sm text-green-600">Expenses</p>
+                        </div>
+                        <div>
+                            <p class="text-lg font-bold">₹9,595</p>
+                            <p class="text-sm text-red-600">Purchases</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="flex space-x-4 border-b pb-2 overflow-auto gap-2">
+                    <button class="text-blue-600 font-semibold">Sales (3)</button>
+                    <button class="text-gray-500">Purchase (3)</button>
+                    <button class="text-gray-500">Expenses (1)</button>
+                </div>
+
+                <!-- Search and Filter -->
+                <div class="my-4">
+                    <input
+                            type="text"
+                            placeholder="Customer Name, Transaction Num"
+                            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring focus:ring-blue-300">
+                    <div class="flex justify-between items-center mt-2 space-x-2">
+                        <select class="w-1/2 border border-gray-300 rounded-md px-2 py-1 text-sm">
+                            <option>All Transactions</option>
+                        </select>
+                        <select class="w-1/2 border border-gray-300 rounded-md px-2 py-1 text-sm">
+                            <option>Latest First</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Transactions -->
+                <div data-th-each="c  : ${bills}"
+                     data-th-object="${c}">
+                    <div class="flex justify-between items-center py-3 border-b">
+                        <div>
+                            <p class="font-semibold text-gray-800" th:text="*{party.name}">Brijesh Wi</p>
+                            <p class="text-sm text-gray-500">
+                                 Sale Bill
+                            </p>
+                            <div class="text-base font-semibold " th:text="*{date}"></div>
+
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold">₹18</p>
+                            <p class="text-sm text-green-600">Fully Paid</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

@@ -42,6 +42,11 @@ public class BillServiceImpl implements MyBillService {
     }
 
     @Override
+    public List<Bill> getAllSaleBills(Long businessId) {
+        return billRepository.findAllSaleBillByBusinessId(businessId);
+    }
+
+    @Override
     public Bill createBill(Bill bill) {
         Optional<Business> businessOptional = businessRepository.findById(bill.getBusiness().getId());
         if (businessOptional.isEmpty()) throw new RuntimeException("Business not found");
