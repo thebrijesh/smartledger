@@ -1,4 +1,4 @@
-package com.sml.smartledger.Services;
+package com.sml.smartledger.Services.interfaces;
 
 import org.springframework.web.multipart.MultipartFile;
 

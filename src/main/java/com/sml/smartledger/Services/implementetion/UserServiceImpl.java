@@ -1,4 +1,4 @@
-package com.sml.smartledger.Services;
+package com.sml.smartledger.Services.implementetion;
 
 
 
@@ -6,6 +6,7 @@ import com.sml.smartledger.Exception.ResourceNotFoundException;
 import com.sml.smartledger.Helper.AppConstants;
 import com.sml.smartledger.Model.User;
 import com.sml.smartledger.Repository.UserRepository;
+import com.sml.smartledger.Services.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class UserServiceImpl implements UserService {
     public User saveUser(User user) {
         // user id : have to generate
         String userId = UUID.randomUUID().toString();
-        user.setUserId(userId);
+        user.setId(userId);
         // password encode
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         // set the user role
@@ -42,7 +43,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> updateUser(User user) {
-        User user2 = userRepository.findById(user.getUserId())
+        User user2 = userRepository.findById(user.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         // update karenge user2 from user
         user2.setName(user.getName());

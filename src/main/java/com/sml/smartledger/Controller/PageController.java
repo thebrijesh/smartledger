@@ -5,7 +5,7 @@ import com.sml.smartledger.Forms.UserForm;
 import com.sml.smartledger.Helper.Message;
 import com.sml.smartledger.Helper.MessageType;
 import com.sml.smartledger.Model.User;
-import com.sml.smartledger.Services.UserService;
+import com.sml.smartledger.Services.interfaces.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
@@ -22,8 +22,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class PageController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public PageController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/")
     public String homes(Model model) {
