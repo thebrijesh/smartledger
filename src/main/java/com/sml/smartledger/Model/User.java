@@ -48,6 +48,8 @@ public class User implements UserDetails {
     private String providerId;
 
     @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_role_list", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role_list")
     List<String> roleList = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL)
