@@ -16,8 +16,12 @@ import java.util.logging.Logger;
 public class RootController {
 
     Logger logger = Logger.getLogger(RootController.class.getName());
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public RootController(UserService userService) {
+        this.userService = userService;
+    }
+
     @ModelAttribute
     public void addLoggedInUserToModel(Model model, Authentication authentication) {
         if (authentication == null) {
@@ -27,5 +31,9 @@ public class RootController {
         logger.info("USERNAME: " + userName);
         User user = userService.getUserByEmail(userName);
         model.addAttribute("loggedInUser", user);
+        model.addAttribute("selectedBusiness", user.getSelectedBusiness());
+        model.addAttribute("profilePic", user.getProfilePic());
+
+
     }
 }
