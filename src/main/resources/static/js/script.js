@@ -59,5 +59,13 @@ function changePageTheme(theme, oldTheme) {
         .querySelector("#dark_mode_button")
         .querySelector("span").textContent = theme === "light" ? "Dark" : "Light";
 }
+function submitForm(radio) {
+    // Get the form
+    const form = document.getElementById('selectBusinessForm');
 
-//change page change theme
+    // Update the form action dynamically with the selected business ID
+
+
+    // Submit the form
+    form.submit();
+}

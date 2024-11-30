@@ -13,8 +13,10 @@ public class BusinessServiceImpl implements BusinessService {
 
     @Autowired
     BusinessRepository businessRepository;
+
+
     @Override
-    public List<Business> getAllBusiness(String userId) {
+    public List<Business> getAllBusiness(Long userId) {
         return businessRepository.findByUserId(userId);
     }
 
@@ -26,11 +28,17 @@ public class BusinessServiceImpl implements BusinessService {
 //            business.setId(business1.get().getId());
 //        }
         if(business.getUser() == null) throw new RuntimeException("User Not Found");
+
         return businessRepository.save(business);
     }
 
     @Override
     public void deleteBusiness(Long Id) {
          businessRepository.deleteById(Id);
+    }
+
+    @Override
+    public Business getBusinessById(Long selectedBusinessId) {
+        return businessRepository.findById(selectedBusinessId).orElseThrow(() -> new RuntimeException("Business Not Found"));
     }
 }

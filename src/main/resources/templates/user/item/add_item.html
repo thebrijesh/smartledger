@@ -1,0 +1,73 @@
+<div th:fragment = "add_product" class="max-w-lg mx-auto mt-10 p-5 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+    <h1 class="text-xl font-semibold mb-4">Add Item</h1>
+
+    <!-- Item Name -->
+    <div class="mb-4">
+        <label class="block text-gray-700 dark:text-gray-300 mb-1" for="item-name">Enter item name here*</label>
+        <input type="text" id="item-name" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200" placeholder="Enter item name here">
+    </div>
+
+    <!-- Primary Unit and Secondary Unit -->
+    <div class="flex justify-between mb-4">
+        <div class="flex items-center">
+            <label class="mr-2">Primary Unit</label>
+            <span class="bg-red-500 text-white rounded px-2 text-sm">New</span>
+        </div>
+        <div class="flex items-center">
+            <label class="mr-2">Add Secondary unit?</label>
+            <input type="checkbox" class="form-checkbox h-5 w-5 text-green-600 dark:text-green-500">
+        </div>
+    </div>
+
+    <!-- Unit Dropdown -->
+    <div class="mb-4">
+        <label class="block text-gray-700 dark:text-gray-300 mb-1" for="unit">Unit</label>
+        <select id="unit" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+            <option value="">MON</option>
+        </select>
+    </div>
+
+    <!-- Sale and Purchase Price -->
+    <div class="grid grid-cols-2 gap-4 mb-4">
+        <div>
+            <label class="block text-gray-700 dark:text-gray-300 mb-1">Sale Price</label>
+            <input type="text" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200" placeholder="₹ Enter price">
+        </div>
+        <div>
+            <label class="block text-gray-700 dark:text-gray-300 mb-1">Purchase Price</label>
+            <input type="text" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200" placeholder="₹ Enter price">
+        </div>
+    </div>
+
+    <!-- Tax Included -->
+    <div class="flex items-center mb-4">
+        <input type="checkbox" class="form-checkbox h-5 w-5 text-green-600 dark:text-green-500">
+        <label class="ml-2">Tax included</label>
+    </div>
+
+    <!-- Stock and Low Stock Alert -->
+    <div class="grid grid-cols-2 gap-4 mb-4">
+        <div>
+            <label class="block text-gray-700 dark:text-gray-300 mb-1">Opening Stock</label>
+            <input type="text" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200" placeholder="Enter count">
+        </div>
+        <div>
+            <label class="block text-gray-700 dark:text-gray-300 mb-1">Low Stock Alert</label>
+            <input type="text" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200" placeholder="Enter count">
+        </div>
+    </div>
+
+    <!-- Date Selection -->
+    <div class="flex justify-between mb-4">
+        <span class="text-gray-600 dark:text-gray-400">As of date</span>
+        <button class="text-blue-500 dark:text-blue-400">Today</button>
+    </div>
+
+    <!-- HSN and GST -->
+    <div class="mb-4">
+        <button class="text-blue-500 dark:text-blue-400">Add HSN and GST details</button>
+    </div>
+
+    <!-- Save Button -->
+    <button class="w-full bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white rounded-lg py-2">SAVE ITEM</button>
+</div>

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,19 +26,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public User saveUser(User user) {
         // user id : have to generate
-        String userId = UUID.randomUUID().toString();
-        user.setId(userId);
         // password encode
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         // set the user role
-        user.setRoleList(List.of(AppConstants.DEFAULT_ROLE));
+        List<String> roles = new ArrayList<>();
+        roles.add(AppConstants.DEFAULT_ROLE);
+        user.setRoleList(roles);
 
         return userRepository.save(user);
 
     }
 
     @Override
-    public Optional<User> getUserById(String id) {
+    public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
 
@@ -63,14 +64,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(String id) {
+    public void deleteUser(Long id) {
         User user2 = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         userRepository.delete(user2);
     }
 
     @Override
-    public boolean isUserExist(String userId) {
+    public boolean isUserExist(Long userId) {
         User user2 = userRepository.findById(userId).orElse(null);
         return user2 != null;
     }

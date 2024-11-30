@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Entity(name = "user")
@@ -17,11 +18,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class User implements UserDetails {
+public class User extends BaseModel implements UserDetails {
 
-    @Id
-    private String id;
 
     @Column(name = "user_name", nullable = false)
     private String name;
@@ -52,16 +50,17 @@ public class User implements UserDetails {
     @Column(name = "role_list")
     List<String> roleList = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL)
-    List<Business> businessList;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    List<Business> businessList = new ArrayList<>();
 
     @OneToOne
     Business selectedBusiness;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<SimpleGrantedAuthority> simpleGrantedAuthorities = roleList.stream().map(SimpleGrantedAuthority::new).toList();
-        return simpleGrantedAuthorities;
+        return roleList.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());  // or use .collect(Collectors.toCollection(ArrayList::new))
     }
 
     @Override

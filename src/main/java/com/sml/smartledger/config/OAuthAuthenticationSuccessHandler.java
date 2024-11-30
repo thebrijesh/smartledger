@@ -1,10 +1,13 @@
 package com.sml.smartledger.config;
 
 
+import com.sml.smartledger.Controller.business.BusinessController;
 import com.sml.smartledger.Helper.AppConstants;
 import com.sml.smartledger.Model.Providers;
 import com.sml.smartledger.Model.User;
+import com.sml.smartledger.Model.business.Business;
 import com.sml.smartledger.Repository.UserRepository;
+import com.sml.smartledger.Services.interfaces.business.BusinessService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,9 +23,9 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 
 
 @Component
@@ -30,8 +33,17 @@ public class OAuthAuthenticationSuccessHandler implements AuthenticationSuccessH
 
 
     Logger logger = LoggerFactory.getLogger(OAuthAuthenticationSuccessHandler.class);
-    @Autowired
+
     private UserRepository userRepo;
+    private BusinessService businessService;
+
+
+    @Autowired
+    public OAuthAuthenticationSuccessHandler(UserRepository userRepo, BusinessService businessService) {
+        this.userRepo = userRepo;
+        this.businessService = businessService;
+    }
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
@@ -40,8 +52,9 @@ public class OAuthAuthenticationSuccessHandler implements AuthenticationSuccessH
         var oauth2AuthenicationToken = (OAuth2AuthenticationToken) authentication;
         String authorizedClientRegistrationId = oauth2AuthenicationToken.getAuthorizedClientRegistrationId();
         User user = new User();
-        user.setId(UUID.randomUUID().toString());
-        user.setRoleList(List.of(AppConstants.DEFAULT_ROLE));
+        List<String> roles = new ArrayList<>();
+        roles.add(AppConstants.DEFAULT_ROLE);
+        user.setRoleList(roles);
         user.setEmailVerified(true);
         user.setEnabled(true);
         user.setPassword("dummy");
@@ -76,11 +89,14 @@ public class OAuthAuthenticationSuccessHandler implements AuthenticationSuccessH
 
             user.setAbout("This account is created using github");
         }
+
         User user2 = userRepo.findByEmail(user.getEmail()).orElse(null);
         if (user2 == null) {
-            userRepo.save(user);
-            System.out.println("user saved:" + user.getEmail());
+
+            User saveUser = userRepo.save(user);
+
+            System.out.println("user saved:" + saveUser.getEmail());
         }
-        new DefaultRedirectStrategy().sendRedirect(request,response,"/users/dashboard");
+        new DefaultRedirectStrategy().sendRedirect(request, response, "/users/dashboard");
     }
 }

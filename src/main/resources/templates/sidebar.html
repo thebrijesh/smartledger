@@ -11,11 +11,11 @@
     </button>
 
     <aside id="sidebar-multi-level-sidebar"
-           th:object="${selectedBusiness} "
+           th:object="${selectedBusiness}"
            class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
            aria-label="Sidebar">
         <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
-            <a href="users/dashboard" class="flex items-center ps-2.5 mb-5">
+            <a href="/users/dashboard" class="flex items-center ps-2.5 mb-5">
                 <img src="/images/logo.png" class="h-6 me-3 sm:h-7" alt=" Logo"/>
                 <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Khatabook</span>
 
@@ -25,11 +25,10 @@
             <!-- User Toggle -->
             <div data-modal-target="select-modal" data-modal-toggle="select-modal"
                  class="inline-flex items-center w-full p-3 text-gray-900 bg-white border border-1 border-gray-600 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-500 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-900 hover:bg-gray-100 dark:text-white dark:bg-gray-600 dark:hover:bg-gray-500">
-                <img id="profilePic" class="w-8 h-8 rounded-full shadow-lg" th:src="@{${profilePic}}" alt="Bonnie image"/>
+                <img id="profilePic" class="w-8 h-8 rounded-full shadow-lg" th:src="*{logo}" alt="Bonnie image"/>
                 <div class="flex-1 ml-2">
-                    <div id="userName" class="text-md font-semibold truncate"><span data-th-text="*{name}"></span> </div>
-                    <div id="userEmail" class="text-sm text-gray-500 dark:text-gray-400 truncate" data-th-text="*{mobile}">
-                    </div>
+                    <div id="userName" class="text-md font-semibold truncate"><span data-th-text="*{name}"></span></div>
+                    <div class="w-full text-gray-500 dark:text-gray-400" data-th-text="*{parties.size() + ' Parties'}"></div>
                 </div>
                 <svg class="w-4 h-4 ms-3 rtl:rotate-180 text-gray-500 dark:text-gray-400" aria-hidden="true"
                      xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
@@ -37,7 +36,6 @@
                           d="M1 5h12m0 0L9 1m4 4L9 9"/>
                 </svg>
             </div>
-
 
             <ul class="mt-4 space-y-2 font-medium mb-3">
                 <button type="button"
@@ -242,7 +240,7 @@
 
                 <li>
                     <a id="dark_mode_button"
-                            class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                         <svg xmlns="http://www.w3.org/2000/svg"
                              viewBox="0 0 24 24"
                              class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
@@ -260,7 +258,9 @@
     </aside>
 
 
-    <div th:fragment="switchBusiness" id="select-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div th:fragment="switchBusiness"
+         id="select-modal" tabindex="-1" aria-hidden="true"
+         class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
         <div class="relative p-4 w-full max-w-md max-h-full">
             <!-- Modal content -->
             <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
@@ -269,31 +269,67 @@
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                         Select a business
                     </h3>
-                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="select-modal">
-                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    <button type="button"
+                            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                            data-modal-toggle="select-modal">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                             viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                         </svg>
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
                 <!-- Modal body -->
                 <div class="p-4 md:p-5">
-                    <ul class="space-y-4 mb-4">
-                        <li>
-                            <input type="radio" id="job-1" name="job" value="job-1" class="hidden peer" required />
-                            <label for="job-1" class="inline-flex items-center justify-between w-full p-5 text-gray-900 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-500 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-900 hover:bg-gray-100 dark:text-white dark:bg-gray-600 dark:hover:bg-gray-500">
-                                <div class="block">
-                                    <div class="w-full text-lg font-semibold">UI/UX Engineer</div>
-                                    <div class="w-full text-gray-500 dark:text-gray-400">Flowbite</div>
-                                </div>
-                                <svg class="w-4 h-4 ms-3 rtl:rotate-180 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/></svg>
-                            </label>
-                        </li>
-                    </ul>
-                    <button class="text-white inline-flex w-full justify-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                        ADD NEW BUSINESS
-                    </button>
+                    <form id="selectBusinessForm" th:action="@{/users/business/select}" method="post">
+
+
+                        <ul data-th-each="business : ${businessList}" data-th-object="${business}" class="space-y-4 mb-4">
+                            <li>
+                                <input type="radio" th:id="'business-' + *{id}" name="selectedBusinessId" th:value="*{id}"
+                                       class="hidden peer" required onchange="submitForm(this)" />
+                                <label th:for="'business-' + *{id}"
+                                       class="inline-flex items-center justify-between w-full p-4 text-gray-900 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-500 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-900 hover:bg-gray-100 dark:text-white dark:bg-gray-600 dark:hover:bg-gray-500">
+                                    <div class="flex items-center gap-2">
+                                        <div>
+                                            <img class="w-9 h-9 rounded-full shadow-lg" th:src="*{logo}" alt="Business Logo" />
+                                        </div>
+                                        <div>
+                                            <div class="w-full text-md font-semibold" data-th-text="*{name}"></div>
+                                            <div class="w-full text-gray-500 dark:text-gray-400" data-th-text="*{parties.size() + ' Parties'}"></div>
+                                        </div>
+                                    </div>
+                                    <svg class="w-4 h-4 ms-3 rtl:rotate-180 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M1 5h12m0 0L9 1m4 4L9 9" />
+                                    </svg>
+                                </label>
+                            </li>
+                        </ul>
+                    </form>
                 </div>
+
+
+                <!--                create business form-->
+                <form class="pl-4 pr-4 pb-4 md:pl-5 md:pr-5 md:pb-5 max-w-md mx-auto"
+                      method="post"
+                      action=""
+                      data-th-object="${businessForm}"
+                      data-th-action="@{'/users/business/create-business'}">
+                    <label for="create-business" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+                    <div class="relative">
+
+                        <input data-th-field="*{name}" type="text" id="create-business"
+                               class="block w-full p-4 ps-5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                               placeholder="Enter Business Name" required/>
+                        <button type="submit"
+                                class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                            Create
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

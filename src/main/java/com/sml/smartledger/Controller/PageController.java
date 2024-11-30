@@ -5,7 +5,9 @@ import com.sml.smartledger.Forms.UserForm;
 import com.sml.smartledger.Helper.Message;
 import com.sml.smartledger.Helper.MessageType;
 import com.sml.smartledger.Model.User;
+import com.sml.smartledger.Model.business.Business;
 import com.sml.smartledger.Services.interfaces.UserService;
+import com.sml.smartledger.Services.interfaces.business.BusinessService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
@@ -19,13 +21,19 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 public class PageController {
 
     private final UserService userService;
+    private final BusinessService businessService;
 
-    public PageController(UserService userService) {
+    @Autowired
+    public PageController(UserService userService, BusinessService businessService) {
         this.userService = userService;
+        this.businessService = businessService;
     }
 
     @GetMapping("/")
@@ -93,6 +101,12 @@ public class PageController {
         user.setProfilePic(
                 "https://www.learncodewithdurgesh.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fdurgesh_sir.35c6cb78.webp&w=1920&q=75");
 
+        Business business = new Business();
+        business.setName(userForm.getName());
+        business.setLogo(user.getProfilePic());
+        business = businessService.createBusiness(business);
+        user.setSelectedBusiness(business);
+//        user.getBusinessList().add(business);
 
         User savedUser = userService.saveUser(user);
 
