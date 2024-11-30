@@ -2,19 +2,21 @@ package com.sml.smartledger.Model.party;
 
 import com.sml.smartledger.Model.BaseModel;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 
 @Entity(name = "PartyTransaction")
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class PartyTransaction  extends BaseModel {
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.ALL)
     Party party;
     double amount;
     Date date;
+    String description;
     @Enumerated(EnumType.ORDINAL)
     TransactionType transactionType;
 }

@@ -1,16 +1,21 @@
 package com.sml.smartledger.Model.party;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sml.smartledger.Model.BaseModel;
 import com.sml.smartledger.Model.business.Business;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 @Entity(name = "party")
-@Getter
-@Setter
+@Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Party extends BaseModel {
 
     String name;
@@ -22,4 +27,17 @@ public class Party extends BaseModel {
 
     @ManyToOne(cascade = CascadeType.MERGE)
     Business business;
+
+    String houseNumber;
+    String area;
+    String pincode;
+    String city;
+    String state;
+    String gstIN;
+
+    @Builder.Default
+    @JsonIgnore
+    @OneToMany(mappedBy = "party", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    List<PartyTransaction> partyTransactionList = new ArrayList<>();
+
 }

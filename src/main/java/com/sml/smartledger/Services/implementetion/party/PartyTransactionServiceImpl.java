@@ -1,7 +1,5 @@
 package com.sml.smartledger.Services.implementetion.party;
 
-import com.sml.smartledger.Model.bill.Bill;
-
 import com.sml.smartledger.Model.business.Business;
 import com.sml.smartledger.Model.party.Party;
 import com.sml.smartledger.Model.party.PartyTransaction;
@@ -9,7 +7,7 @@ import com.sml.smartledger.Model.party.TransactionType;
 import com.sml.smartledger.Repository.business.BusinessRepository;
 import com.sml.smartledger.Repository.party.PartyRepository;
 import com.sml.smartledger.Repository.party.TransactionRepository;
-import com.sml.smartledger.Services.interfaces.party.TransactionService;
+import com.sml.smartledger.Services.interfaces.party.PartyTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class TransactionServiceImpl implements TransactionService {
+public class PartyTransactionServiceImpl implements PartyTransactionService {
     @Autowired
     TransactionRepository transactionRepository;
     @Autowired

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" th:replace ="~{base ::parent(~{::#content},~{::title})}">
+<html lang="en" th:replace ="~{base ::parent(~{::#content}, ~{::title}, ~{::script})}">
 <head>
     <title >Dashboard</title>
 </head>
@@ -19,5 +19,6 @@
 
 
 </div>
+<script>console.log("Dashboard")</script>
 </body>
 </html>

@@ -52,10 +52,7 @@ public class UserController {
             userService.saveUser(saveUser);
         }
 
-        model.addAttribute("selectedBusiness", business);
-        model.addAttribute("loggedInUser", saveUser);
-        model.addAttribute("businessList", saveUser.getBusinessList());
-        model.addAttribute("businessForm", new BusinessForm());
+
         return "user/dashboard";
     }
 

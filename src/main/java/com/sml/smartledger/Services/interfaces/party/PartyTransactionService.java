@@ -5,7 +5,7 @@ import com.sml.smartledger.Model.party.PartyTransaction;
 
 import java.util.List;
 
-public interface TransactionService {
+public interface PartyTransactionService {
 
     List<PartyTransaction> getAllTransaction(Long partyId);
     PartyTransaction createTransaction(PartyTransaction partyTransaction);
