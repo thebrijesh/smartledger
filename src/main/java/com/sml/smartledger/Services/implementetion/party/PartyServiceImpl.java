@@ -4,9 +4,11 @@ import com.sml.smartledger.Model.bill.Bill;
 
 import com.sml.smartledger.Model.business.Business;
 import com.sml.smartledger.Model.party.Party;
+import com.sml.smartledger.Model.party.PartyType;
 import com.sml.smartledger.Repository.business.BusinessRepository;
 import com.sml.smartledger.Repository.party.PartyRepository;
 import com.sml.smartledger.Services.interfaces.party.PartyService;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,5 +43,10 @@ public class PartyServiceImpl implements PartyService {
     @Override
     public List<Party> getAllParty(Long businessId) {
         return partyRepository.findByBusinessId(businessId);
+    }
+
+    @Override
+    public List<Party> getCustomerParty(@NonNull Long id) {
+        return partyRepository.findAllByBusinessIdAndPartyType(id, PartyType.CUSTOMER);
     }
 }

@@ -34,6 +34,7 @@ public class Party extends BaseModel {
     String city;
     String state;
     String gstIN;
+    Double balance;
 
     @Builder.Default
     @JsonIgnore
