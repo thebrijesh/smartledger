@@ -12,6 +12,4 @@ public interface BusinessService {
     public void deleteBusiness(Long Id);
 
     Business getBusinessById(Long selectedBusinessId);
-
-    Business saveBusiness(Business business);
 }

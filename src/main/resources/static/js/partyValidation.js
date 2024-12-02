@@ -1,12 +1,3 @@
-
-
-const button = document.getElementById('partymainlayout');
-const variableValue = button.getAttribute('data-variable');
-
-function loadParty(partyType){
-    console.log(partyType);
-}
-console.log(variableValue);
 document.addEventListener('DOMContentLoaded', function () {
     const phoneNumber = document.getElementById('phone-number');
     const openingBalance = document.getElementById('opening-balance');
@@ -48,24 +39,3 @@ document.addEventListener('DOMContentLoaded', function () {
     phoneNumber.addEventListener('input', validateForm);
     openingBalance.addEventListener('input', validateForm);
 });
-
-document.addEventListener("DOMContentLoaded", () => {
-    const tabs = document.querySelectorAll(".tab");
-
-    tabs.forEach(tab => {
-        tab.addEventListener("click", () => {
-            // Remove the active class from all tabs
-            tabs.forEach(t => t.classList.remove("active"));
-
-            // Add the active class to the clicked tab
-            tab.classList.add("active");
-
-            // Redirect to the URL specified in the data-url attribute
-            const redirectUrl = tab.getAttribute("data-url");
-            if (redirectUrl) {
-                window.location.href = redirectUrl;
-            }
-        });
-    });
-});
-

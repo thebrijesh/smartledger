@@ -8,8 +8,6 @@ import com.sml.smartledger.Repository.business.BusinessRepository;
 import com.sml.smartledger.Repository.party.PartyRepository;
 import com.sml.smartledger.Repository.party.TransactionRepository;
 import com.sml.smartledger.Services.interfaces.party.PartyTransactionService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,21 +16,12 @@ import java.util.Optional;
 
 @Service
 public class PartyTransactionServiceImpl implements PartyTransactionService {
-    final
-    TransactionRepository transactionRepository;
-    final
-    BusinessRepository businessRepository;
-    final
-    PartyRepository partyRepository;
-    Logger logger = LoggerFactory.getLogger(PartyTransactionServiceImpl.class);
-
     @Autowired
-    public PartyTransactionServiceImpl(TransactionRepository transactionRepository, BusinessRepository businessRepository, PartyRepository partyRepository) {
-        this.transactionRepository = transactionRepository;
-        this.businessRepository = businessRepository;
-        this.partyRepository = partyRepository;
-    }
-
+    TransactionRepository transactionRepository;
+    @Autowired
+    BusinessRepository businessRepository;
+    @Autowired
+    PartyRepository partyRepository;
     @Override
     public List<PartyTransaction> getAllTransaction(Long partyId) {
         return transactionRepository.findAllByPartyId(partyId);
@@ -41,23 +30,16 @@ public class PartyTransactionServiceImpl implements PartyTransactionService {
     @Override
     public PartyTransaction createTransaction(PartyTransaction partyTransaction) {
         Optional<Party> partyOptional = partyRepository.findById(partyTransaction.getParty().getId());
-        if (partyOptional.isEmpty()) throw new RuntimeException("Party not found");
+        if(partyOptional.isEmpty()) throw new RuntimeException("Party not found");
         Optional<Business> businessOptional = businessRepository.findById(partyOptional.get().getBusiness().getId());
-        if (businessOptional.isEmpty()) throw new RuntimeException("Business not found");
+        if(businessOptional.isEmpty()) throw new RuntimeException("Business not found");
         Business business = businessOptional.get();
-        logger.info("Balance {} ", partyOptional.get().getBalance());
-        logger.info("Amount {} ", partyTransaction.getAmount());
-        if (partyTransaction.getTransactionType() == TransactionType.CREDIT) {
-            business.setTotalCredit(business.getTotalCredit() + partyTransaction.getAmount());
-            partyOptional.get().setBalance(partyOptional.get().getBalance() - partyTransaction.getAmount());
-
-        } else {
-            business.setTotalDebit(business.getTotalDebit() + partyTransaction.getAmount());
-            partyOptional.get().setBalance(partyOptional.get().getBalance() + partyTransaction.getAmount());
+        if(partyTransaction.getTransactionType() == TransactionType.CREDIT){
+            business.setTotalCredit(business.getTotalCredit()+ partyTransaction.getAmount());
+        }else {
+            business.setTotalDebit(business.getTotalDebit()+ partyTransaction.getAmount());
         }
-
         businessRepository.save(business);
-        partyRepository.save(partyOptional.get());
         return transactionRepository.save(partyTransaction);
     }
 }
