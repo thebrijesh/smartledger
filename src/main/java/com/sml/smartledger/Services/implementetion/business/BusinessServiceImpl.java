@@ -41,4 +41,9 @@ public class BusinessServiceImpl implements BusinessService {
     public Business getBusinessById(Long selectedBusinessId) {
         return businessRepository.findById(selectedBusinessId).orElseThrow(() -> new RuntimeException("Business Not Found"));
     }
+
+    @Override
+    public Business saveBusiness(Business business) {
+       return businessRepository.save(business);
+    }
 }

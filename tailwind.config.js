@@ -12,9 +12,11 @@ export default {
 module.exports = {
   content: ["./src/**/*.{html,js}","./node_modules/flowbite/**/*.js"],
   theme: {
-    extend: {},
+    extend: {
+
+    },
   },
-  plugins: [require('flowbite/plugin')],
+  plugins: [require('flowbite/plugin'), require('tailwind-scrollbar')],
   darkMode: "selector",
 }
 
