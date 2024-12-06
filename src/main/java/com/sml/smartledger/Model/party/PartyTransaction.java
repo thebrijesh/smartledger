@@ -17,6 +17,7 @@ public class PartyTransaction  extends BaseModel {
     double amount;
     Date date;
     String description;
+    Date transactionDate;
     @Enumerated(EnumType.ORDINAL)
     TransactionType transactionType;
 }

@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,6 +55,9 @@ public class PartyTransactionServiceImpl implements PartyTransactionService {
         } else {
             business.setTotalDebit(business.getTotalDebit() + partyTransaction.getAmount());
             partyOptional.get().setBalance(partyOptional.get().getBalance() + partyTransaction.getAmount());
+        }
+        if(partyTransaction.getTransactionDate() == null){
+            partyTransaction.setTransactionDate(new Date());
         }
 
         businessRepository.save(business);

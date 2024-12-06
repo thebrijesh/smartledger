@@ -3,6 +3,10 @@ package com.sml.smartledger.Helper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Helper {
 
@@ -23,5 +27,17 @@ public class Helper {
             return authentication.getName();
         }
         return "";
+    }
+
+
+
+    public static Date convertStringToDate(String date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        try {
+            return formatter.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

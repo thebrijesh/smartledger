@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en" th:replace="~{base ::parent(~{::#content}, ~{::title}, ~{::script})}">
+<head>
+    <title>Bulk Upload</title>
+</head>
+<body>
+<div id="content" class="h-screen">
+
+
+    <div class="pt-20 sm:pl-64">
+        <div class="p-6 bg-gray-100 dark:bg-gray-800 min-h-screen transition-colors duration-300">
+            <!-- Header -->
+            <div class="mb-6 text-2xl font-extrabold text-gray-800 dark:text-gray-200 tracking-wide">
+                <span class="underline decoration-blue-500">Bulk Import</span>
+            </div>
+
+            <!-- Instructions Section -->
+            <div class="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                <div class="mb-8">
+                    <h2 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6 flex items-center space-x-2">
+                        <svg class="w-5 h-5 md:w-6 md:h-6 text-blue-500 animate-bounce"
+                             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M9 17v-6h6v6m4-2a2 2 0 100 4 2 2 0 000-4zm-8 2H7a2 2 0 01-2-2v-4a2 2 0 012-2h10a2 2 0 012 2v4a2 2 0 01-2 2h-6z"/>
+                        </svg>
+                        <span>Bulk upload customers in 3 Simple steps</span>
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Step 1 -->
+                        <div class="flex items-center space-x-3 p-4 border border-blue-100 dark:border-blue-500 rounded-lg bg-blue-50 dark:bg-blue-900 hover:bg-blue-100 dark:hover:bg-blue-800 transition duration-300 transform hover:scale-105">
+                            <img src="https://img.icons8.com/ios-filled/50/null/ms-excel.png" alt="Excel icon"
+                                 class="w-8 h-8 md:w-10 md:h-10"/>
+                            <span class="text-sm md:text-base font-medium text-gray-800 dark:text-gray-100">
+            Step 1: <div id="download-template-btn"
+                         class="cursor-pointer text-blue-600 dark:text-blue-400 underline hover:text-blue-800 dark:hover:text-blue-300">Download</div> the Sample Excel sheet format
+          </span>
+                        </div>
+                        <!-- Step 2 -->
+                        <div class="flex items-center space-x-3 p-4 border border-green-100 dark:border-green-500 rounded-lg bg-green-50 dark:bg-green-900 hover:bg-green-100 dark:hover:bg-green-800 transition duration-300 transform hover:scale-105">
+                            <img src="https://img.icons8.com/ios-filled/50/null/ms-excel.png" alt="Excel icon"
+                                 class="w-8 h-8 md:w-10 md:h-10"/>
+                            <span class="text-sm md:text-base font-medium text-gray-800 dark:text-gray-100">
+            Step 2: Upload your Excel sheet with your customers' details by clicking upload excel sheet button
+          </span>
+                        </div>
+                        <!-- Step 3 -->
+                        <div class="flex items-center space-x-3 p-4 border border-yellow-100 dark:border-yellow-500 rounded-lg bg-yellow-50 dark:bg-yellow-900 hover:bg-yellow-100 dark:hover:bg-yellow-800 transition duration-300 transform hover:scale-105">
+          <span class="text-sm md:text-base font-medium text-gray-800 dark:text-gray-100">
+            Step 3: Click on <span class="font-bold text-gray-900 dark:text-white">"Upload Button"</span>
+          </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bulk Upload Status -->
+
+
+                <div id="upload" class="flex items-center justify-center w-full">
+                    <label for="dropzone-file"
+                           class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                            <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                            </svg>
+                            <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span>
+                                or drag and drop</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">XLSX</p>
+                        </div>
+                        <input id="dropzone-file" name="file" type="file" class="hidden"
+                               th:value="${file}"/>
+                    </label>
+                </div>
+                <button id="submit_btn" onclick="handleFileUpload()"
+                        class="w-full py-3 mt-6 font-medium text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 rounded-lg text-sm px-5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                    Submit
+                </button>
+                <div id="upload-summary"
+                     class="hidden container mx-auto mt-10 p-6 bg-white dark:bg-gray-800 shadow-lg rounded-md">
+                    <h2 class="text-lg font-semibold mb-6 text-gray-800 dark:text-gray-200">
+                        Bulk Upload Status
+                    </h2>
+                    <div class="flex justify-between items-center mb-4">
+                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                            Upload an Excel sheet to update the database.
+                        </p>
+                        <button data-modal-target="default-modal" data-modal-toggle="default-modal"
+                                class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium py-2 px-4 rounded-md transition"
+                        >
+                            + Upload Excel Sheet
+                        </button>
+
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
+                            <thead class="bg-gray-100 dark:bg-gray-700">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    File Name
+                                </th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Upload Type
+                                </th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Successful Entries
+                                </th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Failed Entries
+                                </th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    File Status
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody id="upload-status-body" class="bg-white dark:bg-gray-800">
+                            <tr>
+                                <th id="fileName"
+                                    class="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    File Name
+                                </th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Parties
+                                </th>
+                                <th id="success-count"
+                                    class="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    0
+                                </th>
+                                <th id="failure-count"
+                                    class="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    0
+                                </th>
+                                <th id="failure-reasons"
+                                    class="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    IN PROGRESS
+                                </th>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div th:replace="~{user/party/uploadFile ::uploadFile}"></div>
+
+
+            </div>
+        </div>
+
+
+    </div>
+
+
+</div>
+<script>console.log("Bulk Upload")</script>
+<script data-th-src="@{/js/downlaod_file.js}"></script>
+
+</body>
+</html>

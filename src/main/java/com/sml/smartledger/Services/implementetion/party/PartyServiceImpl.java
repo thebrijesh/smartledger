@@ -49,4 +49,9 @@ public class PartyServiceImpl implements PartyService {
     public List<Party> getCustomerParty(@NonNull Long id) {
         return partyRepository.findAllByBusinessIdAndPartyType(id, PartyType.CUSTOMER);
     }
+
+    @Override
+    public Party getPartyById(Long partyId) {
+        return partyRepository.findById(partyId).orElseThrow(() -> new RuntimeException("Party not found"));
+    }
 }

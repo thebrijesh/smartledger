@@ -14,4 +14,7 @@ public interface PartyService {
     public List<Party> getAllParty(Long BusinessId);
 
     List<Party> getCustomerParty(@NonNull Long id);
+
+
+    Party getPartyById(Long partyId);
 }
