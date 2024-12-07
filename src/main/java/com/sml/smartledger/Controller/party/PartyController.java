@@ -284,7 +284,7 @@ public class PartyController {
 
     @PostMapping("/create-party-transaction")
     public String createPartyTransaction( @ModelAttribute PartyTransactionForm partyTransactionForm){
-         logger.info("Party Transaction Form: " + partyTransactionForm.getPartyId());
+
         Party party = partyService.getPartyById(partyTransactionForm.getPartyId());
         Date date = Helper.convertStringToDate(partyTransactionForm.getDate());
         assert date != null;
@@ -303,4 +303,15 @@ public class PartyController {
         return "redirect:/users/party/view/"+partyTransactionForm.getPartyId();
     }
 
+    @PutMapping("/update-party-transaction/{id}")
+    public ResponseEntity<PartyTransaction> updatePartyTransaction(@PathVariable("id") Long id, @ModelAttribute PartyTransactionForm partyTransactionForm){
+        logger.info("Party Transaction Form: " + partyTransactionForm.getPartyId());
+       PartyTransaction partyTransaction = partyTransactionService.getTransactionById(id);
+        partyTransaction.setAmount(partyTransactionForm.getAmount());
+        partyTransaction.setTransactionType(TransactionType.valueOf(partyTransactionForm.getTransactionType()));
+        partyTransaction.setDescription(partyTransactionForm.getDescription());
+        partyTransaction.setTransactionDate(Helper.convertStringToDate(partyTransactionForm.getDate()));
+        PartyTransaction updatedTransaction = partyTransactionService.updateTransaction(partyTransaction);
+        return new ResponseEntity<>(updatedTransaction, HttpStatus.OK);
+    }
 }

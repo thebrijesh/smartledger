@@ -3,14 +3,15 @@
 
 
 <div th:fragment="addPartyTransactionDrawer" id="drawer-right-example"
-     class=" fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform translate-x-full bg-white w-auto dark:bg-gray-800"
+     class=" fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform translate-x-full bg-white w-auto
+      dark:bg-gray-800"
      tabindex="-1" aria-labelledby="drawer-right-label">
 
 
-    <div class="max-w-md mx-auto bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 rounded-lg shadow-lg p-6">
+    <div class="max-w-md w-auto md:w-96 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 rounded-lg shadow-lg p-6">
         <!-- Header -->
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-xl font-semibold text-indigo-600 dark:text-indigo-400">Add New Party</h2>
+            <h2 class="text-xl font-semibold text-indigo-600 dark:text-indigo-400">Add New Transaction</h2>
             <button type="button" data-drawer-hide="drawer-right-example"
                     aria-controls="drawer-right-example"
                     class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
@@ -22,20 +23,21 @@
         </div>
 
         <!-- Form -->
-        <form data-th-action="@{'/users/party/create-party-transaction'}" data-th-object="${PartyTransactionForm}" method="post">
+        <form id="editTransactionForm" data-th-action="@{'/users/party/create-party-transaction'}" data-th-object="${PartyTransactionForm}" method="post">
 
 
             <!-- Amount -->
             <div class="mt-4">
                 <label for="amount"
                        class="flex justify-start text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Opening Balance <span class="text-gray-500 dark:text-gray-400">(optional)</span>
+                    Amount <span class="text-gray-500 dark:text-gray-400">(required)</span>
                 </label>
                 <div class="flex items-center mt-2">
                                 <span class="inline-flex p-2 items-center px-3 rounded-l-lg border border-r-0 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-sm">
                                   ₹
                                 </span>
-                    <input data-th-field="*{amount}" type="number" id="amount"
+
+                    <input data-th-field="*{amount}" type="number" id="amount" required
                            class="flex-1 border border-r-0 block w-full rounded-none border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none px-4 py-2 text-sm"
                            placeholder="Enter amount">
                 </div>
@@ -45,7 +47,7 @@
 <!--            Discription-->
             <div class="mt-4">
             <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" >Your message</label>
-            <textarea data-th-field="*{description}" id="message" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your thoughts here..."></textarea>
+            <textarea data-th-field="*{description}"  id="message" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your thoughts here..."></textarea>
 
             </div>
 
@@ -75,5 +77,6 @@
         </form>
     </div>
 
+    <script data-th-src="@{/js/partyTransactionValidation.js}"></script>
 
 </div>

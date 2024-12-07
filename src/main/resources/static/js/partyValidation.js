@@ -45,7 +45,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Attach event listeners to inputs
-    phoneNumber.addEventListener('input', validateForm);
     openingBalance.addEventListener('input', validateForm);
 });
 

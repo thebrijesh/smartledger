@@ -9,4 +9,10 @@ public interface PartyTransactionService {
 
     List<PartyTransaction> getAllTransaction(Long partyId);
     PartyTransaction createTransaction(PartyTransaction partyTransaction);
+
+    void deleteTransaction(Long id);
+
+    PartyTransaction updateTransaction(PartyTransaction partyTransaction);
+
+    PartyTransaction getTransactionById(Long partyId);
 }

@@ -8,6 +8,7 @@ import com.sml.smartledger.Repository.business.BusinessRepository;
 import com.sml.smartledger.Repository.party.PartyRepository;
 import com.sml.smartledger.Repository.party.TransactionRepository;
 import com.sml.smartledger.Services.interfaces.party.PartyTransactionService;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,5 +64,20 @@ public class PartyTransactionServiceImpl implements PartyTransactionService {
         businessRepository.save(business);
         partyRepository.save(partyOptional.get());
         return transactionRepository.save(partyTransaction);
+    }
+
+    @Transactional
+    public void deleteTransaction(Long id) {
+        transactionRepository.deleteById(id);
+    }
+
+    @Override
+    public PartyTransaction updateTransaction(PartyTransaction partyTransaction) {
+        return transactionRepository.save(partyTransaction);
+    }
+
+    @Override
+    public PartyTransaction getTransactionById(Long transactionId) {
+        return transactionRepository.findById(transactionId).orElseThrow(() -> new RuntimeException("Transaction not found"));
     }
 }
