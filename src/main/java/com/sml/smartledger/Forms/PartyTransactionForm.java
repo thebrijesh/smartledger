@@ -10,6 +10,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PartyTransactionForm {
+    Long id;
     Long partyId;
     Double amount;
     String transactionType;

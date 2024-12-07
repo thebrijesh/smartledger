@@ -36,6 +36,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -283,12 +285,16 @@ public class PartyController {
     }
 
     @PostMapping("/create-party-transaction")
-    public String createPartyTransaction( @ModelAttribute PartyTransactionForm partyTransactionForm){
+    public String createPartyTransaction(@ModelAttribute PartyTransactionForm partyTransactionForm){
 
         Party party = partyService.getPartyById(partyTransactionForm.getPartyId());
         Date date = Helper.convertStringToDate(partyTransactionForm.getDate());
         assert date != null;
         date.setTime(new Date().getTime());
+        System.out.println("Date: " + date);
+        System.out.println("Date: " + partyTransactionForm.getTransactionType());
+
+
         PartyTransaction transaction = PartyTransaction.builder()
                 .amount(partyTransactionForm.getAmount())
                 .party(party)
@@ -303,15 +309,24 @@ public class PartyController {
         return "redirect:/users/party/view/"+partyTransactionForm.getPartyId();
     }
 
-    @PutMapping("/update-party-transaction/{id}")
-    public ResponseEntity<PartyTransaction> updatePartyTransaction(@PathVariable("id") Long id, @ModelAttribute PartyTransactionForm partyTransactionForm){
+    @PostMapping("/update-party-transaction")
+    public String updatePartyTransaction(@ModelAttribute PartyTransactionForm partyTransactionForm){
         logger.info("Party Transaction Form: " + partyTransactionForm.getPartyId());
-       PartyTransaction partyTransaction = partyTransactionService.getTransactionById(id);
+       PartyTransaction partyTransaction = partyTransactionService.getTransactionById(partyTransactionForm.getId());
         partyTransaction.setAmount(partyTransactionForm.getAmount());
         partyTransaction.setTransactionType(TransactionType.valueOf(partyTransactionForm.getTransactionType()));
         partyTransaction.setDescription(partyTransactionForm.getDescription());
-        partyTransaction.setTransactionDate(Helper.convertStringToDate(partyTransactionForm.getDate()));
+        Date date = Helper.convertStringToDate(partyTransactionForm.getDate());
+
+        // Convert Date to LocalDate and LocalTime
+        assert date != null;
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalTime localTime = partyTransaction.getCreatedAt().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+
+// Combine date and time
+        Date combinedDate = Date.from(localDate.atTime(localTime).atZone(ZoneId.systemDefault()).toInstant());
+        partyTransaction.setTransactionDate(combinedDate);
         PartyTransaction updatedTransaction = partyTransactionService.updateTransaction(partyTransaction);
-        return new ResponseEntity<>(updatedTransaction, HttpStatus.OK);
+        return "redirect:/users/party/view/"+partyTransaction.getParty().getId();
     }
 }
