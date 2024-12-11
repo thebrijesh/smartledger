@@ -2,33 +2,36 @@
      data-th-object="${partyType}" class="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen transition duration-300">
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-gray-900 p-6 max-w-4xl mx-auto">
         <!-- Header -->
-        <div class="flex flex-wrap items-center justify-between gap-y-4 mb-6">
-            <div class="flex gap-6">
-                <div class="tab text-blue-600 dark:text-blue-400 font-semibold border-b-4 border-blue-600 dark:border-blue-400 cursor-pointer"
-                     data-url="/users/party/customer">
-                    Customers <span class="text-gray-500 dark:text-gray-400">(5)</span>
+        <a href="http://localhost:8184/users/other/report/transaction">
+            <div  class="flex flex-wrap items-center justify-between gap-y-4 mb-6">
+                <div class="flex gap-6">
+                    <div class="tab text-blue-600 dark:text-blue-400 font-semibold border-b-4 border-blue-600 dark:border-blue-400 cursor-pointer"
+                         data-url="/users/party/customer">
+                        Customers <span class="text-gray-500 dark:text-gray-400">(5)</span>
+                    </div>
+                    <div class="tab text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 hover:border-b-4 hover:border-blue-500 dark:hover:border-blue-400 cursor-pointer transition"
+                         data-url="/users/party/supplier">
+                        Suppliers <span class="text-gray-500 dark:text-gray-400">(1)</span>
+                    </div>
                 </div>
-                <div class="tab text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 hover:border-b-4 hover:border-blue-500 dark:hover:border-blue-400 cursor-pointer transition"
-                     data-url="/users/party/supplier">
-                    Suppliers <span class="text-gray-500 dark:text-gray-400">(1)</span>
-                </div>
+                <button class="text-blue-600 dark:text-blue-400 text-sm font-medium hover:underline transition">
+                    View Report
+                </button>
             </div>
-            <button class="text-blue-600 dark:text-blue-400 text-sm font-medium hover:underline transition">
-                View Report
-            </button>
-        </div>
+
+        </a>
 
         <!-- Summary -->
         <div class="flex flex-wrap justify-between gap-4 bg-gradient-to-r from-green-50 dark:from-green-900 to-green-100 dark:to-green-800 rounded-lg p-5 mb-6 shadow-inner">
             <div>
                 <p class="text-sm text-gray-500 dark:text-gray-400">You'll Give:</p>
                 <p class="text-green-600 dark:text-green-400 font-semibold text-lg"
-                   data-th-text="${selectedBusiness.totalCredit}">₹5,100</p>
+                   data-th-text="${selectedBusiness.totalDebit}">₹5,100</p>
             </div>
             <div>
                 <p class="text-sm text-gray-500 dark:text-gray-400">You'll Get:</p>
                 <p class="text-red-600 dark:text-red-400 font-semibold text-lg"
-                   data-th-text="${selectedBusiness.totalDebit}">₹58,098</p>
+                   data-th-text="${selectedBusiness.totalCredit}">₹58,098</p>
             </div>
         </div>
 
@@ -60,7 +63,7 @@
                 <!-- Customer Item -->
                 <div data-th-each="party : ${parties}" data-th-object="${party}">
                     <div class="partyList px-3 flex flex-wrap items-center justify-between gap-y-4 py-4 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition cursor-pointer"
-                         th:data-party-id="${party.id}" onclick="redirectToPartyView(this)">
+                         th:data-partyid="${party.id}" onclick="redirectToPartyView(this)">
 
                         <div class="flex items-center gap-4">
                             <!-- First Character with Dynamic Color -->
@@ -107,15 +110,15 @@
                             </div>
                         </div>
                         <div th:if="${party.balance} < 0" class="text-right">
-                            <p class="text-green-600 dark:text-green-400 font-semibold"
+                            <p class="text-red-600 dark:text-red-400 font-semibold"
                                th:text="'₹' + ${party.balance * -1}" data-debit="${party.balance * -1}">₹1,500</p>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">YOU'LL GIVE</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">YOU'LL GET</p>
                         </div>
 
                         <div th:if="${party.balance} > 0" class="text-right">
-                            <p class="text-red-600 dark:text-red-400 font-semibold" th:text="'₹' + ${party.balance}"
+                            <p class="text-green-600 dark:text-green-400 font-semibold" th:text="'₹' + ${party.balance}"
                                data-credit="${party.balance}">₹1,500</p>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">YOU'LL GET</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">YOU'LL GIVE</p>
                         </div>
 
                         <div th:if="${party.balance} == 0" class="text-right">
@@ -130,7 +133,7 @@
 
         <script>
             function redirectToPartyView(element) {
-                const partyId = element.getAttribute('data-party-id');
+                const partyId = element.getAttribute('data-partyid');
                 window.location.href = '/users/party/view/' + partyId;
             }
         </script>

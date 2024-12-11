@@ -64,7 +64,7 @@ public class PartyController {
     }
 
     @PostMapping("/creteParty")
-    public String createParty( @ModelAttribute PartyForm partyForm, Authentication authentication){
+    public String createParty(@ModelAttribute PartyForm partyForm, Authentication authentication) {
         String email = getEmailOfLoggedInUser(authentication);
         User saveUser = userService.getUserByEmail(email);
         Business business = saveUser.getSelectedBusiness();
@@ -88,7 +88,7 @@ public class PartyController {
             PartyTransaction transaction = PartyTransaction.builder()
                     .amount(partyForm.getBalance())
                     .party(party)
-                    .transactionType(partyForm.getTransectionType().equals("you-gave") ? TransactionType.DEBIT : TransactionType.CREDIT)
+                    .transactionType(partyForm.getTransectionType().equals("you-gave") ? TransactionType.CREDIT : TransactionType.DEBIT)
                     .description("Opening Balance")
                     .build();
             PartyTransaction partyTransaction = partyTransactionService.createTransaction(transaction);
@@ -100,19 +100,32 @@ public class PartyController {
         return "redirect:/users/party/customer";
     }
 
+    @PostMapping("/updateParty")
+    public String updateParty(@ModelAttribute Party party) {
+        Party partyFromDB = partyService.getPartyById(party.getId());
+        partyFromDB.setName(party.getName());
+        partyFromDB.setMobile(party.getMobile());
+        partyFromDB.setPartyType(party.getPartyType());
+        partyFromDB.setHouseNumber(party.getHouseNumber());
+        partyFromDB.setArea(party.getArea());
+        partyFromDB.setCity(party.getCity());
+        partyFromDB.setState(party.getState());
+        partyFromDB.setPincode(party.getPincode());
+        partyFromDB.setGstIN(party.getGstIN());
+        partyService.updateParty(partyFromDB);
+        return "redirect:/users/party/view/" + party.getId();
+    }
+
     @GetMapping("/{businessId}")
-    public ResponseEntity< List<Party>> getAllParty(@PathVariable("businessId") Long businessId){
+    public ResponseEntity<List<Party>> getAllParty(@PathVariable("businessId") Long businessId) {
         List<Party> createdPartyList = partyService.getAllParty(businessId);
         return new ResponseEntity<>(createdPartyList, HttpStatus.OK);
     }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Party> deleteParty(@PathVariable Long id){
-          partyService.deleteParty(id);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
+
+
 
     @GetMapping("/customer")
-    public String customer(Model model,Authentication authentication){
+    public String customer(Model model, Authentication authentication) {
 
         String email = getEmailOfLoggedInUser(authentication);
         User user = userService.getUserByEmail(email);
@@ -128,7 +141,7 @@ public class PartyController {
     }
 
     @GetMapping("/supplier")
-    public String supplier(Model model,Authentication authentication){
+    public String supplier(Model model, Authentication authentication) {
 
         String email = getEmailOfLoggedInUser(authentication);
         User user = userService.getUserByEmail(email);
@@ -144,7 +157,7 @@ public class PartyController {
     }
 
     @GetMapping("/bulk_upload")
-    public String bulkUpload(Model model,Authentication authentication){
+    public String bulkUpload(Model model, Authentication authentication) {
         String email = getEmailOfLoggedInUser(authentication);
         User user = userService.getUserByEmail(email);
         model.addAttribute("partyForm", new PartyForm());
@@ -153,6 +166,7 @@ public class PartyController {
 //        model.addAttribute("parties", "bulk_upload");
         return "user/party/bulk_upload";
     }
+
     @GetMapping("/download-template")
     public ResponseEntity<InputStreamResource> downloadTemplate() {
         String filePath = "src/main/resources/static/template.xlsx"; // Path to the uploaded file
@@ -270,7 +284,7 @@ public class PartyController {
     }
 
     @GetMapping("/view/{id}")
-    public String viewParty(@PathVariable("id") Long partyId, Model model,Authentication authentication){
+    public String viewParty(@PathVariable("id") Long partyId, Model model, Authentication authentication) {
         String email = getEmailOfLoggedInUser(authentication);
         User user = userService.getUserByEmail(email);
 
@@ -280,12 +294,12 @@ public class PartyController {
         String date1 = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
         partyTransactionForm.setDate(date1);
         model.addAttribute("party", party);
-        model.addAttribute("PartyTransactionForm",partyTransactionForm);
+        model.addAttribute("PartyTransactionForm", partyTransactionForm);
         return "user/party/party_details";
     }
 
     @PostMapping("/create-party-transaction")
-    public String createPartyTransaction(@ModelAttribute PartyTransactionForm partyTransactionForm){
+    public String createPartyTransaction(@ModelAttribute PartyTransactionForm partyTransactionForm) {
 
         Party party = partyService.getPartyById(partyTransactionForm.getPartyId());
         Date date = Helper.convertStringToDate(partyTransactionForm.getDate());
@@ -306,27 +320,49 @@ public class PartyController {
         partyTransactionService.createTransaction(transaction);
 
 
-        return "redirect:/users/party/view/"+partyTransactionForm.getPartyId();
+        return "redirect:/users/party/view/" + partyTransactionForm.getPartyId();
     }
 
     @PostMapping("/update-party-transaction")
-    public String updatePartyTransaction(@ModelAttribute PartyTransactionForm partyTransactionForm){
-        logger.info("Party Transaction Form: " + partyTransactionForm.getPartyId());
-       PartyTransaction partyTransaction = partyTransactionService.getTransactionById(partyTransactionForm.getId());
-        partyTransaction.setAmount(partyTransactionForm.getAmount());
-        partyTransaction.setTransactionType(TransactionType.valueOf(partyTransactionForm.getTransactionType()));
-        partyTransaction.setDescription(partyTransactionForm.getDescription());
-        Date date = Helper.convertStringToDate(partyTransactionForm.getDate());
+    public String updatePartyTransaction(@ModelAttribute PartyTransactionForm partyTransactionForm) {
+        logger.info("Party Transaction ID: " + partyTransactionForm.getId());
+        PartyTransaction newPartyTransaction = new PartyTransaction();
+        newPartyTransaction.setId(partyTransactionForm.getId());
+        newPartyTransaction.setAmount(partyTransactionForm.getAmount());
+        newPartyTransaction.setDescription(partyTransactionForm.getDescription());
 
-        // Convert Date to LocalDate and LocalTime
+        PartyTransaction partyTransaction = partyTransactionService.getTransactionById(partyTransactionForm.getId());
+        logger.info("New Party Transaction date: " + partyTransaction.getCreatedAt());
+        Date date = Helper.convertStringToDate(partyTransactionForm.getDate());
         assert date != null;
         LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         LocalTime localTime = partyTransaction.getCreatedAt().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
 
 // Combine date and time
+
         Date combinedDate = Date.from(localDate.atTime(localTime).atZone(ZoneId.systemDefault()).toInstant());
-        partyTransaction.setTransactionDate(combinedDate);
-        PartyTransaction updatedTransaction = partyTransactionService.updateTransaction(partyTransaction);
-        return "redirect:/users/party/view/"+partyTransaction.getParty().getId();
+        newPartyTransaction.setTransactionDate(combinedDate);
+
+        PartyTransaction updatedTransaction = partyTransactionService.updateTransaction(newPartyTransaction);
+        return "redirect:/users/party/view/" + partyTransaction.getParty().getId();
+    }
+
+
+
+
+    @PostMapping("/set-due-date")
+    @ResponseBody
+    public String setDueDate(@RequestBody Map<String, Object> payload) {
+        String date = (String) payload.get("date");
+        Long partyId = Long.valueOf(payload.get("partyId").toString());
+        logger.info("Date: " + date);
+        logger.info("Party ID: " + partyId);
+        Party party = partyService.getPartyById(partyId);
+        Date dueDate = Helper.convertStringToDate(date);
+
+        party.setDueDate(dueDate);
+        partyService.updateParty(party);
+        // Save dueDate to DB or update in backend logic
+        return "redirect:/users/party/view/" + partyId;
     }
 }

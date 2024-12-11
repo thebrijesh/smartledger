@@ -1,6 +1,7 @@
 package com.sml.smartledger.Services.interfaces.party;
 
 
+import com.sml.smartledger.Model.party.Party;
 import com.sml.smartledger.Model.party.PartyTransaction;
 
 import java.util.List;
@@ -8,6 +9,9 @@ import java.util.List;
 public interface PartyTransactionService {
 
     List<PartyTransaction> getAllTransaction(Long partyId);
+    List<PartyTransaction> getAllByPartyIn(List<Party> partyIds);
+
+
     PartyTransaction createTransaction(PartyTransaction partyTransaction);
 
     void deleteTransaction(Long id);

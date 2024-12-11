@@ -17,4 +17,6 @@ public interface PartyService {
 
 
     Party getPartyById(Long partyId);
+
+    Party updateParty(Party party);
 }

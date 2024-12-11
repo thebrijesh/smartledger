@@ -10,9 +10,9 @@ console.log(variableValue);
 document.addEventListener('DOMContentLoaded', function () {
     const phoneNumber = document.getElementById('phone-number');
     const openingBalance = document.getElementById('opening-balance');
-    const submitBtn = document.getElementById('submitBtn');
     const mobileNumberError = document.getElementById('mobileNumberError');
     const amountError = document.getElementById('amountError');
+
 
     // Helper function to validate the form
     function validateForm() {
@@ -36,12 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
             amountError.classList.add('hidden');
         }
 
-        // Enable or disable the submit button
-        submitBtn.disabled = !isValid;
-        submitBtn.classList.toggle('bg-blue-700', isValid);
-        submitBtn.classList.toggle('hover:bg-blue-800', isValid);
-        submitBtn.classList.toggle('bg-gray-400', !isValid);
-        submitBtn.classList.toggle('cursor-not-allowed', !isValid);
+
     }
 
     // Attach event listeners to inputs
@@ -68,4 +63,22 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-
+function validateMobile(){
+    const parties = document.getElementsByClassName('partyList');
+    const phoneNumber = document.getElementById('phone-number').value;
+    console.log(phoneNumber);
+    const createPartyForm = document.getElementById('createPartyForm');
+    console.log(parties);
+    let show = true;
+    Array.from(parties).forEach(party => {
+        const mobile = party.querySelector('[data-mobile]').textContent;
+        if(mobile === phoneNumber){
+            show = false;
+            window.location.href = '/users/party/view/'+party.getAttribute('data-partyid');
+        }
+        console.log(mobile + " " + phoneNumber.textContent);
+    });
+    if(show){
+        createPartyForm.submit();
+    }
+}

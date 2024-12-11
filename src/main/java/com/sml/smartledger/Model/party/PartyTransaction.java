@@ -20,4 +20,6 @@ public class PartyTransaction  extends BaseModel {
     Date transactionDate;
     @Enumerated(EnumType.ORDINAL)
     TransactionType transactionType;
+
+
 }

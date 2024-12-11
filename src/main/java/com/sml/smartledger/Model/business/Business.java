@@ -35,8 +35,9 @@ public class Business extends BaseModel {
     @JsonIgnore
     List<StaffMember> staffList = new ArrayList<>();
     @Builder.Default
-    @OneToMany
-    List<Party> parties= new ArrayList<>();
+    @OneToMany(mappedBy = "business", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @JsonIgnore
+    List<Party> parties = new ArrayList<>();
     @Builder.Default
     @OneToMany(cascade = CascadeType.ALL)
     @JsonIgnore
@@ -44,15 +45,15 @@ public class Business extends BaseModel {
     @Builder.Default
     @OneToMany(cascade = CascadeType.ALL)
     @JsonIgnore
-    List<Expanses> expansesList= new ArrayList<>();
+    List<Expanses> expansesList = new ArrayList<>();
     @Builder.Default
     @OneToMany(cascade = CascadeType.ALL)
     @JsonIgnore
-    List<BillProduct> products= new ArrayList<>();
+    List<BillProduct> products = new ArrayList<>();
     @Builder.Default
     @OneToMany(cascade = CascadeType.ALL)
     @JsonIgnore
-    List<BillService> services= new ArrayList<>();
+    List<BillService> services = new ArrayList<>();
     private String logo;
 
     double totalCredit;

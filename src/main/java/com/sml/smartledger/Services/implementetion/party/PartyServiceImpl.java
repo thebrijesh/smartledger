@@ -8,6 +8,7 @@ import com.sml.smartledger.Model.party.PartyType;
 import com.sml.smartledger.Repository.business.BusinessRepository;
 import com.sml.smartledger.Repository.party.PartyRepository;
 import com.sml.smartledger.Services.interfaces.party.PartyService;
+import jakarta.transaction.Transactional;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,10 +22,11 @@ public class PartyServiceImpl implements PartyService {
     PartyRepository partyRepository;
     @Autowired
     BusinessRepository businessRepository;
+
     @Override
     public Party createParty(Party party) {
         Optional<Business> businessOptional = businessRepository.findById(party.getBusiness().getId());
-        if(businessOptional.isEmpty()) throw new RuntimeException("Business not found");
+        if (businessOptional.isEmpty()) throw new RuntimeException("Business not found");
         Business business = businessOptional.get();
 
         Party savedParty = partyRepository.save(party);
@@ -34,9 +36,9 @@ public class PartyServiceImpl implements PartyService {
     }
 
 
-
-    @Override
+    @Transactional
     public void deleteParty(Long id) {
+        partyRepository.deletePartyTransactionsByPartyId(id);
         partyRepository.deleteById(id);
     }
 
@@ -53,5 +55,10 @@ public class PartyServiceImpl implements PartyService {
     @Override
     public Party getPartyById(Long partyId) {
         return partyRepository.findById(partyId).orElseThrow(() -> new RuntimeException("Party not found"));
+    }
+
+    @Override
+    public Party updateParty(Party party) {
+        return partyRepository.save(party);
     }
 }

@@ -21,9 +21,9 @@ function filterCustomers() {
 
         // Apply type filter
         if (filterType !== 'all') {
-            if (filterType === 'debit' && credit <= 0) {
+            if (filterType === 'credit' && credit <= 0) {
                 show = false;
-            } else if (filterType === 'credit' && debit <= 0) {
+            } else if (filterType === 'debit' && debit <= 0) {
                 show = false;
             } else if (filterType === 'settle' && (credit !== 0 || debit !== 0)) {
                 show = false;
