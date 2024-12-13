@@ -61,4 +61,9 @@ public class PartyServiceImpl implements PartyService {
     public Party updateParty(Party party) {
         return partyRepository.save(party);
     }
+
+    @Override
+    public List<Party> getSupplierParty(@NonNull Long id) {
+        return partyRepository.findAllByBusinessIdAndPartyType(id, PartyType.SUPPLIER);
+    }
 }

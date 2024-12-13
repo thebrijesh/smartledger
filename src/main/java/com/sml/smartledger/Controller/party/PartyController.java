@@ -96,8 +96,11 @@ public class PartyController {
 
         }
 
+        if(party.getPartyType().equals(PartyType.CUSTOMER)) {
+            return "redirect:/users/party/customer";
+        }
 
-        return "redirect:/users/party/customer";
+        return "redirect:/users/party/supplier";
     }
 
     @PostMapping("/updateParty")
@@ -135,7 +138,7 @@ public class PartyController {
         PartyForm partyForm = new PartyForm();
         partyForm.setPartyType("CUSTOMER");
         model.addAttribute("partyForm", partyForm);
-        model.addAttribute("partyType", "customer");
+        model.addAttribute("partyType", "Customer");
         model.addAttribute("parties", partyList);
         return "user/party/customers";
     }
@@ -149,10 +152,11 @@ public class PartyController {
         PartyForm partyForm = new PartyForm();
         partyForm.setBalance(0d);
         partyForm.setPartyType("SUPPLIER");
-//        List<Party> partyList = partyService.getSupplierParty(user.getSelectedBusiness().getId());
+       List<Party> partyList = partyService.getSupplierParty(user.getSelectedBusiness().getId());
         model.addAttribute("partyForm", partyForm);
-        model.addAttribute("partyType", "supplier");
-        model.addAttribute("parties", "supplier");
+        model.addAttribute("partyType", "Supplier");
+        model.addAttribute("parties", partyList);
+
         return "user/party/suppliers";
     }
 
@@ -304,15 +308,18 @@ public class PartyController {
         Party party = partyService.getPartyById(partyTransactionForm.getPartyId());
         Date date = Helper.convertStringToDate(partyTransactionForm.getDate());
         assert date != null;
-        date.setTime(new Date().getTime());
-        System.out.println("Date: " + date);
-        System.out.println("Date: " + partyTransactionForm.getTransactionType());
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalTime localTime = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+
+// Combine date and time
+
+        Date combinedDate = Date.from(localDate.atTime(localTime).atZone(ZoneId.systemDefault()).toInstant());
 
 
         PartyTransaction transaction = PartyTransaction.builder()
                 .amount(partyTransactionForm.getAmount())
                 .party(party)
-                .transactionDate(date)
+                .transactionDate(combinedDate)
                 .transactionType(TransactionType.valueOf(partyTransactionForm.getTransactionType()))
                 .description(partyTransactionForm.getDescription())
                 .build();

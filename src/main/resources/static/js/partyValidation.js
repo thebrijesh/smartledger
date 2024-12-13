@@ -43,25 +43,25 @@ document.addEventListener('DOMContentLoaded', function () {
     openingBalance.addEventListener('input', validateForm);
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-    const tabs = document.querySelectorAll(".tab");
-
-    tabs.forEach(tab => {
-        tab.addEventListener("click", () => {
-            // Remove the active class from all tabs
-            tabs.forEach(t => t.classList.remove("active"));
-
-            // Add the active class to the clicked tab
-            tab.classList.add("active");
-
-            // Redirect to the URL specified in the data-url attribute
-            const redirectUrl = tab.getAttribute("data-url");
-            if (redirectUrl) {
-                window.location.href = redirectUrl;
-            }
-        });
-    });
-});
+// document.addEventListener("DOMContentLoaded", () => {
+//     const tabs = document.querySelectorAll(".tab");
+//
+//     tabs.forEach(tab => {
+//         tab.addEventListener("click", () => {
+//             // Remove the active class from all tabs
+//             tabs.forEach(t => t.classList.remove("active"));
+//
+//             // Add the active class to the clicked tab
+//             tab.classList.add("active");
+//
+//             // Redirect to the URL specified in the data-url attribute
+//             const redirectUrl = tab.getAttribute("data-url");
+//             if (redirectUrl) {
+//                 window.location.href = redirectUrl;
+//             }
+//         });
+//     });
+// });
 
 function validateMobile(){
     const parties = document.getElementsByClassName('partyList');

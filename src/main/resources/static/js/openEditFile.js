@@ -11,7 +11,7 @@ function handleEdit(button) {
     const party = button.getAttribute('data-party');
     const transactionType = button.getAttribute('data-transactionType');
     const id = button.getAttribute('data-id');
-    console.log(id);
+    console.log(date);
 
 
     // Add the specified number of days to the current date
@@ -28,10 +28,13 @@ function handleEdit(button) {
     document.getElementById('id').value = id;
     console.log(document.getElementById('id').value);
 
-    // Format the date as YYYY-MM-DD (for compatibility with HTML date input)
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-    const day = String(date.getDate()).padStart(2, '0');
+    // Convert the date string to a Date object
+    const dateObj = new Date(date);
+
+// Format the date as YYYY-MM-DD (for compatibility with HTML date input)
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const day = String(dateObj.getDate()).padStart(2, '0');
     document.getElementById('datepicker-format').value = `${day}-${month}-${year}`;
 
 }

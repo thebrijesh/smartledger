@@ -1,6 +1,5 @@
 package com.sml.smartledger.Model.party;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sml.smartledger.Model.BaseModel;
 import com.sml.smartledger.Model.business.Business;
@@ -26,6 +25,7 @@ public class Party extends BaseModel {
     Date dueDate;
 
     @ManyToOne(cascade = CascadeType.MERGE)
+    @JsonIgnore
     Business business;
 
     String houseNumber;
@@ -37,8 +37,25 @@ public class Party extends BaseModel {
     Double balance;
 
     @Builder.Default
-    @JsonIgnore
     @OneToMany(mappedBy = "party", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     List<PartyTransaction> partyTransactionList = new ArrayList<>();
 
+    @Override
+    public String toString() {
+        return "Party{" +
+                "name='" + name + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", image='" + image + '\'' +
+                ", partyType=" + partyType +
+                ", dueDate=" + dueDate +
+                ", businessId=" + (business != null ? business.getId() : null) +
+                ", houseNumber='" + houseNumber + '\'' +
+                ", area='" + area + '\'' +
+                ", pincode='" + pincode + '\'' +
+                ", city='" + city + '\'' +
+                ", state='" + state + '\'' +
+                ", gstIN='" + gstIN + '\'' +
+                ", balance=" + balance +
+                '}';
+    }
 }

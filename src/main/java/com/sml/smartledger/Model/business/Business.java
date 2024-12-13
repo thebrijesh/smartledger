@@ -1,6 +1,5 @@
 package com.sml.smartledger.Model.business;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sml.smartledger.Model.BaseModel;
 import com.sml.smartledger.Model.User;
@@ -18,7 +17,6 @@ import java.util.List;
 
 @Getter
 @Setter
-@ToString
 @Entity(name = "business")
 @Builder
 @AllArgsConstructor
@@ -36,7 +34,6 @@ public class Business extends BaseModel {
     List<StaffMember> staffList = new ArrayList<>();
     @Builder.Default
     @OneToMany(mappedBy = "business", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    @JsonIgnore
     List<Party> parties = new ArrayList<>();
     @Builder.Default
     @OneToMany(cascade = CascadeType.ALL)
@@ -58,5 +55,23 @@ public class Business extends BaseModel {
 
     double totalCredit;
     double totalDebit;
-}
 
+    @Override
+    public String toString() {
+        return "Business{" +
+                "name='" + name + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", address='" + address + '\'' +
+                ", user=" + user +
+                ", staffList=" + staffList.size() +
+                ", parties=" + parties.size() +
+                ", bills=" + bills.size() +
+                ", expansesList=" + expansesList.size() +
+                ", products=" + products.size() +
+                ", services=" + services.size() +
+                ", logo='" + logo + '\'' +
+                ", totalCredit=" + totalCredit +
+                ", totalDebit=" + totalDebit +
+                '}';
+    }
+}

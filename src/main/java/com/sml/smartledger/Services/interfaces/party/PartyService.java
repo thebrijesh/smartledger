@@ -19,4 +19,6 @@ public interface PartyService {
     Party getPartyById(Long partyId);
 
     Party updateParty(Party party);
+
+    List<Party> getSupplierParty(@NonNull Long id);
 }

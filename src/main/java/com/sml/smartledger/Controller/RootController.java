@@ -40,7 +40,7 @@ public class RootController {
         Business business = saveUser.getSelectedBusiness();
 
         model.addAttribute("loggedInUser", user);
-//        model.addAttribute("selectedBusiness", user.getSelectedBusiness());
+//      model.addAttribute("selectedBusiness", user.getSelectedBusiness());
         model.addAttribute("profilePic", user.getProfilePic());
         model.addAttribute("selectedBusiness", business);
         model.addAttribute("loggedInUser", saveUser);

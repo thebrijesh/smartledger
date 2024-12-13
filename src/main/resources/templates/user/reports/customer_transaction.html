@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en" th:replace ="~{base ::parent(~{::#content}, ~{::title}, ~{::script})}">
+<head>
+    <title >Customer Transaction Report</title>
+</head>
+<body>
+<div id="content" class="h-screen">
+
+
+
+    <div class=" sm:pl-64 mb-6">
+        <div th:replace="~{user/reports/transactions_report ::transactionReport}"></div>
+    </div>
+
+
+
+</div>
+<script>console.log("Customer Transaction Report")</script>
+<script th:src="@{/js/reportFilteration.js}"></script>
+<script>
+    function downloadReport(format) {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        const term = document.getElementById('reportSearchInput').value;
+        window.location.href = `/users/report/export/transaction/download?format=${format}&startDate=${startDate}&endDate=${endDate}&term=${term}&type=customer`;
+    }
+</script>
+</body>
+</html>

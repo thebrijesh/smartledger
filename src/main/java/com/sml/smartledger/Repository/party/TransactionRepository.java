@@ -24,6 +24,5 @@ public interface TransactionRepository extends JpaRepository<PartyTransaction,Lo
     void deleteById(@Param("partyId") Long id);
 
 
-    // Add a method to find all transactions of all parties
     List<PartyTransaction> findAllByPartyIn(List<Party> partyIds);
 }

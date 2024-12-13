@@ -1,5 +1,6 @@
 package com.sml.smartledger.Model.party;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sml.smartledger.Model.BaseModel;
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,8 +12,9 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PartyTransaction  extends BaseModel {
+public class PartyTransaction extends BaseModel {
     @ManyToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
     Party party;
     double amount;
     Date date;
