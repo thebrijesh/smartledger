@@ -15,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -59,11 +58,11 @@ public class ExportsController {
         Business business = user.getSelectedBusiness();
         List<Party> parties;
         if(type.equals("customer")){
-            parties = partyService.getCustomerParty(business.getId());
+            parties = partyService.getCustomerParties(business.getId());
         }else{
-            parties = partyService.getSupplierParty(business.getId());
+            parties = partyService.getSupplierParties(business.getId());
         }
-        List<PartyTransaction> transactions = partyTransactionService.getAllByPartyIn(parties);
+        List<PartyTransaction> transactions = partyTransactionService.getAllTransactionsByPartyIds(parties);
 
         LocalDate startDate = LocalDate.parse(startDateStr);
         LocalDate endDate = LocalDate.parse(endDateStr);

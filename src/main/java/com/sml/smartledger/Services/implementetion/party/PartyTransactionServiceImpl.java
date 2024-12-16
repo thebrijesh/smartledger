@@ -1,5 +1,8 @@
 package com.sml.smartledger.Services.implementetion.party;
 
+import com.sml.smartledger.Exception.BusinessNotFoundException;
+import com.sml.smartledger.Exception.PartyNotFoundException;
+import com.sml.smartledger.Exception.TransactionNotFoundException;
 import com.sml.smartledger.Model.business.Business;
 import com.sml.smartledger.Model.party.Party;
 import com.sml.smartledger.Model.party.PartyTransaction;
@@ -20,12 +23,9 @@ import java.util.Optional;
 
 @Service
 public class PartyTransactionServiceImpl implements PartyTransactionService {
-    final
-    TransactionRepository transactionRepository;
-    final
-    BusinessRepository businessRepository;
-    final
-    PartyRepository partyRepository;
+    final TransactionRepository transactionRepository;
+    final BusinessRepository businessRepository;
+    final PartyRepository partyRepository;
     Logger logger = LoggerFactory.getLogger(PartyTransactionServiceImpl.class);
 
     @Autowired
@@ -36,42 +36,26 @@ public class PartyTransactionServiceImpl implements PartyTransactionService {
     }
 
     @Override
-    public List<PartyTransaction> getAllTransaction(Long partyId) {
+    public List<PartyTransaction> getAllTransactions(Long partyId) {
         return transactionRepository.findAllByPartyId(partyId);
     }
 
     @Override
-    public List<PartyTransaction> getAllByPartyIn(List<Party> partyIds) {
+    public List<PartyTransaction> getAllTransactionsByPartyIds(List<Party> partyIds) {
         return transactionRepository.findAllByPartyIn(partyIds);
     }
 
     @Override
+    @Transactional
     public PartyTransaction createTransaction(PartyTransaction partyTransaction) {
-        Optional<Party> partyOptional = partyRepository.findById(partyTransaction.getParty().getId());
-        Party party = partyOptional.orElseThrow(() -> new RuntimeException("Party not found"));
-        Optional<Business> businessOptional = businessRepository.findById(partyOptional.get().getBusiness().getId());
-        if (businessOptional.isEmpty()) throw new RuntimeException("Business not found");
-        Business business = businessOptional.get();
-        logger.info("Balance {} ", partyOptional.get().getBalance());
-        logger.info("Amount {} ", partyTransaction.getAmount());
-        if(party.getBalance() < 0){
-            business.setTotalCredit(business.getTotalCredit() + (party.getBalance()));
-        }else{
-            business.setTotalDebit(business.getTotalDebit() - (party.getBalance()));
-        }
-        if (partyTransaction.getTransactionType() == TransactionType.CREDIT) {
-            party.setBalance(party.getBalance() - partyTransaction.getAmount());
-        } else {
-            party.setBalance(party.getBalance() + partyTransaction.getAmount());
-        }
+        Party party = partyRepository.findById(partyTransaction.getParty().getId())
+                .orElseThrow(() -> new PartyNotFoundException("Party with ID " + partyTransaction.getParty().getId() + " not found"));
+        Business business = businessRepository.findById(party.getBusiness().getId())
+                .orElseThrow(() -> new BusinessNotFoundException("Business with ID " + party.getBusiness().getId() + " not found"));
 
-        if(party.getBalance() < 0){
-            business.setTotalCredit(business.getTotalCredit() - (party.getBalance()));
-        }else{
-            business.setTotalDebit(business.getTotalDebit() + (party.getBalance()));
-        }
+        updateBusinessAndPartyBalances(business, party, partyTransaction.getAmount(), partyTransaction.getTransactionType());
 
-        if(partyTransaction.getTransactionDate() == null){
+        if (partyTransaction.getTransactionDate() == null) {
             partyTransaction.setTransactionDate(new Date());
         }
 
@@ -79,7 +63,6 @@ public class PartyTransactionServiceImpl implements PartyTransactionService {
         partyRepository.save(party);
         return transactionRepository.save(partyTransaction);
     }
-
     @Transactional
     public void deleteTransaction(Long id) {
 //        partyRepository.deleteById(id);
@@ -108,13 +91,14 @@ public class PartyTransactionServiceImpl implements PartyTransactionService {
     }
 
     @Override
+    @Transactional
     public PartyTransaction updateTransaction(PartyTransaction partyTransaction) {
 
 
         PartyTransaction partyTransaction1 = transactionRepository.findById(partyTransaction.getId()).orElseThrow(() -> new RuntimeException("Transaction not found"));
         logger.info("Amount1 {} ", partyTransaction1.getAmount());
         Business business = partyTransaction1.getParty().getBusiness();
-       Party party = partyTransaction1.getParty();
+        Party party = partyTransaction1.getParty();
         if(party.getBalance() < 0){
             business.setTotalCredit(business.getTotalCredit() + (party.getBalance()));
         }else{
@@ -155,6 +139,27 @@ public class PartyTransactionServiceImpl implements PartyTransactionService {
 
     @Override
     public PartyTransaction getTransactionById(Long transactionId) {
-        return transactionRepository.findById(transactionId).orElseThrow(() -> new RuntimeException("Transaction not found"));
+        return transactionRepository.findById(transactionId)
+                .orElseThrow(() -> new TransactionNotFoundException("Transaction with ID " + transactionId + " not found"));
+    }
+
+    private void updateBusinessAndPartyBalances(Business business, Party party, double amount, TransactionType transactionType) {
+        if (party.getBalance() < 0) {
+            business.setTotalCredit(business.getTotalCredit() + party.getBalance());
+        } else {
+            business.setTotalDebit(business.getTotalDebit() - party.getBalance());
+        }
+
+        if (transactionType == TransactionType.CREDIT) {
+            party.setBalance(party.getBalance() - amount);
+        } else {
+            party.setBalance(party.getBalance() + amount);
+        }
+
+        if (party.getBalance() < 0) {
+            business.setTotalCredit(business.getTotalCredit() - party.getBalance());
+        } else {
+            business.setTotalDebit(business.getTotalDebit() + party.getBalance());
+        }
     }
 }

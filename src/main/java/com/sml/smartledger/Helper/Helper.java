@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 public class Helper {
 
@@ -40,4 +41,10 @@ public class Helper {
             return null;
         }
     }
+
+    //genarate 8 character short code for party through uuid
+    public static String generateShortCode() {
+        return UUID.randomUUID().toString().substring(0, 8);
+    }
+
 }

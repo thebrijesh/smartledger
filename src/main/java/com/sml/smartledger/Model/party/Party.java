@@ -36,6 +36,8 @@ public class Party extends BaseModel {
     String gstIN;
     Double balance;
 
+    String shortCode;
+
     @Builder.Default
     @OneToMany(mappedBy = "party", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     List<PartyTransaction> partyTransactionList = new ArrayList<>();

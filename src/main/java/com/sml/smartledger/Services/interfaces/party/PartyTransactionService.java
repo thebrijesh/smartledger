@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface PartyTransactionService {
 
-    List<PartyTransaction> getAllTransaction(Long partyId);
-    List<PartyTransaction> getAllByPartyIn(List<Party> partyIds);
+    List<PartyTransaction> getAllTransactions(Long partyId);
+    List<PartyTransaction> getAllTransactionsByPartyIds(List<Party> partyIds);
 
 
     PartyTransaction createTransaction(PartyTransaction partyTransaction);

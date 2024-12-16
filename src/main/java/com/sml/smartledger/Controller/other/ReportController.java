@@ -6,7 +6,6 @@ import com.sml.smartledger.Model.business.Business;
 import com.sml.smartledger.Model.party.Party;
 import com.sml.smartledger.Model.party.PartyTransaction;
 import com.sml.smartledger.Services.interfaces.UserService;
-import com.sml.smartledger.Services.interfaces.business.BusinessService;
 import com.sml.smartledger.Services.interfaces.party.PartyService;
 import com.sml.smartledger.Services.interfaces.party.PartyTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +44,8 @@ public class ReportController {
             User user = userService.getUserByEmail(email);
 
             Business business = user.getSelectedBusiness();
-            List<Party> parties = partyService.getCustomerParty(business.getId());
-            List<PartyTransaction> partyTransactions = partyTransactionService.getAllByPartyIn(parties);
+            List<Party> parties = partyService.getCustomerParties(business.getId());
+            List<PartyTransaction> partyTransactions = partyTransactionService.getAllTransactionsByPartyIds(parties);
 
             model.addAttribute("partyTransactions", partyTransactions);
             model.addAttribute("business", business);
@@ -62,9 +61,9 @@ public class ReportController {
         User user = userService.getUserByEmail(email);
 
         Business business = user.getSelectedBusiness();
-        List<Party> parties = partyService.getSupplierParty(business.getId());
+        List<Party> parties = partyService.getSupplierParties(business.getId());
 
-        List<PartyTransaction> partyTransactions = partyTransactionService.getAllByPartyIn(parties);
+        List<PartyTransaction> partyTransactions = partyTransactionService.getAllTransactionsByPartyIds(parties);
 
         model.addAttribute("partyTransactions", partyTransactions);
         model.addAttribute("business", business);

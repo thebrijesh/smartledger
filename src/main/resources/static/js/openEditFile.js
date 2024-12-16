@@ -55,14 +55,14 @@ function setDueDate(days) {
     callApi(`${day}-${month}-${year}`);
 }
 
-function callApi(selectedDate) {
+ function callApi(selectedDate) {
     // Get the partyId from the data attribute
     const partyId = document.getElementById('partyContainer').getAttribute('data-partyId');
 console.log(partyId);
     // Check if selectedDate is valid
     if (selectedDate) {
         // Make the API call using fetch
-        fetch('/users/party/set-due-date', {
+         fetch('/users/party/set-due-date', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',  // Specify the content type as JSON
@@ -73,8 +73,10 @@ console.log(partyId);
             }),
         })
             .then(response => response.json())  // Parse the response as JSON
-            .then(data => alert(data))
-            .then(window.location.reload())// Handle success and alert the response data
+             .then(data => {
+
+                 window.location.reload();
+             })// Handle success and alert the response data
             .catch(error => console.error('Error:', error));
 
 
@@ -95,3 +97,4 @@ function updateDueDate() {
     // Hide the date picker after setting the date
     callApi(selectedDate);
 }
+

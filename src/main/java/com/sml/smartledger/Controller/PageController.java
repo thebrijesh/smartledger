@@ -6,8 +6,10 @@ import com.sml.smartledger.Helper.Message;
 import com.sml.smartledger.Helper.MessageType;
 import com.sml.smartledger.Model.User;
 import com.sml.smartledger.Model.business.Business;
+import com.sml.smartledger.Model.party.Party;
 import com.sml.smartledger.Services.interfaces.UserService;
 import com.sml.smartledger.Services.interfaces.business.BusinessService;
+import com.sml.smartledger.Services.interfaces.party.PartyService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
@@ -16,10 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +28,13 @@ public class PageController {
 
     private final UserService userService;
     private final BusinessService businessService;
+    private final PartyService partyService;
 
     @Autowired
-    public PageController(UserService userService, BusinessService businessService) {
+    public PageController(PartyService partyService,UserService userService, BusinessService businessService) {
         this.userService = userService;
         this.businessService = businessService;
+        this.partyService = partyService;
     }
 
     @GetMapping("/")
@@ -114,4 +115,14 @@ public class PageController {
         session.setAttribute("message", message);
         return "redirect:/signup";
     }
+
+    @RequestMapping("/{shortCode}")
+    public String shortCode(@PathVariable("shortCode") String shortCode ,  Model model) {
+
+        Party party = partyService.getPartyByShortCode(shortCode);
+        model.addAttribute("party", party);
+
+        return "transaction_view";
+    }
+
 }

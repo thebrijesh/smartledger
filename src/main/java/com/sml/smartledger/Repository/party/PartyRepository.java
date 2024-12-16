@@ -29,4 +29,6 @@ public interface PartyRepository extends JpaRepository<Party, Long> {
     @Transactional
     @Query("DELETE FROM party p WHERE p.id = :parties_id")
     void deleteById(@Param("parties_id") Long id);
+
+    Party findByShortCode(String shortCode);
 }

@@ -1,6 +1,5 @@
 package com.sml.smartledger.Controller.party;
 
-
 import com.sml.smartledger.Forms.PartyForm;
 import com.sml.smartledger.Forms.PartyTransactionForm;
 import com.sml.smartledger.Helper.Helper;
@@ -10,7 +9,6 @@ import com.sml.smartledger.Model.party.Party;
 import com.sml.smartledger.Model.party.PartyTransaction;
 import com.sml.smartledger.Model.party.PartyType;
 import com.sml.smartledger.Model.party.TransactionType;
-import com.sml.smartledger.Repository.party.PartyRepository;
 import com.sml.smartledger.Services.interfaces.UserService;
 import com.sml.smartledger.Services.interfaces.business.BusinessService;
 import com.sml.smartledger.Services.interfaces.party.PartyService;
@@ -46,14 +44,11 @@ import static com.sml.smartledger.Helper.Helper.getEmailOfLoggedInUser;
 @Controller
 @RequestMapping("/users/party")
 public class PartyController {
-    final
-    PartyService partyService;
-    PartyTransactionService partyTransactionService;
-    private UserService userService;
-
-    BusinessService businessService;
-
-    Logger logger = LoggerFactory.getLogger(PartyController.class);
+    private final PartyService partyService;
+    private final PartyTransactionService partyTransactionService;
+    private final UserService userService;
+    private final BusinessService businessService;
+    private final Logger logger = LoggerFactory.getLogger(PartyController.class);
 
     @Autowired
     public PartyController(PartyService partyService, PartyTransactionService partyTransactionService, UserService userService, BusinessService businessService) {
@@ -63,77 +58,38 @@ public class PartyController {
         this.businessService = businessService;
     }
 
-    @PostMapping("/creteParty")
+    @PostMapping("/createParty")
     public String createParty(@ModelAttribute PartyForm partyForm, Authentication authentication) {
         String email = getEmailOfLoggedInUser(authentication);
         User saveUser = userService.getUserByEmail(email);
         Business business = saveUser.getSelectedBusiness();
-        Party party = Party.builder()
-                .name(partyForm.getName())
-                .mobile(partyForm.getNumber())
-                .partyType(PartyType.valueOf(partyForm.getPartyType()))
-                .houseNumber(partyForm.getHouseNumber())
-                .area(partyForm.getArea())
-                .city(partyForm.getCity())
-                .state(partyForm.getState())
-                .pincode(partyForm.getPincode())
-                .gstIN(partyForm.getGstIN())
-                .business(business)
-                .balance(0d)
-                .build();
+        Party party = buildPartyFromForm(partyForm, business);
 
         party = partyService.createParty(party);
-        Double balance = partyForm.getBalance();
-        if (balance != null && balance != 0) {
-            PartyTransaction transaction = PartyTransaction.builder()
-                    .amount(partyForm.getBalance())
-                    .party(party)
-                    .transactionType(partyForm.getTransectionType().equals("you-gave") ? TransactionType.CREDIT : TransactionType.DEBIT)
-                    .description("Opening Balance")
-                    .build();
-            PartyTransaction partyTransaction = partyTransactionService.createTransaction(transaction);
+        createOpeningBalanceTransaction(partyForm, party);
 
-
-        }
-
-        if(party.getPartyType().equals(PartyType.CUSTOMER)) {
-            return "redirect:/users/party/customer";
-        }
-
-        return "redirect:/users/party/supplier";
+        return party.getPartyType().equals(PartyType.CUSTOMER) ? "redirect:/users/party/customer" : "redirect:/users/party/supplier";
     }
 
     @PostMapping("/updateParty")
     public String updateParty(@ModelAttribute Party party) {
         Party partyFromDB = partyService.getPartyById(party.getId());
-        partyFromDB.setName(party.getName());
-        partyFromDB.setMobile(party.getMobile());
-        partyFromDB.setPartyType(party.getPartyType());
-        partyFromDB.setHouseNumber(party.getHouseNumber());
-        partyFromDB.setArea(party.getArea());
-        partyFromDB.setCity(party.getCity());
-        partyFromDB.setState(party.getState());
-        partyFromDB.setPincode(party.getPincode());
-        partyFromDB.setGstIN(party.getGstIN());
+        updatePartyDetails(partyFromDB, party);
         partyService.updateParty(partyFromDB);
         return "redirect:/users/party/view/" + party.getId();
     }
 
     @GetMapping("/{businessId}")
     public ResponseEntity<List<Party>> getAllParty(@PathVariable("businessId") Long businessId) {
-        List<Party> createdPartyList = partyService.getAllParty(businessId);
+        List<Party> createdPartyList = partyService.getAllParties(businessId);
         return new ResponseEntity<>(createdPartyList, HttpStatus.OK);
     }
 
-
-
     @GetMapping("/customer")
     public String customer(Model model, Authentication authentication) {
-
         String email = getEmailOfLoggedInUser(authentication);
         User user = userService.getUserByEmail(email);
-
-        List<Party> partyList = partyService.getCustomerParty(user.getSelectedBusiness().getId());
+        List<Party> partyList = partyService.getCustomerParties(user.getSelectedBusiness().getId());
 
         PartyForm partyForm = new PartyForm();
         partyForm.setPartyType("CUSTOMER");
@@ -145,14 +101,13 @@ public class PartyController {
 
     @GetMapping("/supplier")
     public String supplier(Model model, Authentication authentication) {
-
         String email = getEmailOfLoggedInUser(authentication);
         User user = userService.getUserByEmail(email);
 
         PartyForm partyForm = new PartyForm();
         partyForm.setBalance(0d);
         partyForm.setPartyType("SUPPLIER");
-       List<Party> partyList = partyService.getSupplierParty(user.getSelectedBusiness().getId());
+        List<Party> partyList = partyService.getSupplierParties(user.getSelectedBusiness().getId());
         model.addAttribute("partyForm", partyForm);
         model.addAttribute("partyType", "Supplier");
         model.addAttribute("parties", partyList);
@@ -166,14 +121,12 @@ public class PartyController {
         User user = userService.getUserByEmail(email);
         model.addAttribute("partyForm", new PartyForm());
         model.addAttribute("file", null);
-//        model.addAttribute("partyType", "bulk_upload");
-//        model.addAttribute("parties", "bulk_upload");
         return "user/party/bulk_upload";
     }
 
     @GetMapping("/download-template")
     public ResponseEntity<InputStreamResource> downloadTemplate() {
-        String filePath = "src/main/resources/static/template.xlsx"; // Path to the uploaded file
+        String filePath = "src/main/resources/static/template.xlsx";
         try {
             File file = new File(filePath);
             InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
@@ -211,54 +164,23 @@ public class PartyController {
             return ResponseEntity.badRequest().body(response);
         }
 
-        try {
-            // Check file type
-            if (!file.getOriginalFilename().endsWith(".xlsx")) {
-                response.put("status", "failed");
-                response.put("message", "Invalid file format. Please upload an Excel file.");
-                return ResponseEntity.badRequest().body(response);
-            }
-
-            // Process the file
-            Workbook workbook = new XSSFWorkbook(file.getInputStream());
-            logger.info("Workbook has " + workbook.getNumberOfSheets() + " Sheets : ");
+        try (Workbook workbook = new XSSFWorkbook(file.getInputStream())) {
             Sheet sheet = workbook.getSheetAt(0);
-            logger.info("Sheet name: " + sheet.getSheetName());
-
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) continue; // Skip header row
 
                 try {
-                    // Skip empty rows
                     if (row.getCell(0).getStringCellValue().isEmpty()) break;
 
-                    // Create a new Party
-                    Party party = new Party();
-                    party.setPartyType(PartyType.valueOf(row.getCell(0).getStringCellValue()));
-                    logger.info("Party Type: " + party.getPartyType());
-                    party.setName(row.getCell(1).getStringCellValue());
-                    logger.info("Party Name: " + party.getName());
-                    party.setMobile(String.valueOf((long) row.getCell(2).getNumericCellValue()));
-
-                    String var = row.getCell(4).getStringCellValue().equals("YOU_GAVE") ? "You_Gave" : "You_Got";
-                    party.setGstIN(row.getCell(5).getStringCellValue());
-                    party.setBalance(0d);
-                    party.setHouseNumber(row.getCell(6).getStringCellValue());
-                    party.setArea(row.getCell(7).getStringCellValue());
-                    party.setCity(row.getCell(9).getStringCellValue());
-                    party.setState(row.getCell(10).getStringCellValue());
-                    party.setPincode(String.valueOf((int) row.getCell(8).getNumericCellValue()));
-                    party.setBusiness(user.getSelectedBusiness());
-
+                    Party party = buildPartyFromRow(row, user.getSelectedBusiness());
                     Party savedParty = partyService.createParty(party);
 
-                    // Process opening balance
-                    double balance = row.getCell(3).getNumericCellValue(); // Opening balance
+                    double balance = row.getCell(3).getNumericCellValue();
                     if (balance != 0) {
                         PartyTransaction transaction = PartyTransaction.builder()
                                 .amount(balance)
                                 .party(savedParty)
-                                .transactionType(var.equals("You_Gave") ? TransactionType.DEBIT : TransactionType.CREDIT)
+                                .transactionType(row.getCell(4).getStringCellValue().equals("YOU_GAVE") ? TransactionType.DEBIT : TransactionType.CREDIT)
                                 .description("Opening Balance")
                                 .build();
                         partyTransactionService.createTransaction(transaction);
@@ -270,8 +192,6 @@ public class PartyController {
                     failureReasons.add("Row " + (row.getRowNum() + 1) + ": " + ex.getMessage());
                 }
             }
-
-            workbook.close();
 
             response.put("status", "success");
             response.put("successfulContacts", successCount);
@@ -295,8 +215,7 @@ public class PartyController {
         Party party = partyService.getPartyById(partyId);
         PartyTransactionForm partyTransactionForm = new PartyTransactionForm();
         partyTransactionForm.setPartyId(partyId);
-        String date1 = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-        partyTransactionForm.setDate(date1);
+        partyTransactionForm.setDate(LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
         model.addAttribute("party", party);
         model.addAttribute("PartyTransactionForm", partyTransactionForm);
         return "user/party/party_details";
@@ -304,17 +223,12 @@ public class PartyController {
 
     @PostMapping("/create-party-transaction")
     public String createPartyTransaction(@ModelAttribute PartyTransactionForm partyTransactionForm) {
-
         Party party = partyService.getPartyById(partyTransactionForm.getPartyId());
         Date date = Helper.convertStringToDate(partyTransactionForm.getDate());
         assert date != null;
         LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         LocalTime localTime = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
-
-// Combine date and time
-
         Date combinedDate = Date.from(localDate.atTime(localTime).atZone(ZoneId.systemDefault()).toInstant());
-
 
         PartyTransaction transaction = PartyTransaction.builder()
                 .amount(partyTransactionForm.getAmount())
@@ -325,8 +239,6 @@ public class PartyController {
                 .build();
 
         partyTransactionService.createTransaction(transaction);
-
-
         return "redirect:/users/party/view/" + partyTransactionForm.getPartyId();
     }
 
@@ -354,22 +266,82 @@ public class PartyController {
         return "redirect:/users/party/view/" + partyTransaction.getParty().getId();
     }
 
-
-
-
-    @PostMapping("/set-due-date")
-    @ResponseBody
-    public String setDueDate(@RequestBody Map<String, Object> payload) {
+ @PostMapping("/set-due-date")
+@ResponseBody
+public ResponseEntity<Map<String, Object>> setDueDate(@RequestBody Map<String, Object> payload) {
+    Map<String, Object> response = new HashMap<>();
+    try {
         String date = (String) payload.get("date");
         Long partyId = Long.valueOf(payload.get("partyId").toString());
         logger.info("Date: " + date);
         logger.info("Party ID: " + partyId);
         Party party = partyService.getPartyById(partyId);
         Date dueDate = Helper.convertStringToDate(date);
-
         party.setDueDate(dueDate);
         partyService.updateParty(party);
-        // Save dueDate to DB or update in backend logic
-        return "redirect:/users/party/view/" + partyId;
+        response.put("status", "success");
+        response.put("message", "Due date updated successfully");
+    } catch (Exception e) {
+        response.put("status", "error");
+        response.put("message", e.getMessage());
+    }
+    return ResponseEntity.ok(response);
+}
+
+    private Party buildPartyFromForm(PartyForm partyForm, Business business) {
+        return Party.builder()
+                .name(partyForm.getName())
+                .mobile(partyForm.getNumber())
+                .partyType(PartyType.valueOf(partyForm.getPartyType()))
+                .houseNumber(partyForm.getHouseNumber())
+                .area(partyForm.getArea())
+                .city(partyForm.getCity())
+                .state(partyForm.getState())
+                .pincode(partyForm.getPincode())
+                .gstIN(partyForm.getGstIN())
+                .business(business)
+                .balance(0d)
+                .build();
+    }
+
+    private Party buildPartyFromRow(Row row, Business business) {
+        return Party.builder()
+                .partyType(PartyType.valueOf(row.getCell(0).getStringCellValue()))
+                .name(row.getCell(1).getStringCellValue())
+                .mobile(String.valueOf((long) row.getCell(2).getNumericCellValue()))
+                .gstIN(row.getCell(5).getStringCellValue())
+                .houseNumber(row.getCell(6).getStringCellValue())
+                .area(row.getCell(7).getStringCellValue())
+                .city(row.getCell(9).getStringCellValue())
+                .state(row.getCell(10).getStringCellValue())
+                .pincode(String.valueOf((int) row.getCell(8).getNumericCellValue()))
+                .business(business)
+                .balance(0d)
+                .build();
+    }
+
+    private void createOpeningBalanceTransaction(PartyForm partyForm, Party party) {
+        Double balance = partyForm.getBalance();
+        if (balance != null && balance != 0) {
+            PartyTransaction transaction = PartyTransaction.builder()
+                    .amount(balance)
+                    .party(party)
+                    .transactionType(partyForm.getTransectionType().equals("you-gave") ? TransactionType.CREDIT : TransactionType.DEBIT)
+                    .description("Opening Balance")
+                    .build();
+            partyTransactionService.createTransaction(transaction);
+        }
+    }
+
+    private void updatePartyDetails(Party partyFromDB, Party party) {
+        partyFromDB.setName(party.getName());
+        partyFromDB.setMobile(party.getMobile());
+        partyFromDB.setPartyType(party.getPartyType());
+        partyFromDB.setHouseNumber(party.getHouseNumber());
+        partyFromDB.setArea(party.getArea());
+        partyFromDB.setCity(party.getCity());
+        partyFromDB.setState(party.getState());
+        partyFromDB.setPincode(party.getPincode());
+        partyFromDB.setGstIN(party.getGstIN());
     }
 }

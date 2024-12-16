@@ -1,11 +1,8 @@
 package com.sml.smartledger.Controller;
 
-import com.sml.smartledger.Helper.Helper;
 import com.sml.smartledger.Model.business.Business;
-import com.sml.smartledger.Model.party.Party;
 import com.sml.smartledger.Model.party.PartyTransaction;
 import com.sml.smartledger.Repository.business.BusinessRepository;
-import com.sml.smartledger.Services.implementetion.party.PartyTransactionServiceImpl;
 import com.sml.smartledger.Services.interfaces.business.BusinessService;
 import com.sml.smartledger.Services.interfaces.party.PartyService;
 import com.sml.smartledger.Services.interfaces.party.PartyTransactionService;
@@ -14,8 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @RestController()
@@ -46,6 +41,6 @@ public class ApiController {
     @GetMapping("/get-all-transaction/{id}")
     public ResponseEntity<List<PartyTransaction>> getAllTransaction(@PathVariable("id") Long id){
         Business business =  businessRepository.findById(id).get();
-        return new ResponseEntity<>(partyTransactionService.getAllByPartyIn( business.getParties()), HttpStatus.OK);
+        return new ResponseEntity<>(partyTransactionService.getAllTransactionsByPartyIds( business.getParties()), HttpStatus.OK);
     }
 }

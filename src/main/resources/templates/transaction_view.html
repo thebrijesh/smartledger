@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en" th:replace="~{base ::parent(~{::#content}, ~{::title}, ~{::script})}">
+<head>
+    <title data-th-text="${party.getName()}">Transaction View</title>
+</head>
+<body>
+<div id="content" class="h-screen">
+
+    <div class="max-w-4xl mx-auto p-4 bg-white rounded-lg shadow-lg mt-10">
+        <!-- Header Section -->
+        <div class="flex items-center gap-4 flex-wrap">
+            <div class="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center text-xl font-bold">CL
+            </div>
+            <div>
+                <h1 class="text-xl font-semibold"data-th-text="${party.getBusiness().getName()}">Carrom Limited</h1>
+                <p class="text-sm text-gray-500" data-th-text="${party.getBusiness().getMobile()}">carrom master</p>
+            </div>
+        </div>
+
+        <!-- Banner -->
+        <div class="mt-4">
+            <img src="https://via.placeholder.com/400x100" alt="Ad" class="w-full rounded-lg">
+        </div>
+
+        <!-- Transaction Summary -->
+        <div class="flex flex-wrap justify-between items-center mt-6 p-4 bg-gray-50 rounded-lg border gap-4">
+            <div class="text-center flex-1">
+                <p class="text-gray-500" >Total Debit(-)</p>
+                <p id="totalDebit" class="text-xl font-bold text-red-600" >&#8377;7,08,098</p>
+            </div>
+            <div class="text-center flex-1">
+                <p class="text-gray-500" >Total Credit(+)</p>
+                <p id="totalCredit" class="text-xl font-bold text-green-600">&#8377;4,51,500</p>
+            </div>
+            <div class="text-center flex-1">
+                <p class="text-gray-500" >Net Balance</p>
+                <p id="netBalance" class="text-xl font-bold text-red-600">&#8377;2,56,598 Dr</p>
+            </div>
+        </div>
+
+        <!-- Transaction Table -->
+        <div class="mt-6">
+            <h2 class="text-lg font-semibold">Transaction History</h2>
+            <p class="text-sm text-gray-500">
+                <span data-th-text="${#dates.format(party.getCreatedAt(), 'dd-MM-yyyy')}"></span>
+                <span> to </span>
+                <span data-th-text="${#dates.format(party.getUpdatedAt(), 'dd-MM-yyyy')}"></span>
+            </p>
+
+            <div class="mt-4 overflow-x-auto">
+                <div class="min-w-max">
+                    <table class="w-full text-sm text-left border-collapse">
+                        <thead>
+                        <tr class="bg-gray-100 border-b">
+                            <th class="p-2 font-semibold">Date</th>
+                            <th class="p-2 font-semibold">Debit(-)</th>
+                            <th class="p-2 font-semibold">Credit(+)</th>
+
+                        </tr>
+                        </thead>
+                        <tbody id="transactionTable" class="transactionRow"  data-th-each="transaction : ${party.getPartyTransactionList()}" data-th-object="${transaction}" th:data-type = "${transaction.getTransactionType()}" th:data-amount = "${transaction.getAmount()}">
+                        <tr data-th-if="${transaction.getTransactionType() == T(com.sml.smartledger.Model.party.TransactionType).CREDIT}"
+                            class=" border-b hover:bg-gray-50">
+                            <td class="p-2" data-th-text="${#dates.format(transaction.getTransactionDate(), 'dd-MM-yyyy')}" >07 Oct</td>
+                            <td class="p-2 text-red-600" data-th-text="*{amount}">&#8377;2,00,000</td>
+                            <td class="p-2">-</td>
+
+                        </tr>
+
+                        <tr data-th-if="${transaction.getTransactionType() == T(com.sml.smartledger.Model.party.TransactionType).DEBIT}"
+                                class=" border-b hover:bg-gray-50">
+                            <td class="p-2" data-th-text="${#dates.format(transaction.getTransactionDate(), 'dd-MM-yyyy')}" >07 Oct</td>
+                            <td class="p-2">-</td>
+                            <td class="p-2 text-green-600" data-th-text="*{amount}">&#8377;2,00,000</td>
+
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const totalDebitElement = document.getElementById('totalDebit');
+        const totalCreditElement = document.getElementById('totalCredit');
+        const netBalanceElement = document.getElementById('netBalance');
+
+        let totalDebit = 0;
+        let totalCredit = 0;
+
+        Array.from(document.getElementsByClassName('transactionRow')).forEach(row => {
+
+            const amount = parseFloat(row.getAttribute('data-amount'));
+            const type = row.getAttribute('data-type');
+
+            if (type === 'CREDIT') {
+                totalDebit += amount;
+            }else{
+                totalCredit += amount;
+            }
+
+        });
+
+        const netBalance = totalCredit - totalDebit;
+
+        totalDebitElement.textContent = `₹${totalDebit.toLocaleString()}`;
+        totalCreditElement.textContent = `₹${totalCredit.toLocaleString()}`;
+        netBalanceElement.textContent = `₹${netBalance.toLocaleString()}`;
+    });
+</script>
+<script>console.log("Transaction View")</script>
+</body>
+</html>

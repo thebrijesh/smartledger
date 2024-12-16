@@ -1,7 +1,5 @@
 package com.sml.smartledger.Services.implementetion.party;
 
-import com.sml.smartledger.Model.bill.Bill;
-
 import com.sml.smartledger.Model.business.Business;
 import com.sml.smartledger.Model.party.Party;
 import com.sml.smartledger.Model.party.PartyType;
@@ -16,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static com.sml.smartledger.Helper.Helper.generateShortCode;
+
 @Service
 public class PartyServiceImpl implements PartyService {
     @Autowired
@@ -28,7 +28,7 @@ public class PartyServiceImpl implements PartyService {
         Optional<Business> businessOptional = businessRepository.findById(party.getBusiness().getId());
         if (businessOptional.isEmpty()) throw new RuntimeException("Business not found");
         Business business = businessOptional.get();
-
+         party.setShortCode(generateShortCode());
         Party savedParty = partyRepository.save(party);
         business.getParties().add(savedParty);
         businessRepository.save(business);
@@ -43,12 +43,12 @@ public class PartyServiceImpl implements PartyService {
     }
 
     @Override
-    public List<Party> getAllParty(Long businessId) {
+    public List<Party> getAllParties(Long businessId) {
         return partyRepository.findByBusinessId(businessId);
     }
 
     @Override
-    public List<Party> getCustomerParty(@NonNull Long id) {
+    public List<Party> getCustomerParties(@NonNull Long id) {
         return partyRepository.findAllByBusinessIdAndPartyType(id, PartyType.CUSTOMER);
     }
 
@@ -58,12 +58,17 @@ public class PartyServiceImpl implements PartyService {
     }
 
     @Override
-    public Party updateParty(Party party) {
-        return partyRepository.save(party);
+    public void updateParty(Party party) {
+        partyRepository.save(party);
     }
 
     @Override
-    public List<Party> getSupplierParty(@NonNull Long id) {
+    public List<Party> getSupplierParties(@NonNull Long id) {
         return partyRepository.findAllByBusinessIdAndPartyType(id, PartyType.SUPPLIER);
+    }
+
+    @Override
+    public Party getPartyByShortCode(String shortCode) {
+        return partyRepository.findByShortCode(shortCode);
     }
 }

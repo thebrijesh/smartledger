@@ -8,17 +8,19 @@ import java.util.List;
 
 public interface PartyService {
 
-    public Party createParty(Party party);
+     Party createParty(Party party);
 
-    public void deleteParty(Long id);
-    public List<Party> getAllParty(Long BusinessId);
+     void deleteParty(Long id);
+     List<Party> getAllParties(Long BusinessId);
 
-    List<Party> getCustomerParty(@NonNull Long id);
+    List<Party> getCustomerParties(@NonNull Long id);
 
 
     Party getPartyById(Long partyId);
 
-    Party updateParty(Party party);
+    void updateParty(Party party);
 
-    List<Party> getSupplierParty(@NonNull Long id);
+    List<Party> getSupplierParties(@NonNull Long id);
+
+    Party getPartyByShortCode(String shortCode);
 }
