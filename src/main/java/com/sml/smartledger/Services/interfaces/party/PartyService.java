@@ -23,4 +23,6 @@ public interface PartyService {
     List<Party> getSupplierParties(@NonNull Long id);
 
     Party getPartyByShortCode(String shortCode);
+
+    List<Party> getDueParties(@NonNull Long id);
 }

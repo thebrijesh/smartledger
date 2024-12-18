@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en" th:replace ="~{base ::parent(~{::#content}, ~{::title}, ~{::script})}">
+<head>
+    <title data-th-text="${loggedInUser.name}">Dashboard</title>
+</head>
+<body>
+<div id="content" class="h-screen">
+
+
+
+    <div class="sm:pl-64">
+        <div th:replace="~{user/party/due_parties_fragment :: dueParties}">
+
+        </div>
+    </div>
+
+
+
+</div>
+<script>console.log("Dashboard")</script>
+<script data-th-src="@{/js/dueCustomersFilteration.js}"></script>
+
+</body>
+</html>

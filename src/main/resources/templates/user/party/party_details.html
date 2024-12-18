@@ -57,7 +57,7 @@
                 </div>
 
                 <!-- Due Date Section -->
-                <div th:if="*{balance < 0 && dueDate == null}" class="mb-6">
+                <div th:if="*{balance < 0} and *{dueDate == null} and ${'CUSTOMER'.equals(party.getPartyType().toString())}" class="mb-6">
                     <h2 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Set Due Date:</h2>
                     <div class="flex gap-2 mt-2 flex-wrap">
                         <button class="text-sm text-blue-600 bg-blue-50 dark:bg-blue-600 dark:text-white px-4 py-2 rounded-full shadow transition hover:bg-blue-100"
@@ -170,6 +170,7 @@
 
                 <!-- Reminder Buttons -->
                 <div id="reminderBtn"
+                     th:if="*{balance < 0} and *{dueDate == null} and ${'CUSTOMER'.equals(party.getPartyType().toString())}"
                      th:data-name="${party.getName()}"
                      th:data-mobile="${party.getMobile()}"
                      th:data-businessName="${party.getBusiness().getName()}"

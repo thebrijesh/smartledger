@@ -71,4 +71,9 @@ public class PartyServiceImpl implements PartyService {
     public Party getPartyByShortCode(String shortCode) {
         return partyRepository.findByShortCode(shortCode);
     }
+
+    @Override
+    public List<Party> getDueParties(@NonNull Long id) {
+        return partyRepository.findAllByBusinessIdAndDueDateNotNull(id);
+    }
 }
