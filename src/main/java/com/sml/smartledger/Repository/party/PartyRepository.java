@@ -2,6 +2,7 @@ package com.sml.smartledger.Repository.party;
 
 import com.sml.smartledger.Model.business.Business;
 import com.sml.smartledger.Model.party.Party;
+import com.sml.smartledger.Model.party.PartyTransaction;
 import com.sml.smartledger.Model.party.PartyType;
 import lombok.NonNull;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -31,4 +33,8 @@ public interface PartyRepository extends JpaRepository<Party, Long> {
     void deleteById(@Param("parties_id") Long id);
 
     Party findByShortCode(String shortCode);
+
+    //get list of customers who have due date not null
+    List<Party> findAllByBusinessIdAndDueDateNotNull(Long businessId);
+
 }

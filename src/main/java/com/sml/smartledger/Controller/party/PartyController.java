@@ -266,27 +266,27 @@ public class PartyController {
         return "redirect:/users/party/view/" + partyTransaction.getParty().getId();
     }
 
- @PostMapping("/set-due-date")
-@ResponseBody
-public ResponseEntity<Map<String, Object>> setDueDate(@RequestBody Map<String, Object> payload) {
-    Map<String, Object> response = new HashMap<>();
-    try {
-        String date = (String) payload.get("date");
-        Long partyId = Long.valueOf(payload.get("partyId").toString());
-        logger.info("Date: " + date);
-        logger.info("Party ID: " + partyId);
-        Party party = partyService.getPartyById(partyId);
-        Date dueDate = Helper.convertStringToDate(date);
-        party.setDueDate(dueDate);
-        partyService.updateParty(party);
-        response.put("status", "success");
-        response.put("message", "Due date updated successfully");
-    } catch (Exception e) {
-        response.put("status", "error");
-        response.put("message", e.getMessage());
+    @PostMapping("/set-due-date")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> setDueDate(@RequestBody Map<String, Object> payload) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            String date = (String) payload.get("date");
+            Long partyId = Long.valueOf(payload.get("partyId").toString());
+            logger.info("Date: " + date);
+            logger.info("Party ID: " + partyId);
+            Party party = partyService.getPartyById(partyId);
+            Date dueDate = Helper.convertStringToDate(date);
+            party.setDueDate(dueDate);
+            partyService.updateParty(party);
+            response.put("status", "success");
+            response.put("message", "Due date updated successfully");
+        } catch (Exception e) {
+            response.put("status", "error");
+            response.put("message", e.getMessage());
+        }
+        return ResponseEntity.ok(response);
     }
-    return ResponseEntity.ok(response);
-}
 
     private Party buildPartyFromForm(PartyForm partyForm, Business business) {
         return Party.builder()
@@ -343,5 +343,16 @@ public ResponseEntity<Map<String, Object>> setDueDate(@RequestBody Map<String, O
         partyFromDB.setState(party.getState());
         partyFromDB.setPincode(party.getPincode());
         partyFromDB.setGstIN(party.getGstIN());
+    }
+
+
+    @GetMapping("/due-parties")
+    public String dueTransactions(Model model, Authentication authentication) {
+        String email = getEmailOfLoggedInUser(authentication);
+        User user = userService.getUserByEmail(email);
+        List<Party> parties = partyService.getDueParties(user.getSelectedBusiness().getId());
+        model.addAttribute("dueParties", parties);
+        logger.info("Due Parties: " + parties);
+        return "user/party/due_parties";
     }
 }
