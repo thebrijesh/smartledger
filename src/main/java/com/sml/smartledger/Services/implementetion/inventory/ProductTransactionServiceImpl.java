@@ -1,7 +1,7 @@
 package com.sml.smartledger.Services.implementetion.inventory;
 
 
-import com.sml.smartledger.Model.bill.BillProduct;
+import com.sml.smartledger.Model.inventory.Product;
 import com.sml.smartledger.Model.inventory.ProductTransaction;
 import com.sml.smartledger.Model.inventory.StockTransactionType;
 import com.sml.smartledger.Repository.inventory.ProductRepository;
@@ -15,15 +15,18 @@ import java.util.Optional;
 
 @Service
 public class ProductTransactionServiceImpl implements ProductTransactionService {
-    @Autowired
     ProductTransactionRepository productTransactionRepository;
-    @Autowired
     ProductRepository productRepository;
+    @Autowired
+    public ProductTransactionServiceImpl(ProductTransactionRepository productTransactionRepository, ProductRepository productRepository) {
+        this.productTransactionRepository = productTransactionRepository;
+        this.productRepository = productRepository;
+    }
     @Override
     public ProductTransaction addTransaction(ProductTransaction productTransaction) {
-        Optional<BillProduct> billProductOptional = productRepository.findById(productTransaction.getBillProduct().getId());
+        Optional<Product> billProductOptional = productRepository.findById(productTransaction.getProduct().getId());
         if(billProductOptional.isEmpty()) throw new RuntimeException("Product not found");
-        BillProduct billProduct = billProductOptional.get();
+        Product billProduct = billProductOptional.get();
 
         ProductTransaction savedproductTransaction = productTransactionRepository.save(productTransaction);
         billProduct.getProductTransactions().add(savedproductTransaction);
@@ -39,7 +42,7 @@ public class ProductTransactionServiceImpl implements ProductTransactionService 
 
     @Override
     public List<ProductTransaction> getAllProductTransactionByProductId(Long productId) {
-        return productTransactionRepository.findAllProductTransactionByBillProductId(productId);
+        return productTransactionRepository.findAllProductTransactionByProductId(productId);
     }
 
     @Override

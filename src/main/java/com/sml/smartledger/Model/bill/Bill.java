@@ -2,6 +2,8 @@ package com.sml.smartledger.Model.bill;
 
 import com.sml.smartledger.Model.BaseModel;
 import com.sml.smartledger.Model.business.Business;
+import com.sml.smartledger.Model.inventory.Product;
+import com.sml.smartledger.Model.inventory.Service;
 import com.sml.smartledger.Model.party.Party;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -29,7 +31,7 @@ public class Bill extends BaseModel {
     @CollectionTable(name = "bill_products", joinColumns = @JoinColumn(name = "bill_id"))
     @MapKeyJoinColumn(name = "product_id")
     @Column(name = "quantity")
-    Map<BillProduct, Integer> products;
+    Map<Product, Integer> products;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    List<BillService> services;
+    List<Service> services;
 }

@@ -1,8 +1,8 @@
 package com.sml.smartledger.Model.inventory;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sml.smartledger.Model.BaseModel;
-import com.sml.smartledger.Model.bill.BillProduct;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +20,7 @@ public class ProductTransaction extends BaseModel {
     double amount;
     int unit;
     String description;
-    @ManyToOne(cascade = CascadeType.MERGE)
-    BillProduct billProduct;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
+    Product product;
 }

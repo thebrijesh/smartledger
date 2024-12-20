@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sml.smartledger.Model.BaseModel;
 import com.sml.smartledger.Model.User;
 import com.sml.smartledger.Model.bill.Bill;
-import com.sml.smartledger.Model.bill.BillProduct;
-import com.sml.smartledger.Model.bill.BillService;
+import com.sml.smartledger.Model.inventory.Product;
+import com.sml.smartledger.Model.inventory.Service;
 import com.sml.smartledger.Model.bill.Expanses;
 import com.sml.smartledger.Model.party.Party;
 import com.sml.smartledger.Model.staff.StaffMember;
@@ -46,15 +46,17 @@ public class Business extends BaseModel {
     @Builder.Default
     @OneToMany(cascade = CascadeType.ALL)
     @JsonIgnore
-    List<BillProduct> products = new ArrayList<>();
+    List<Product> products = new ArrayList<>();
     @Builder.Default
     @OneToMany(cascade = CascadeType.ALL)
     @JsonIgnore
-    List<BillService> services = new ArrayList<>();
+    List<Service> services = new ArrayList<>();
     private String logo;
 
     double totalCredit;
     double totalDebit;
+    int totalProductsStock;
+    int lowStockProducts;
 
     @Override
     public String toString() {

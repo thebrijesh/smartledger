@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface ServiceTransactionRepository extends JpaRepository<ServiceTransaction, Long> {
-    List<ServiceTransaction> findAllServiceTransactionByBillServiceId(Long billServiceId);
+    List<ServiceTransaction> findAllServiceTransactionByServiceId(Long billServiceId);
 }

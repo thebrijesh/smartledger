@@ -1,12 +1,9 @@
 package com.sml.smartledger.Model.inventory;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sml.smartledger.Model.BaseModel;
-import com.sml.smartledger.Model.bill.BillService;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,8 +18,9 @@ public class ServiceTransaction extends BaseModel {
     double amount;
     int unit;
     String description;
-    @ManyToOne
-    BillService billService;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
+    Service service;
     @Enumerated(EnumType.ORDINAL)
     ServiceTransactionType type;
 }

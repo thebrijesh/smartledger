@@ -1,10 +1,9 @@
-package com.sml.smartledger.Model.bill;
+package com.sml.smartledger.Model.inventory;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sml.smartledger.Model.BaseModel;
 import com.sml.smartledger.Model.business.Business;
-import com.sml.smartledger.Model.inventory.ServiceTransaction;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
@@ -14,10 +13,10 @@ import lombok.Setter;
 
 import java.util.List;
 
-@Entity(name = "billService")
+@Entity(name = "services")
 @Getter
 @Setter
-public class BillService extends BaseModel {
+public class Service extends BaseModel {
     String name;
     double salePrice;
     int monthlySales;
@@ -25,7 +24,7 @@ public class BillService extends BaseModel {
     @ManyToOne(cascade = CascadeType.MERGE)
     Business business;
     @OneToMany(cascade = CascadeType.ALL)
-    @JsonIgnore
+
     List<ServiceTransaction> serviceTransactions;
 
 

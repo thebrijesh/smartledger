@@ -1,11 +1,10 @@
 package com.sml.smartledger.Services.interfaces.bill;
 
 import com.sml.smartledger.Model.bill.Bill;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface MyBillService {
+public interface BillService {
     List<Bill> getAllBills(Long businessId);
     List<Bill> getAllSaleBills(Long businessId);
     Bill createBill(Bill bill);

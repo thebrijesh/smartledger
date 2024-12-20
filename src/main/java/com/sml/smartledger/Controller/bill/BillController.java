@@ -3,7 +3,7 @@ import com.sml.smartledger.Model.User;
 import com.sml.smartledger.Model.bill.Bill;
 import com.sml.smartledger.Model.business.Business;
 import com.sml.smartledger.Services.interfaces.UserService;
-import com.sml.smartledger.Services.interfaces.bill.MyBillService;
+import com.sml.smartledger.Services.interfaces.bill.BillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +21,10 @@ import static com.sml.smartledger.Helper.Helper.getEmailOfLoggedInUser;
 public class BillController {
 
 
-    MyBillService billService;
+    BillService billService;
     UserService userService;
     @Autowired
-    public BillController(MyBillService billService, UserService userService) {
+    public BillController(BillService billService, UserService userService) {
         this.billService = billService;
         this.userService = userService;
     }
