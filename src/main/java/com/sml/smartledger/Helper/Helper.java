@@ -6,6 +6,9 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.UUID;
 
@@ -47,4 +50,11 @@ public class Helper {
         return UUID.randomUUID().toString().substring(0, 8);
     }
 
+    public static Date combineDate(String date1) {
+        Date date = Helper.convertStringToDate(date1);
+        assert date != null;
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalTime localTime = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+        return Date.from(localDate.atTime(localTime).atZone(ZoneId.systemDefault()).toInstant());
+    }
 }
