@@ -1,10 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" th:replace="~{base ::parent(~{::#content}, ~{::title}, ~{::script})}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Product</title>
 </head>
 <body>
+<div id="content">
+    <div class="pt-5 sm:pl-64">
+        <div th:replace="~{user/item/item_fragment ::item_fragment}"></div>
+        <div th:replace="~{user/item/add_new_product_drawer ::addProduct}"></div>
 
+    </div>
+</div>
+
+<script>
+    console.log('Product Page');
+</script>
+<script data-th-src="@{/js/product_filteration.js}"></script>
 </body>
 </html>

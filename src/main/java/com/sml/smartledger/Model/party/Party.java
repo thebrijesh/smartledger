@@ -6,6 +6,7 @@ import com.sml.smartledger.Model.business.Business;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Party extends BaseModel {
+public class Party extends BaseModel implements Serializable {
 
     String name;
     String mobile;

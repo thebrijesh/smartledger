@@ -22,7 +22,7 @@ public class ProductServiceImpl implements ProductService {
         this.businessRepository = businessRepository;
     }
     @Override
-    public Product addProduct(Product product) {
+    public void addProduct(Product product) {
         Optional<Business> businessOptional = businessRepository.findById(product.getBusiness().getId());
         if(businessOptional.isEmpty()) throw new RuntimeException("Business not found");
         Business business = businessOptional.get();
@@ -30,7 +30,6 @@ public class ProductServiceImpl implements ProductService {
         Product savedBillProduct = productRepository.save(product);
         business.getProducts().add(savedBillProduct);
         businessRepository.save(business);
-        return savedBillProduct;
     }
 
     @Override
@@ -41,5 +40,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
+    }
+
+    @Override
+    public Product getProductById(Long id) {
+        return productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product Not Found"));
     }
 }

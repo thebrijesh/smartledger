@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const sortedTransactions = Array.from(partyList).sort((a, b) => {
             const dateA = new Date(a.querySelector('[data-date]').textContent.split('-').reverse().join('-'));
             const dateB = new Date(b.querySelector('[data-date]').textContent.split('-').reverse().join('-'));
-            return dateB - dateA;
+        return dateB - dateA;
         });
 
         // Clear the container and append sorted transactions back to the container

@@ -5,6 +5,7 @@ import com.sml.smartledger.Model.BaseModel;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity(name = "PartyTransaction")
@@ -12,7 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PartyTransaction extends BaseModel {
+public class PartyTransaction extends BaseModel implements Serializable {
     @ManyToOne(cascade = CascadeType.ALL)
     @JsonIgnore
     Party party;

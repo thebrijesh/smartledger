@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,6 +23,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+
+import static com.sml.smartledger.Helper.Helper.getEmailOfLoggedInUser;
 
 @Controller
 public class PageController {
@@ -30,11 +34,15 @@ public class PageController {
     private final BusinessService businessService;
     private final PartyService partyService;
 
+    private final PasswordEncoder passwordEncoder;
+
+    Logger logger = Logger.getLogger(PageController.class.getName());
     @Autowired
-    public PageController(PartyService partyService,UserService userService, BusinessService businessService) {
+    public PageController(PartyService partyService, UserService userService, BusinessService businessService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.businessService = businessService;
         this.partyService = partyService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/")
@@ -49,23 +57,11 @@ public class PageController {
         return "home";
     }
 
-    @RequestMapping("/about")
-    public String about(Model model) {
-        model.addAttribute("isPublicPage", true);
-        return "about";
-    }
 
-    @RequestMapping("/services")
-    public String services(Model model) {
-        model.addAttribute("isPublicPage", true);
-        return "services";
-    }
 
-    @RequestMapping("/contact")
-    public String contact(Model model) {
-        model.addAttribute("isPublicPage", true);
-        return "contact";
-    }
+
+
+
 
     @RequestMapping("/signup")
     public String register(Model model,Authentication authentication) {
@@ -80,7 +76,10 @@ public class PageController {
 
     @RequestMapping("/login")
     public String login(Authentication authentication) {
+
         if (authentication != null) {
+            User user = userService.getUserByEmail(getEmailOfLoggedInUser(authentication));
+            logger.info("User password: " + user.getPassword());
             return "redirect:/users/dashboard";
         }
         return "login";
@@ -95,25 +94,19 @@ public class PageController {
         User user = new User();
         user.setName(userForm.getName());
         user.setEmail(userForm.getEmail());
-        user.setPassword(userForm.getPassword());
+        user.setPassword(passwordEncoder.encode(userForm.getPassword()));
         user.setAbout(userForm.getAbout());
         user.setPhoneNumber(userForm.getPhoneNumber());
         user.setEnabled(true);
         user.setProfilePic(
                 "https://www.learncodewithdurgesh.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fdurgesh_sir.35c6cb78.webp&w=1920&q=75");
 
-        Business business = new Business();
-        business.setName(userForm.getName());
-        business.setLogo(user.getProfilePic());
-        business = businessService.createBusiness(business);
-        user.setSelectedBusiness(business);
-//        user.getBusinessList().add(business);
 
         User savedUser = userService.saveUser(user);
 
         Message message = new Message("User Registered Successfully !!", MessageType.green);
         session.setAttribute("message", message);
-        return "redirect:/signup";
+        return "redirect:/users/dashboard";
     }
 
     @RequestMapping("/{shortCode}")

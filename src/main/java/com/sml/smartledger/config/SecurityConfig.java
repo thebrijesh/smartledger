@@ -60,10 +60,10 @@ public class SecurityConfig {
         httpSecurity.formLogin(formLogin -> {
             formLogin.loginPage("/login");
             formLogin.loginProcessingUrl("/authenticate");
-            formLogin.defaultSuccessUrl("/users/dashboard");
-            formLogin.failureUrl("/login?error=true");
             formLogin.usernameParameter("email");
             formLogin.passwordParameter("password");
+            formLogin.failureUrl("/login?error=true");
+            formLogin.defaultSuccessUrl("/users/dashboard");
         });
 
         httpSecurity.csrf(AbstractHttpConfigurer::disable);

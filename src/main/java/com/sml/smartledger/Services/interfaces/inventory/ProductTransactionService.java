@@ -6,8 +6,8 @@ import com.sml.smartledger.Model.inventory.ProductTransaction;
 import java.util.List;
 
 public interface ProductTransactionService {
-    public ProductTransaction addTransaction(ProductTransaction productTransaction);
-    public List<ProductTransaction> getAllProductTransactionByProductId(Long productId);
-    public void deleteProductTransaction(Long id);
+     ProductTransaction addProductTransaction(ProductTransaction productTransaction);
+     List<ProductTransaction> getAllProductTransactionByProductId(Long productId);
+     void deleteProductTransaction(Long id);
 
 }

@@ -24,7 +24,7 @@ public class UserController {
     Logger logger = Logger.getLogger(UserController.class.getName());
 
     UserService userService;
-    private BusinessService businessService;
+    private final BusinessService businessService;
 
 
     @Autowired

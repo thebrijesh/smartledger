@@ -224,16 +224,12 @@ public class PartyController {
     @PostMapping("/create-party-transaction")
     public String createPartyTransaction(@ModelAttribute PartyTransactionForm partyTransactionForm) {
         Party party = partyService.getPartyById(partyTransactionForm.getPartyId());
-        Date date = Helper.convertStringToDate(partyTransactionForm.getDate());
-        assert date != null;
-        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        LocalTime localTime = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
-        Date combinedDate = Date.from(localDate.atTime(localTime).atZone(ZoneId.systemDefault()).toInstant());
+
 
         PartyTransaction transaction = PartyTransaction.builder()
                 .amount(partyTransactionForm.getAmount())
                 .party(party)
-                .transactionDate(combinedDate)
+                .transactionDate(Helper.combineDate(partyTransactionForm.getDate()))
                 .transactionType(TransactionType.valueOf(partyTransactionForm.getTransactionType()))
                 .description(partyTransactionForm.getDescription())
                 .build();

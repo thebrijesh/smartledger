@@ -9,6 +9,7 @@ import com.sml.smartledger.Services.interfaces.party.PartyService;
 import jakarta.transaction.Transactional;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -53,6 +54,7 @@ public class PartyServiceImpl implements PartyService {
     }
 
     @Override
+    @Cacheable(value = "party", key = "#partyId")
     public Party getPartyById(Long partyId) {
         return partyRepository.findById(partyId).orElseThrow(() -> new RuntimeException("Party not found"));
     }
