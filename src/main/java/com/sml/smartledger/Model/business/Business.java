@@ -12,6 +12,7 @@ import com.sml.smartledger.Model.staff.StaffMember;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Business extends BaseModel {
+public class Business extends BaseModel implements Serializable {
     String name;
     String mobile;
     String address;
@@ -55,7 +56,7 @@ public class Business extends BaseModel {
 
     double totalCredit;
     double totalDebit;
-    int totalProductsStock;
+    int totalProductsStock=0;
     int lowStockProducts;
 
     @Override

@@ -83,7 +83,7 @@ public class BillServiceImpl implements BillService {
             productTransaction.setAmount(billProduct.getSalePrice() * bill.getProducts().get(billProduct));
             productTransaction.setDescription("Stock Balance" + billProduct.getStockQuantity());
             productTransaction.setStockTransactionType(transactionType);
-            productTransactionService.addTransaction(productTransaction);
+            productTransactionService.addProductTransaction(productTransaction);
         }
     }
 

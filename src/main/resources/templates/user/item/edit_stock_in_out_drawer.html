@@ -1,0 +1,109 @@
+<!-- drawer component -->
+
+
+<div th:fragment="editStockInOut" id="drawer-right-edit-stock-in-out"
+     class=" fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform translate-x-full bg-white w-auto dark:bg-gray-800"
+     tabindex="-1" aria-labelledby="drawer-right-label">
+
+
+    <div class="max-w-md w-72 md:w-96 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 rounded-lg shadow-lg p-6">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-semibold text-indigo-600 dark:text-indigo-400">EDIT STOCK <span class="editStockInOutText">IN/Out</span></h2>
+            <button type="button" data-drawer-hide="drawer-right-edit-stock-in-out"
+                    aria-controls="drawer-right-edit-stock-in-out"
+                    class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                     stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Form -->
+        <form id="editProduct" data-th-action="@{'/users/inventory/productTransaction/add'}" data-th-object="${ProductTransactionForm}"
+              method="post">
+
+            <div class="mt-4" >
+                <label for="editStockQuantity"
+                       class="flex justify-start text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Stock Quantity
+                </label>
+                <div class="flex items-center mt-2">
+                                <span id="editUnitTypeText" class="inline-flex p-2 items-center px-3 rounded-l-lg border border-r-0 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-sm"
+                                >
+                                </span>
+                    <input data-th-field="*{stockQuantity}" type="number" id="editStockQuantity" min="0"
+                           class="flex-1 border border-r-0 w-full block rounded-r-lg border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none px-4 py-2 text-sm"
+                           placeholder="0">
+                </div>
+
+            </div>
+            <!-- Sale Purchase Price-->
+            <div class="mt-4" id="editPurchasePriceLayout">
+                <label for="editPurchasePrice"
+                       class="flex justify-start text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <span id="editSalePurchaseText"> Sale </span> <pre> </pre>Price
+                </label>
+
+                <div class="flex items-center mt-2">
+                                <span class="inline-flex p-2 items-center px-3 rounded-l-lg border border-r-0 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-sm">
+                                  ₹
+                                </span>
+                    <input data-th-field="*{amount}" type="number" id="editPurchasePrice" min="0"
+                           class="flex-1 border border-r-0 block w-full rounded-r-lg border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none px-4 py-2 text-sm"
+                           placeholder="Enter amount">
+
+                </div>
+            </div>
+
+            <!-- Date -->
+            <div class="mt-4 mb-2">Select Date</div>
+            <div class="relative max-w-sm">
+                <div class="absolute inset-y-0 start-0  flex items-center ps-3 pointer-events-none">
+                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                         xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                    </svg>
+                </div>
+                <input data-th-field="*{date}" id="editDatepicker" datepicker datepicker-format="dd-mm-yyyy"
+                       data-datepicker-placement="top" type="text"
+                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                       placeholder="Select date">
+            </div>
+
+            <div class="mt-4">
+                <label
+                        for="editAbout"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >Description</label
+                >
+                <textarea
+                        id="editAbout"
+                        rows="6"
+                        th:field="*{description}"
+                        class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Write here..."
+                ></textarea>
+
+                <p
+                        class="text-red-600 px-1 py-2"
+                ></p>
+            </div>
+            <!--            transactiontype hidden field-->
+            <input id="editTransactionType"  type="hidden" data-th-field="*{transactionType}" value="STOCK_IN"/>
+            <input id="editProductId"  type="hidden" data-th-field="*{productId}" value="STOCK_IN"/>
+
+
+            <!-- Add Customer Button -->
+            <div>
+                <button id="editAddProductBtn" type="submit"
+                        class="mt-4 w-full bg-blue-600  text-white shadow-md hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 mb-2">
+                    STOCK <span class="editStockInOutText">IN/OUT</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+
+</div>

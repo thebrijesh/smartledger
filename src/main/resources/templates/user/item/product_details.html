@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en" th:replace="~{base ::parent(~{::#content}, ~{::title}, ~{::script})}">
+<head>
+    <title>Product details</title>
+</head>
+<body>
+<div id="content" class="h-screen">
+
+
+    <div class="p-4 sm:pl-64">
+        <div data-th-object="${product}"
+             class="max-w-4xl mx-auto bg-white mb-6 dark:bg-gray-800 shadow-xl rounded-lg overflow-hidden transition-colors duration-300">
+            <!-- Header -->
+            <div class="flex items-center p-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white dark:from-gray-700 dark:to-gray-600">
+                <div class="flex items-center justify-center w-12 h-12 bg-white bg-opacity-20 rounded-full">
+                    <img src="https://via.placeholder.com/40" alt="Item Icon" class="w-8 h-8"
+                         data-th-src="${product.getImage()}">
+                </div>
+                <div class="flex-col ml-3">
+                    <h1 class="text-2xl font-semibold" data-th-text="${product.getName()}">hello</h1>
+                    <h2 id="unitType" data-th-text="${'Unit Type: ' + product.getUnitType()}"></h2>
+                    <span id="productIdHidden" class="hidden" data-th-text="${product.getId()}"></span>
+                </div>
+            </div>
+
+            <!-- Top Summary Section -->
+            <div class="grid grid-cols-2 gap-6 p-6 text-sm text-center sm:grid-cols-3 md:grid-cols-5">
+                <div class="p-4 bg-gradient-to-r from-blue-100 to-blue-50 dark:from-blue-800 dark:to-blue-700 rounded-lg shadow hover:shadow-lg">
+                    <p class="text-lg font-bold text-blue-600 dark:text-blue-300"
+                       data-th-text="${product.getSalePrice()}">₹10</p>
+                    <p class="mt-1 text-gray-600 dark:text-gray-300">SALE PRICE</p>
+                </div>
+                <div class="p-4 bg-gradient-to-r from-green-100 to-green-50 dark:from-green-800 dark:to-green-700 rounded-lg shadow hover:shadow-lg">
+                    <p class="text-lg font-bold text-green-600 dark:text-green-300"
+                       data-th-text="${product.getPurchasePrice()}">₹5</p>
+                    <p class="mt-1 text-gray-600 dark:text-gray-300">PURCHASE PRICE</p>
+                </div>
+                <div class="p-4 bg-gradient-to-r from-yellow-100 to-yellow-50 dark:from-yellow-800 dark:to-yellow-700 rounded-lg shadow hover:shadow-lg">
+                    <p class="text-lg font-bold text-yellow-600 dark:text-yellow-300"
+                       data-th-text="${product.getStockQuantity()}">30 PCS</p>
+                    <p class="mt-1 text-gray-600 dark:text-gray-300">STOCK QUANTITY</p>
+                </div>
+                <div class="p-4 bg-gradient-to-r from-indigo-100 to-indigo-50 dark:from-indigo-800 dark:to-indigo-700 rounded-lg shadow hover:shadow-lg">
+                    <p class="text-lg font-bold text-indigo-600 dark:text-indigo-300"
+                       data-th-text="${product.getStockQuantity() * product.getSalePrice()}">₹300</p>
+                    <p class="mt-1 text-gray-600 dark:text-gray-300">STOCK VALUE</p>
+                </div>
+                <div class="p-4 bg-gradient-to-r from-pink-100 to-pink-50 dark:from-pink-800 dark:to-pink-700 rounded-lg shadow hover:shadow-lg">
+                    <p class="text-lg font-bold text-pink-600 dark:text-pink-300"
+                       data-th-text="${product.getLowStock()}">2 PCS</p>
+                    <p class="mt-1 text-gray-600 dark:text-gray-300">LOW STOCK</p>
+                </div>
+            </div>
+
+            <!-- Item Profit Tracker -->
+            <div class="p-6">
+                <h2 class="mb-6 text-xl font-bold text-gray-800 dark:text-gray-100 md:text-2xl">ITEM PROFIT TRACKER</h2>
+                <div class="flex flex-wrap gap-4 mb-8">
+                    <select id="ProductPeriod" th:data-transactionList="${product.getProductTransactions()}"
+                            class="w-full rounded-lg border px-4 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 md:w-1/4">
+                        <option selected value="Today">Today</option>
+                        <option value="Yesterday">Yesterday</option>
+                        <option value="This Week">This Week</option>
+                        <option value="This Month">This Month</option>
+                        <option value="This Year">This Year</option>
+
+                    </select>
+
+                    <input id="startDate" type="date"
+                           class="w-full rounded-lg border px-4 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 md:w-auto"/>
+                    <input id="endDate" type="date"
+                           class="w-full rounded-lg border px-4 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 md:w-auto"/>
+
+                </div>
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div class="p-6 text-center bg-green-50 dark:bg-green-800 rounded-lg shadow hover:shadow-lg">
+                        <p id="profit" class="text-2xl font-bold text-green-600 dark:text-green-300">₹0</p>
+                        <p class="mt-2 text-gray-600 dark:text-gray-300">Total Profit made</p>
+                    </div>
+                    <div class="p-6 text-center bg-gray-50 dark:bg-gray-700 rounded-lg shadow hover:shadow-lg">
+                        <p id="qty" class="text-2xl font-bold text-gray-800 dark:text-gray-100">0</p>
+                        <p class="mt-2 text-gray-600 dark:text-gray-300">Total Stock qty sold</p>
+                    </div>
+                </div>
+
+                <!-- Stock Entry Table -->
+                <div class="mt-8 overflow-x-auto">
+                    <div class="h-[400px] overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-400 hover:scrollbar-thumb-gray-500 scrollbar-track-gray-200 dark:scrollbar-thumb-gray-600 dark:hover:scrollbar-thumb-gray-500 dark:scrollbar-track-gray-800">
+
+                        <table class="w-full text-sm text-left border-collapse bg-white dark:bg-gray-800 shadow-md rounded-lg">
+                            <thead class="text-gray-500 dark:text-gray-300 bg-gray-100 dark:bg-gray-700">
+                            <tr>
+                                <th class="py-4 px-6">STOCK ENTRY</th>
+                                <th class="py-4 px-6">STOCK OUT</th>
+                                <th class="py-4 px-6">STOCK IN</th>
+                            </tr>
+                            </thead>
+                            <tbody class="container cursor-pointer" data-th-each="transaction : ${product.getProductTransactions()}"
+                                   onclick="setEditProduct(this)"
+                                   th:data-transaction-type="${transaction.getStockTransactionType().toString()}"
+                                   th:data-amount="${transaction.getAmount()}"
+                                   th:data-stock-quantity="${transaction.getUnit()}"
+                                   th:data-description = "${transaction.getDescription()}"
+                                   th:data-date = "${#dates.format(transaction.getDate(), 'dd-MM-yyyy')}"
+                                   data-drawer-target="drawer-right-edit-stock-in-out"
+                                   data-drawer-show="drawer-right-edit-stock-in-out"
+                                   aria-controls="drawer-right-edit-stock-in-out"
+                                   data-drawer-placement="right">
+                            <tr data-th-if="${transaction.getStockTransactionType().toString() == 'OUT'}"
+                                th:data-amount="${transaction.getAmount()}"
+                                th:data-type="${transaction.getStockTransactionType().toString()}"
+                                th:data-unit="${transaction.getUnit()}"
+                                th:data-purchase="${product.getPurchasePrice()}"
+                                th:data-sales="${product.getSalePrice()}"
+                                th:data-date = "${#dates.format(transaction.getDate(), 'dd-MM-yyyy')}"
+
+                                class="transactionList
+                                  border-b hover:bg-gray-50 dark:hover:bg-gray-700">
+                                <td class="productTransaction-date py-4 px-6 text-gray-800 dark:text-gray-300"
+                                    data-th-text="${transaction.getDate()}">
+                                    22 Dec 2024 • 10:38 am<br>
+                                </td>
+                                <td class="py-4 px-6 text-red-500 dark:text-red-300">
+                                    ⬆ Out • <span data-th-text="${transaction.getUnit()}">10</span>
+                                    <span data-th-text="${product.getUnitType()}">PCS</span>
+                                    <br>
+                                    <span class="text-sm" data-th-text="${transaction.getAmount()}">₹100</span>
+                                </td>
+                                <td class="py-4 px-6"></td>
+                            </tr>
+                            <tr data-th-if="${transaction.getStockTransactionType().toString() == 'IN'}"
+                                class="transactionList hover:bg-gray-50 dark:hover:bg-gray-700">
+                                <td class="productTransaction-date py-4 px-6 text-gray-800 dark:text-gray-300"
+                                    data-date="${#dates.format(transaction.getTransactionDate(), 'dd-MM-yyyy')}"
+                                    data-th-text="${transaction.getDate()}"
+                                >
+
+                                    22 Dec 2024 • 10:30 am<br>
+                                </td>
+                                <td class="py-4 px-6"></td>
+                                <td class="py-4 px-6 text-green-500 dark:text-green-300">
+                                    ⬇ In • <span data-th-text="${transaction.getUnit()}">10</span>
+                                    <span data-th-text="${product.getUnitType()}">PCS</span>
+                                    <br>
+                                    <span class="text-sm" data-th-text="${'₹ '+ transaction.getAmount()}">₹8</span>
+                                </td>
+                            </tr>
+                            <div th:replace="~{user/item/edit_stock_in_out_drawer ::editStockInOut}"></div>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Footer Buttons -->
+                    <div class="flex justify-between mt-8 relative z-10 gap-2">
+                        <button  data-drawer-target="drawer-right-stock-in-out"
+                                 data-drawer-show="drawer-right-stock-in-out"
+                                 aria-controls="drawer-right-stock-in-out"
+                                 data-drawer-placement="right"
+                                 onclick="setProductTransactionType('in')"
+
+                                class="flex-1 bg-green-100 text-green-600 py-3 rounded-lg shadow hover:bg-green-200 dark:bg-green-700 dark:text-green-300 dark:hover:bg-green-600 transition ml-2">
+                            Stock In
+                        </button>
+                        <button  data-drawer-target="drawer-right-stock-in-out"
+                                 data-drawer-show="drawer-right-stock-in-out"
+                                 aria-controls="drawer-right-stock-in-out"
+                                 data-drawer-placement="right"
+                                 onclick="setProductTransactionType('out')"
+
+                                class="flex-1 bg-red-100 text-red-600 py-3 rounded-lg shadow hover:bg-red-200 dark:bg-red-700 dark:text-red-300 dark:hover:bg-red-600 transition mr-2">
+                            Stock Out
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:replace="~{user/item/stock_in_out_drawer ::stockInOut}"></div>
+    </div>
+
+
+</div>
+<script>console.log("Product Details")</script>
+<script data-th-src="@{/js/itemReport.js}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Get all elements with the class 'transaction-date'
+        const dateElements = document.querySelectorAll('.productTransaction-date');
+        dateElements.forEach((dateElement) => {
+            // Get the raw date from the data-th-text attribute
+            const rawDate = dateElement.innerText;
+            if (rawDate) {
+                // Convert the raw date string to a JavaScript Date object
+                const dateObj = new Date(rawDate.replace(" ", "T")); // Replace space with "T" for ISO format
+
+                // Format the date
+                const options = {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true
+                };
+                // Update the element's content
+                dateElement.textContent = dateObj.toLocaleDateString('en-US', options).replace(",", "").replace(" at ", " - ");
+            }
+        });
+    });
+</script>
+<script>
+    function setProductTransactionType(value) {
+        const spans = document.getElementsByClassName('stockInOutText');
+        const salePurchaseText = document.getElementById('salePurchaseText');
+        const transactionType = document.getElementById('transactionType');
+        const productId = document.getElementById('productId');
+        const productIdHidden = document.getElementById('productIdHidden');
+        console.log(transactionType);
+        if (value === 'in') {
+            salePurchaseText.textContent = 'Purchase';
+        } else {
+            salePurchaseText.textContent = 'Sale';
+        }
+        const unitType = document.getElementById('unitType');
+        const unitTypeText = document.getElementById('unitTypeText');
+        transactionType.value = value.toUpperCase();
+        productId.value = productIdHidden.textContent;
+        unitTypeText.textContent = unitType.textContent.split(":")[1].trim();
+        for (let i = 0; i < spans.length; i++) {
+            spans[i].textContent = value.toUpperCase();
+        }
+    }
+</script>
+</body>
+</html>
+
+
+
+<script>
+    function setEditProduct(value) {
+        const editSpans = document.getElementsByClassName('editStockInOutText');
+        const salePurchaseText = document.getElementById('editSalePurchaseText');
+        const transactionType = document.getElementById('editTransactionType');
+        const productId = document.getElementById('editProductId');
+        const productIdHidden = document.getElementById('productIdHidden');
+
+
+        const date = value.getAttribute('data-date');
+        const amount = value.getAttribute('data-amount');
+        const quantity = value.getAttribute('data-stock-quantity');
+        const description = value.getAttribute('data-description');
+
+
+        const editPurchasePrice = document.getElementById('editPurchasePrice');
+        editPurchasePrice.value = amount;
+        const editDatepicker = document.getElementById('editDatepicker');
+        editDatepicker.value = date;
+        const editAbout = document.getElementById('editAbout');
+        editAbout.value = description;
+        const editStockQuantity = document.getElementById('editStockQuantity');
+        editStockQuantity.value = quantity;
+
+
+        let valueType = value.getAttribute('data-transaction-type').toString();
+        salePurchaseText.textContent = (valueType  === 'OUT') ?  'Sale' : 'Purchase'
+
+        const unitType = document.getElementById('unitType');
+        const unitTypeText = document.getElementById('editUnitTypeText');
+        transactionType.value = valueType
+        productId.value = productIdHidden.textContent;
+        unitTypeText.textContent = unitType.textContent.split(":")[1].trim();
+        for (let i = 0; i < editSpans.length; i++) {
+            editSpans[i].textContent = valueType.toString()
+        }
+    }
+</script>
