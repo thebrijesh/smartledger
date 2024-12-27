@@ -3,7 +3,6 @@ package com.sml.smartledger.Controller.inventory;
 
 import com.sml.smartledger.Model.User;
 import com.sml.smartledger.Model.business.Business;
-import com.sml.smartledger.Model.inventory.Product;
 import com.sml.smartledger.Model.inventory.Service;
 import com.sml.smartledger.Services.interfaces.UserService;
 import com.sml.smartledger.Services.interfaces.inventory.ServicesService;
@@ -47,7 +46,7 @@ public class ServiceController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/")
+    @GetMapping("/view")
     public String Services(@ModelAttribute Model model, Authentication authentication){
         String email = getEmailOfLoggedInUser(authentication);
         User user = userService.getUserByEmail(email);
@@ -56,6 +55,8 @@ public class ServiceController {
 
         model.addAttribute("item", serviceList);
         model.addAttribute("itemType", "Service");
-        return "/user/item/services";
+        model.addAttribute("selectedBusiness", business);
+
+        return "/user/item/services/services";
     }
 }
