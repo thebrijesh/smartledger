@@ -93,7 +93,7 @@ public class BillServiceImpl implements BillService {
             serviceTransaction.setService(billService);
             serviceTransaction.setDate(new Date());
             serviceTransaction.setUnit(bill.getProducts().get(billService));
-            serviceTransaction.setAmount(billService.getSalePrice() * bill.getProducts().get(billService));
+            serviceTransaction.setAmount(billService.getServicePrice() * bill.getProducts().get(billService));
             serviceTransactionService.addServiceTransaction(serviceTransaction);
         }
     }

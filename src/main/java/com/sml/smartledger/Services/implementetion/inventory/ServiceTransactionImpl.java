@@ -38,10 +38,10 @@ public class ServiceTransactionImpl implements ServiceTransactionService {
         billService.getServiceTransactions().add(savedServiceTransaction);
         if(serviceTransaction.getType() == ServiceTransactionType.SALE){
             billService.setTotalSales(billService.getTotalSales()+serviceTransaction.getUnit());
-            billService.setSalePrice((billService.getSalePrice()+serviceTransaction.getAmount())/billService.getTotalSales());
+            billService.setServicePrice((billService.getServicePrice()+serviceTransaction.getAmount())/billService.getTotalSales());
         }else{
             billService.setTotalSales(billService.getTotalSales()-serviceTransaction.getUnit());
-            billService.setSalePrice((billService.getSalePrice()-serviceTransaction.getAmount())/billService.getTotalSales());
+            billService.setServicePrice((billService.getServicePrice()-serviceTransaction.getAmount())/billService.getTotalSales());
         }
         billServiceRepository.save(billService);
         return savedServiceTransaction;

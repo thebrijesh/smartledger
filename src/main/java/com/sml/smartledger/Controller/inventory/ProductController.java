@@ -116,14 +116,11 @@ public class ProductController {
     public String Products(Model model, Authentication authentication) {
         String email = getEmailOfLoggedInUser(authentication);
         User user = userService.getUserByEmail(email);
-        logger.info("User: {}", user);
         Business business = user.getSelectedBusiness();
-        logger.info("Business: {}", business);
         List<Product> ProductList = productService.getAllProductByBusinessId(business.getId());
-        logger.info("ProductList: {}", ProductList);
 
         ProductForm productForm = new ProductForm();
-
+        productForm.setUnitType(UnitType.PCS.name());
         productForm.setDate(new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
         model.addAttribute("items", ProductList);
         model.addAttribute("itemType", "Product");

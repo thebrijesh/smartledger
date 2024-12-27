@@ -1,9 +1,14 @@
 package com.sml.smartledger.Controller.inventory;
 
 
+import com.sml.smartledger.Forms.ProductForm;
+import com.sml.smartledger.Forms.ServiceForm;
+import com.sml.smartledger.Helper.AppConstants;
 import com.sml.smartledger.Model.User;
 import com.sml.smartledger.Model.business.Business;
 import com.sml.smartledger.Model.inventory.Service;
+import com.sml.smartledger.Model.inventory.UnitType;
+import com.sml.smartledger.Services.interfaces.ImageService;
 import com.sml.smartledger.Services.interfaces.UserService;
 import com.sml.smartledger.Services.interfaces.inventory.ServicesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +19,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
+import static com.sml.smartledger.Helper.AppConstants.unitList;
 import static com.sml.smartledger.Helper.Helper.getEmailOfLoggedInUser;
 
 @Controller
@@ -24,16 +35,35 @@ public class ServiceController {
 
     ServicesService serviceService;
     UserService userService;
+    private ImageService imageService;
+
     @Autowired
-    public ServiceController(ServicesService serviceService, UserService userService) {
+    public ServiceController(ServicesService serviceService, UserService userService, ImageService imageService) {
         this.userService = userService;
         this.serviceService = serviceService;
+        this.imageService = imageService;
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Service> addService(@RequestBody Service service) {
-        Service billService = serviceService.addService(service);
-        return new ResponseEntity<>(billService, HttpStatus.CREATED);
+    public String addService(@ModelAttribute ServiceForm serviceForm, Authentication authentication) throws IOException, ParseException {
+        String email = getEmailOfLoggedInUser(authentication);
+        User user = userService.getUserByEmail(email);
+        Business business = user.getSelectedBusiness();
+        Service service = new Service();
+        service.setName(serviceForm.getName());
+        service.setServicePrice(serviceForm.getServicePrice());
+        service.setUnitType(UnitType.valueOf(serviceForm.getUnitType()));
+        String fileName = UUID.randomUUID().toString();
+        String serviceImageLink = "";
+        if (!serviceForm.getServiceImage().isEmpty()) {
+            serviceImageLink = imageService.uploadImage(serviceForm.getServiceImage(), fileName);
+        }
+        service.setCloudinaryImagePublicId(fileName);
+        service.setImage((serviceImageLink == null || serviceImageLink.isEmpty()) ? AppConstants.DEFAULT_PRODUCT_IMAGE_LINK : serviceImageLink);
+        service.setDate(new SimpleDateFormat("dd-MM-yyyy").parse(serviceForm.getDate()));
+        service.setBusiness(business);
+        serviceService.addService(service);
+        return "redirect:/users/inventory/services/view";
     }
     @GetMapping("/{billServiceId}")
     public ResponseEntity<List<Service>> getAllBillServicesById(@PathVariable("billServiceId") Long billServiceId){
@@ -47,15 +77,21 @@ public class ServiceController {
     }
 
     @GetMapping("/view")
-    public String Services(@ModelAttribute Model model, Authentication authentication){
+    public String Services(Model model, Authentication authentication){
         String email = getEmailOfLoggedInUser(authentication);
         User user = userService.getUserByEmail(email);
         Business business = user.getSelectedBusiness();
         List<Service> serviceList = serviceService.getAllServiceByBusinessId(business.getId());
 
-        model.addAttribute("item", serviceList);
+        ServiceForm serviceForm = new ServiceForm();
+        serviceForm.setUnitType(UnitType.PCS.name());
+        serviceForm.setDate(new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
+
+        model.addAttribute("items", serviceList);
         model.addAttribute("itemType", "Service");
+        model.addAttribute("unitList", unitList);
         model.addAttribute("selectedBusiness", business);
+        model.addAttribute("serviceForm", serviceForm);
 
         return "/user/item/services/services";
     }

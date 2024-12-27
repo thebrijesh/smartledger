@@ -1,12 +1,13 @@
 <!doctype html>
 <html lang="en" th:replace="~{base ::parent(~{::#content}, ~{::title}, ~{::script})}">
 <head>
-    <title>Product</title>
+    <title>Service</title>
 </head>
 <body>
 <div id="content">
     <div class="pt-5 sm:pl-64">
         <div th:replace="~{user/item/services/service_fragment ::serviceFragment}"></div>
+        <div th:replace="~{user/item/services/add_new_service_drawer ::addService}"></div>
 
 
     </div>
@@ -15,6 +16,6 @@
 <script>
     console.log('Product Page');
 </script>
-<script data-th-src="@{/js/product_filteration.js}"></script>
+<script data-th-src="@{/js/service_filteration.js}"></script>
 </body>
 </html>
