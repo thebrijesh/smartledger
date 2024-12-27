@@ -56,21 +56,17 @@
 
         <!-- Search and Filter -->
         <div class="flex flex-wrap gap-4 mb-6">
-            <input id="itemSearchInput" type="text" th:placeholder="'Search for ' + ${itemType}" oninput="filterStock()"
+            <input id="itemSearchInput" type="text" th:placeholder="'Search for ' + ${itemType}" oninput="filterService()"
                    class="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-full p-3 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition">
-            <select id="itemFilterType" onchange="filterStock()"
-                    class="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-500 dark:text-gray-200 rounded-full p-3 flex-1 md:flex-none focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition">
-                <option selected value="all">All</option>
-                <option value="lowStock">Low Stock</option>
-            </select>
-            <select id="itemSortBy" onchange="sortStock()"
+
+            <select id="itemSortBy" onchange="sortService()"
                     class="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-500 dark:text-gray-200 rounded-full p-3 flex-1 md:flex-none focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition">
                 <option selected value="mostRecent">Most Recent</option>
-                <option value="stockHighToLow">Stock High - Low</option>
-                <option value="stockLowToHigh">Stock Low - High</option>
-                <option value="stockPriceHighToLow">Stock Price High - Low</option>
-                <option value="stockPriceLowToHigh">Stock Price Low - High</option>
-                <option value="productNameAtoZ">Product Name A - Z</option>
+                <option value="salesHighToLow">Sales High - Low</option>
+                <option value="salesLowToHigh">Sales Low - High</option>
+                <option value="salesPriceHighToLow">Sales Price High - Low</option>
+                <option value="salesPriceLowToHigh">Sales Price Low - High</option>
+                <option value="serviceNameAtoZ">Service Name A - Z</option>
             </select>
 
 
@@ -85,17 +81,17 @@
             <div class="grid grid-cols-6 gap-2 text-gray-600 dark:text-gray-400 text-sm font-semibold border-b pb-3 dark:border-gray-600">
                 <span class="col-span-4 text-left">PRODUCT NAME</span>
                 <span class="text-start">SALES PRICE</span>
-                <span class="text-start">STOCK QTY</span>
+                <span class="text-start">TOTAL SOLD</span>
             </div>
             <div class="h-[400px] overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-400 hover:scrollbar-thumb-gray-500 scrollbar-track-gray-200 dark:scrollbar-thumb-gray-600 dark:hover:scrollbar-thumb-gray-500 dark:scrollbar-track-gray-800">
                 <div class=" divide-gray-200 dark:divide-gray-700">
                     <!-- Transaction Rows -->
-                    <div class=" productView space-y-4 mt-4" data-th-each="item : ${items}" data-th-object="${item}">
+                    <div class=" serviceView space-y-4 mt-4" data-th-each="item : ${items}" data-th-object="${item}">
                         <!-- Transaction 1 -->
 
-                        <div class="cursor-pointer ProductList bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 p-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
+                        <div class="cursor-pointer serviceList bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 p-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
                              th:data-serviceId="${item.getId()}"
-                             onclick="redirectToProductView(this)">
+                             onclick="redirectToServiceView(this)">
 
                             <div class="grid grid-cols-6 md:grid-cols-6 sm:grid-cols-4 items-center gap-2">
                                 <!-- Entry Details -->
@@ -108,26 +104,26 @@
                                         />
                                     </div>
                                     <div class="ms-2">
-                                        <p class="productName font-medium text-lg text-gray-800 dark:text-gray-100"
+                                        <p class="serviceName font-medium text-lg text-gray-800 dark:text-gray-100"
                                            data-th-text="${item.getName()}">for pizza</p>
                                         
                                     </div>
                                 </div>
 
                                 <!-- Sales Price -->
-                                <p class="stockSalePrice text-gray-600 flex justify-center items-center dark:text-gray-400  text-sm"
+                                <p class="servicePrice text-gray-600 flex justify-center items-center dark:text-gray-400  text-sm"
                                    data-th-text="${item.getServicePrice()}">₹400</p>
                                 <!-- Service Quantity -->
-                                <p class="stockQuantity text-gray-400 dark:text-gray-400 text-center"
-                                   data-th-text="${item.getTotalSales()}">
+                                <p class="serviceTotalSoldUnits text-gray-400 dark:text-gray-400 text-center"
+                                   data-th-text="${item.getTotalSoldUnits()}">
                                     -
                                 </p>
                             </div>
                         </div>
                         <script>
-                            function redirectToProductView(element) {
+                            function redirectToServiceView(element) {
                                 const serviceId = element.getAttribute('data-serviceId');
-                                window.location.href = '/users/inventory/products/details/' + serviceId;
+                                window.location.href = '/users/inventory/services/details/' + serviceId;
                             }
                         </script>
                     </div>

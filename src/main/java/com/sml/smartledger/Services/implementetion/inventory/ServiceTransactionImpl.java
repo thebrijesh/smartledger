@@ -4,7 +4,7 @@ package com.sml.smartledger.Services.implementetion.inventory;
 import com.sml.smartledger.Model.inventory.Service;
 import com.sml.smartledger.Model.inventory.ServiceTransaction;
 import com.sml.smartledger.Model.inventory.ServiceTransactionType;
-import com.sml.smartledger.Repository.bill.BillServiceRepository;
+import com.sml.smartledger.Repository.inventory.ServicesRepository;
 import com.sml.smartledger.Repository.inventory.ServiceTransactionRepository;
 import com.sml.smartledger.Services.interfaces.inventory.ServiceTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +15,11 @@ import java.util.Optional;
 @org.springframework.stereotype.Service
 public class ServiceTransactionImpl implements ServiceTransactionService {
     ServiceTransactionRepository serviceTransactionRepository;
-    BillServiceRepository billServiceRepository;
+    ServicesRepository servicesRepository;
     @Autowired
-    public ServiceTransactionImpl(ServiceTransactionRepository serviceTransactionRepository, BillServiceRepository billServiceRepository) {
+    public ServiceTransactionImpl(ServiceTransactionRepository serviceTransactionRepository, ServicesRepository servicesRepository) {
         this.serviceTransactionRepository = serviceTransactionRepository;
-        this.billServiceRepository = billServiceRepository;
+        this.servicesRepository = servicesRepository;
     }
 
     @Override
@@ -30,20 +30,20 @@ public class ServiceTransactionImpl implements ServiceTransactionService {
 
     @Override
     public ServiceTransaction addServiceTransaction(ServiceTransaction serviceTransaction) {
-        Optional<Service> billServiceOptional = billServiceRepository.findById(serviceTransaction.getService().getId());
+        Optional<Service> billServiceOptional = servicesRepository.findById(serviceTransaction.getService().getId());
         if(billServiceOptional.isEmpty()) throw new RuntimeException("Service not found");
         Service billService= billServiceOptional.get();
 
         ServiceTransaction savedServiceTransaction = serviceTransactionRepository.save(serviceTransaction);
         billService.getServiceTransactions().add(savedServiceTransaction);
         if(serviceTransaction.getType() == ServiceTransactionType.SALE){
-            billService.setTotalSales(billService.getTotalSales()+serviceTransaction.getUnit());
-            billService.setServicePrice((billService.getServicePrice()+serviceTransaction.getAmount())/billService.getTotalSales());
+            billService.setTotalSoldUnits(billService.getTotalSoldUnits()+serviceTransaction.getUnit());
+            billService.setServicePrice((billService.getServicePrice()+serviceTransaction.getAmount())/billService.getTotalSoldUnits());
         }else{
-            billService.setTotalSales(billService.getTotalSales()-serviceTransaction.getUnit());
-            billService.setServicePrice((billService.getServicePrice()-serviceTransaction.getAmount())/billService.getTotalSales());
+            billService.setTotalSoldUnits(billService.getTotalSoldUnits()-serviceTransaction.getUnit());
+            billService.setServicePrice((billService.getServicePrice()-serviceTransaction.getAmount())/billService.getTotalSoldUnits());
         }
-        billServiceRepository.save(billService);
+        servicesRepository.save(billService);
         return savedServiceTransaction;
     }
 }

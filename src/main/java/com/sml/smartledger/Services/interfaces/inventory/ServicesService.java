@@ -10,4 +10,7 @@ public interface ServicesService {
     public List<Service> getAllServiceByBusinessId(Long serviceId);
     public void deleteService(Long id);
 
+    Service getServiceById(Long id);
+
+    void updateService(Service service);
 }

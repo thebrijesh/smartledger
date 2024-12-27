@@ -29,34 +29,44 @@ public class Business extends BaseModel implements Serializable {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
+
     @Builder.Default
     @OneToMany(cascade = CascadeType.ALL)
     @JsonIgnore
     List<StaffMember> staffList = new ArrayList<>();
+
     @Builder.Default
     @OneToMany(mappedBy = "business", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     List<Party> parties = new ArrayList<>();
+
     @Builder.Default
     @OneToMany(cascade = CascadeType.ALL)
     @JsonIgnore
     List<Bill> bills = new ArrayList<>();
+
     @Builder.Default
     @OneToMany(cascade = CascadeType.ALL)
     @JsonIgnore
     List<Expanses> expansesList = new ArrayList<>();
+
     @Builder.Default
     @OneToMany(cascade = CascadeType.ALL)
     @JsonIgnore
     List<Product> products = new ArrayList<>();
+
     @Builder.Default
     @OneToMany(cascade = CascadeType.ALL)
     @JsonIgnore
     List<Service> services = new ArrayList<>();
+
+
     private String logo;
 
     double totalCredit;
     double totalDebit;
-    int totalProductsStock=0;
+    int totalServicesSold;
+    int totalServiceAmount;
+    int totalProductsStock = 0;
     int lowStockProducts;
 
     @Override

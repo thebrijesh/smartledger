@@ -7,6 +7,7 @@ import com.sml.smartledger.Model.business.Business;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Date;
 import java.util.List;
@@ -14,13 +15,13 @@ import java.util.List;
 @Entity(name = "services")
 @Getter
 @Setter
+@ToString
 public class Service extends BaseModel {
     String name;
     String image;
     private String cloudinaryImagePublicId;
     double servicePrice;
-    int monthlySales;
-    int totalSales;
+    int totalSoldUnits;
     @ManyToOne(cascade = CascadeType.MERGE)
     Business business;
     @Enumerated(EnumType.ORDINAL)
