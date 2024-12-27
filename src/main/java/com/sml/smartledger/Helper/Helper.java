@@ -50,11 +50,11 @@ public class Helper {
         return UUID.randomUUID().toString().substring(0, 8);
     }
 
-    public static Date combineDate(String date1) {
+    public static Date combineDate(String date1,Date time) {
         Date date = Helper.convertStringToDate(date1);
         assert date != null;
         LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        LocalTime localTime = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+        LocalTime localTime = time.toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
         return Date.from(localDate.atTime(localTime).atZone(ZoneId.systemDefault()).toInstant());
     }
 }

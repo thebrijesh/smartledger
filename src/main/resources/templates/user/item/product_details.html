@@ -21,6 +21,18 @@
                     <h2 id="unitType" data-th-text="${'Unit Type: ' + product.getUnitType()}"></h2>
                     <span id="productIdHidden" class="hidden" data-th-text="${product.getId()}"></span>
                 </div>
+                <!-- Button positioned to the far right -->
+                <button type="button" data-drawer-target="edit-drawer-right-product"
+                        data-drawer-show="edit-drawer-right-product"
+                        data-drawer-placement="right" aria-controls="edit-drawer-right-product"
+                        class="ml-auto flex items-end px-4 py-2 text-sm text-gray-500 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg border border-gray-300 dark:border-white-700 hover:border-blue-600 dark:hover:border-blue-400 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M11 4H4a1 1 0 00-1 1v14a1 1 0 001 1h14a1 1 0 001-1v-7M12 20l-7-7m0 0l-7-7m7 7h14"/>
+                    </svg>
+                    Edit
+                </button>
             </div>
 
             <!-- Top Summary Section -->
@@ -95,11 +107,12 @@
                                 <th class="py-4 px-6">STOCK IN</th>
                             </tr>
                             </thead>
-                            <tbody class="container cursor-pointer" data-th-each="transaction : ${product.getProductTransactions()}"
+                            <tbody id="transactionContainer" class="container cursor-pointer" data-th-each="transaction : ${product.getProductTransactions()}"
                                    onclick="setEditProduct(this)"
                                    th:data-transaction-type="${transaction.getStockTransactionType().toString()}"
                                    th:data-amount="${transaction.getAmount()}"
                                    th:data-stock-quantity="${transaction.getUnit()}"
+                                   th:data-transaction-id="${transaction.getId()}"
                                    th:data-description = "${transaction.getDescription()}"
                                    th:data-date = "${#dates.format(transaction.getDate(), 'dd-MM-yyyy')}"
                                    data-drawer-target="drawer-right-edit-stock-in-out"
@@ -129,6 +142,7 @@
                                 <td class="py-4 px-6"></td>
                             </tr>
                             <tr data-th-if="${transaction.getStockTransactionType().toString() == 'IN'}"
+
                                 class="transactionList hover:bg-gray-50 dark:hover:bg-gray-700">
                                 <td class="productTransaction-date py-4 px-6 text-gray-800 dark:text-gray-300"
                                     data-date="${#dates.format(transaction.getTransactionDate(), 'dd-MM-yyyy')}"
@@ -176,6 +190,9 @@
 
         <div th:replace="~{user/item/stock_in_out_drawer ::stockInOut}"></div>
     </div>
+
+    <div data-th-replace="~{user/delete_fragment :: delete}"></div>
+    <div th:replace="~{user/item/edit_product ::editProduct}"></div>
 
 
 </div>
@@ -230,10 +247,78 @@
         }
     }
 </script>
-</body>
-</html>
+
+<script>
+
+    const unitTypeSelector = document.getElementById('unitTypeSelector');
+        const dropdownSearch = document.getElementById('editDropdownSearch');
+
+    unitTypeSelector.addEventListener('click', () => {
+        dropdownSearch.classList.toggle('hidden');
+    });
+
+    selectUnitTypeEditProduct();
+
+    //   create a function for  user can select unit type from dropdown
+    function selectUnitTypeEditProduct(unit) {
+        unitTypeSelector.value = unit.querySelector('#unitShortName').textContent;
+        dropdownSearch.classList.add('hidden');
+
+    }
+
+    function searchUnitTypeEditProduct(input) {
+        const filter = input.value.toLowerCase();
+        console.log(filter);
+        const unitType = document.querySelectorAll('#editUnitType');
+        for (let i = 0; i < unitType.length; i++) {
+            let fullName = unitType[i].querySelector('#unitFullName').textContent.toLowerCase();
+            let shortName = unitType[i].querySelector('#unitShortName').textContent.toLowerCase();
+            unitType[i].style.display = (!fullName.includes(filter) && !shortName.includes(filter)) ? 'none' : '';
+        }
+    }
+</script>
+<!-- Delete Product Transaction-->
+<script>
+    function deleteProductTransaction(value) {
+        console.log(value);
 
 
+        let url = null;
+        if (value === 'productTransaction') {
+            const transactionId = document.getElementById('editProductTransactionId').value;
+            url = 'http://localhost:8184/users/inventory/productTransaction/delete-product-transactions/' + transactionId;
+            console.log(url);
+        } else {
+            const productId = document.getElementById('productId').value;
+            url = 'http://localhost:8184/users/inventory/products/delete/' + productId;
+            console.log(url);
+        }
+
+        document.getElementById('deleteBtn').addEventListener('click', () => {
+            fetch(url, {
+                method: "DELETE", // HTTP method
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to delete transaction: ${response.status}`);
+                    }
+                })
+                .then(data => {
+                    console.log("Transaction deleted successfully:", data);
+                    if (value === 'productTransaction') {
+                        window.location.reload();
+                    } else {
+                        window.location.href = 'http://localhost:8184/users/inventory/products/view';
+                    }
+
+                })
+                .catch(error => {
+                    console.error("Error deleting transaction:", error);
+                });
+        });
+
+    }
+</script>
 
 <script>
     function setEditProduct(value) {
@@ -258,6 +343,8 @@
         editAbout.value = description;
         const editStockQuantity = document.getElementById('editStockQuantity');
         editStockQuantity.value = quantity;
+        const editProductTransactionId = document.getElementById('editProductTransactionId');
+        editProductTransactionId.value = value.getAttribute('data-transaction-id');
 
 
         let valueType = value.getAttribute('data-transaction-type').toString();
@@ -273,3 +360,8 @@
         }
     }
 </script>
+</body>
+</html>
+
+
+

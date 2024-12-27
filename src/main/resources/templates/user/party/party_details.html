@@ -366,6 +366,7 @@
 </script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+
         const datepicker = document.getElementById('datepicker-autohide');
         console.log(datepicker);
         const today = new Date();
@@ -395,6 +396,7 @@
 <script>
     function deleteTransaction(element) {
         const transactionId = element.getAttribute('data-transactionid');
+        console.log("transactionId: " + transactionId);
         const partyId = element.getAttribute('data-partyid');
         let url = null;
         if (transactionId !== null) {

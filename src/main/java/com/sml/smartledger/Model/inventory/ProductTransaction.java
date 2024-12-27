@@ -12,6 +12,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductTransaction extends BaseModel {
@@ -22,7 +23,7 @@ public class ProductTransaction extends BaseModel {
     double amount;
     int unit;
     String description;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL )
     @JsonIgnore
     Product product;
 }

@@ -1,6 +1,5 @@
 package com.sml.smartledger.Forms;
 
-import com.sml.smartledger.validators.ValidFile;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductForm {
+    Long id;
     String name;
     double salePrice;
     double purchasePrice;
@@ -19,4 +19,5 @@ public class ProductForm {
     String unitType;
 
     MultipartFile productImage;
+    String picture;
 }

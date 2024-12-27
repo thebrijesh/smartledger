@@ -21,7 +21,7 @@
         </div>
 
         <!-- Form -->
-        <form id="editProduct" data-th-action="@{'/users/inventory/productTransaction/add'}" data-th-object="${ProductTransactionForm}"
+        <form id="editProduct" data-th-action="@{'/users/inventory/productTransaction/update'}" data-th-object="${ProductTransactionForm}"
               method="post">
 
             <div class="mt-4" >
@@ -93,13 +93,29 @@
             <!--            transactiontype hidden field-->
             <input id="editTransactionType"  type="hidden" data-th-field="*{transactionType}" value="STOCK_IN"/>
             <input id="editProductId"  type="hidden" data-th-field="*{productId}" value="STOCK_IN"/>
+            <input id="editProductTransactionId"  type="hidden" data-th-field="*{id}" value="STOCK_IN"/>
 
 
-            <!-- Add Customer Button -->
+            <!-- Edit OR Delete Stock IN/OUT Transaction Button -->
             <div>
-                <button id="editAddProductBtn" type="submit"
+                <button id="editStockInOutTransactionBtn" type="submit"
                         class="mt-4 w-full bg-blue-600  text-white shadow-md hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 mb-2">
                     STOCK <span class="editStockInOutText">IN/OUT</span>
+                </button>
+
+
+                <!-- Delete Button -->
+                <button id="deleteProductTransactionBtn" th:data-producttransactionid="${ProductTransactionForm.getId()}"
+                        data-modal-target="popup-modal" data-modal-toggle="popup-modal"
+                        type="button"
+                        onclick="deleteProductTransaction('productTransaction')"
+                        class="flex w-full justify-center items-center px-4 py-2 border border-red-500 text-red-500 font-semibold rounded-lg hover:bg-red-500 hover:text-white transition duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                    Delete
                 </button>
             </div>
         </form>

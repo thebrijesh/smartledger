@@ -6,6 +6,7 @@ import com.sml.smartledger.Model.business.Business;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Date;
 import java.util.List;
@@ -26,7 +27,7 @@ public class Product extends BaseModel {
     Business business;
     @Enumerated(EnumType.ORDINAL)
     UnitType unitType;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "product", fetch = FetchType.EAGER)
     List<ProductTransaction> productTransactions;
     Date date;
 }

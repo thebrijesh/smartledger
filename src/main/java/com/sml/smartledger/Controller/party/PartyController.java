@@ -229,7 +229,7 @@ public class PartyController {
         PartyTransaction transaction = PartyTransaction.builder()
                 .amount(partyTransactionForm.getAmount())
                 .party(party)
-                .transactionDate(Helper.combineDate(partyTransactionForm.getDate()))
+                .transactionDate(Helper.combineDate(partyTransactionForm.getDate(),new Date()))
                 .transactionType(TransactionType.valueOf(partyTransactionForm.getTransactionType()))
                 .description(partyTransactionForm.getDescription())
                 .build();
@@ -247,16 +247,7 @@ public class PartyController {
         newPartyTransaction.setDescription(partyTransactionForm.getDescription());
 
         PartyTransaction partyTransaction = partyTransactionService.getTransactionById(partyTransactionForm.getId());
-        logger.info("New Party Transaction date: " + partyTransaction.getCreatedAt());
-        Date date = Helper.convertStringToDate(partyTransactionForm.getDate());
-        assert date != null;
-        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        LocalTime localTime = partyTransaction.getCreatedAt().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
-
-// Combine date and time
-
-        Date combinedDate = Date.from(localDate.atTime(localTime).atZone(ZoneId.systemDefault()).toInstant());
-        newPartyTransaction.setTransactionDate(combinedDate);
+            newPartyTransaction.setTransactionDate(Helper.combineDate(partyTransactionForm.getDate(), partyTransaction.getCreatedAt()));
 
         PartyTransaction updatedTransaction = partyTransactionService.updateTransaction(newPartyTransaction);
         return "redirect:/users/party/view/" + partyTransaction.getParty().getId();

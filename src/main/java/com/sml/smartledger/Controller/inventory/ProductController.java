@@ -46,11 +46,12 @@ public class ProductController {
     ProductTransactionService productTransactionService;
     UserService userService;
     ImageService imageService;
-    Logger  logger = LoggerFactory.getLogger(ProductController.class);
+    Logger logger = LoggerFactory.getLogger(ProductController.class);
 
     BusinessService businessService;
+
     @Autowired
-    public ProductController(BusinessService businessService,ProductService productService, UserService userService, ProductTransactionService productTransactionService, ImageService imageService) {
+    public ProductController(BusinessService businessService, ProductService productService, UserService userService, ProductTransactionService productTransactionService, ImageService imageService) {
         this.productService = productService;
         this.userService = userService;
         this.productTransactionService = productTransactionService;
@@ -70,51 +71,49 @@ public class ProductController {
         product.setLowStock(productForm.getLowStock());
         logger.info("UnitType: {}", productForm.getUnitType());
         product.setUnitType(UnitType.valueOf(productForm.getUnitType()));
-        String fileName =  UUID.randomUUID().toString();
+        String fileName = UUID.randomUUID().toString();
         String productImageLink = "";
-        if(!productForm.getProductImage().isEmpty()){
+        if (!productForm.getProductImage().isEmpty()) {
             productImageLink = imageService.uploadImage(productForm.getProductImage(), fileName);
         }
         product.setCloudinaryImagePublicId(fileName);
-        product.setImage((productImageLink == null || productImageLink.isEmpty())? AppConstants.DEFAULT_PRODUCT_IMAGE_LINK : productImageLink);
+        product.setImage((productImageLink == null || productImageLink.isEmpty()) ? AppConstants.DEFAULT_PRODUCT_IMAGE_LINK : productImageLink);
 //        product.setUnitType(UnitType.valueOf(productForm.getUnitType()));
         product.setDate(new SimpleDateFormat("dd-MM-yyyy").parse(productForm.getDate()));
 
         product.setBusiness(business);
         productService.addProduct(product);
         //if the opening stock is greater than 0 then add a transaction
-        if(productForm.getOpeningStock() > 0){
+        if (productForm.getOpeningStock() > 0) {
             ProductTransaction productTransaction = new ProductTransaction();
             productTransaction.setAmount(productForm.getPurchasePrice());
             productTransaction.setUnit(productForm.getOpeningStock());
             productTransaction.setStockTransactionType(StockTransactionType.IN);
             productTransaction.setProduct(product);
-            productTransaction.setDate(Helper.combineDate(productForm.getDate()));
+            productTransaction.setDate(Helper.combineDate(productForm.getDate(), new Date()));
             productTransaction.setDescription("Opening Stock");
             productTransactionService.addProductTransaction(productTransaction);
 
         }
 
-        if(isProductLowStock(product)) {
+        if (isProductLowStock(product)) {
             business.setLowStockProducts(business.getLowStockProducts() + 1);
         }
         businessService.saveBusiness(business);
         return "redirect:/users/inventory/products/view";
 
     }
+
     @GetMapping("/{billId}")
-    public ResponseEntity<List<Product>> getAllProductByBusinessId(@PathVariable("billId") Long businessId){
+    public ResponseEntity<List<Product>> getAllProductByBusinessId(@PathVariable("billId") Long businessId) {
         List<Product> billProductList = productService.getAllProductByBusinessId(businessId);
-        return new ResponseEntity<>(billProductList,HttpStatus.OK);
-    }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Product> deleteProduct(@PathVariable Long id){
-        productService.deleteProduct(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(billProductList, HttpStatus.OK);
     }
 
+
+
     @GetMapping("/view")
-    public String Products( Model model, Authentication authentication){
+    public String Products(Model model, Authentication authentication) {
         String email = getEmailOfLoggedInUser(authentication);
         User user = userService.getUserByEmail(email);
         logger.info("User: {}", user);
@@ -129,13 +128,13 @@ public class ProductController {
         model.addAttribute("items", ProductList);
         model.addAttribute("itemType", "Product");
         model.addAttribute("unitList", unitList);
-        model.addAttribute("productForm",  productForm);
+        model.addAttribute("productForm", productForm);
         model.addAttribute("selectedBusiness", business);
 
         return "/user/item/products";
     }
 
-    public boolean isProductLowStock(Product product){
+    public boolean isProductLowStock(Product product) {
         return product.getStockQuantity() < product.getLowStock();
     }
 
@@ -148,11 +147,58 @@ public class ProductController {
         ProductTransactionForm productTransactionForm = new ProductTransactionForm();
         productTransactionForm.setProductId(product.getId());
         productTransactionForm.setDate(new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
+        ProductForm productForm = new ProductForm();
+        productForm.setDate(new SimpleDateFormat("dd-MM-yyyy").format(product.getDate()));
+        productForm.setUnitType(product.getUnitType().name());
+        productForm.setLowStock(product.getLowStock());
+        productForm.setName(product.getName());
+        productForm.setSalePrice(product.getSalePrice());
+        productForm.setPurchasePrice(product.getPurchasePrice());
+        productForm.setPicture(product.getImage());
+        productForm.setOpeningStock(product.getStockQuantity());
+        productForm.setId(product.getId());
+        model.addAttribute("itemType", "Product");
+
+        model.addAttribute("unitList", unitList);
+
         model.addAttribute("product", product);
         model.addAttribute("ProductTransactionForm", productTransactionForm);
+        model.addAttribute("productForm", productForm);
 
         model.addAttribute("selectedBusiness", business);
         return "user/item/product_details";
     }
+
+    @PostMapping("/update")
+    public String updateProduct(@ModelAttribute ProductForm productForm) throws ParseException, IOException {
+        Product product = new Product();
+        System.out.println("guhhb"+productForm.getId());
+        System.out.println("guhhb"+productForm.getName());
+        product.setId(productForm.getId());
+        product.setName(productForm.getName());
+        product.setSalePrice(productForm.getSalePrice());
+        product.setLowStock(productForm.getLowStock());
+        product.setUnitType(UnitType.valueOf(productForm.getUnitType()));
+        product.setPurchasePrice(productForm.getPurchasePrice());
+        product.setDate(new SimpleDateFormat("dd-MM-yyyy").parse(productForm.getDate()));
+        String fileName = UUID.randomUUID().toString();
+        if (!productForm.getProductImage().isEmpty()) {
+            String productImageLink = imageService.uploadImage(productForm.getProductImage(), fileName);
+            product.setCloudinaryImagePublicId(fileName);
+            product.setImage(productImageLink);
+        }
+
+        productService.updateProduct(product);
+
+        return "redirect:/users/inventory/products/view";
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable("id") Long id) {
+        productService.deleteProduct(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
 
 }

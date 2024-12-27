@@ -19,10 +19,15 @@ import static com.sml.smartledger.Helper.Helper.generateShortCode;
 
 @Service
 public class PartyServiceImpl implements PartyService {
-    @Autowired
+
     PartyRepository partyRepository;
-    @Autowired
     BusinessRepository businessRepository;
+
+    @Autowired
+    public PartyServiceImpl(PartyRepository partyRepository, BusinessRepository businessRepository) {
+        this.partyRepository = partyRepository;
+        this.businessRepository = businessRepository;
+    }
 
     @Override
     public Party createParty(Party party) {
@@ -54,7 +59,7 @@ public class PartyServiceImpl implements PartyService {
     }
 
     @Override
-    @Cacheable(value = "party", key = "#partyId")
+//    @Cacheable(value = "party", key = "#partyId")
     public Party getPartyById(Long partyId) {
         return partyRepository.findById(partyId).orElseThrow(() -> new RuntimeException("Party not found"));
     }
@@ -78,4 +83,5 @@ public class PartyServiceImpl implements PartyService {
     public List<Party> getDueParties(@NonNull Long id) {
         return partyRepository.findAllByBusinessIdAndDueDateNotNull(id);
     }
+
 }
