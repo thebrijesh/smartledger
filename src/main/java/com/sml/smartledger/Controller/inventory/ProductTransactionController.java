@@ -40,10 +40,6 @@ public class ProductTransactionController {
     public String addTransaction(@ModelAttribute ProductTransactionForm productTransactionForm) {
 
         Product product = productService.getProductById(productTransactionForm.getProductId());
-        Business business = product.getBusiness();
-        if (isProductLowStock(product)) {
-            business.setLowStockProducts(business.getLowStockProducts() - 1);
-        }
         ProductTransaction productTransaction = ProductTransaction.builder()
                 .amount(productTransactionForm.getAmount())
                 .description(productTransactionForm.getDescription())
@@ -55,11 +51,7 @@ public class ProductTransactionController {
                 .build();
 
         productTransactionService.addProductTransaction(productTransaction);
-        if(isProductLowStock(product)){
-            business.setLowStockProducts(business.getLowStockProducts() + 1);
-        }
 
-        businessService.saveBusiness(business);
         return "redirect:/users/inventory/products/details/" + product.getId();
     }
 
@@ -71,36 +63,8 @@ public class ProductTransactionController {
 
     @DeleteMapping("/delete-product-transactions/{id}")
     public ResponseEntity<Void> deleteProductTransactions(@PathVariable("id") Long id) {
-        ProductTransaction productTransaction = productTransactionService.getProductTransactionById(id);
-        Product product = productTransaction.getProduct();
-        Business business = product.getBusiness();
-//        Product productDB = new Product();
-//        productDB.setStockQuantity(product.getStockQuantity());
-//        productDB.setSalePrice(product.getSalePrice());
-        if(isProductLowStock(product)){
-            business.setLowStockProducts(business.getLowStockProducts() - 1);
-        }
-        int oldQuantity = product.getStockQuantity();
-        if (productTransaction.getStockTransactionType().equals(StockTransactionType.IN)) {
-            double totalAmount = product.getPurchasePrice() * oldQuantity;
-            double totalTransactionAmount = productTransaction.getAmount() * productTransaction.getUnit();
-            product.setStockQuantity(oldQuantity - productTransaction.getUnit());
-            double purchasePrice = (totalAmount - totalTransactionAmount) / (oldQuantity - productTransaction.getUnit());
-            if (Double.isNaN(purchasePrice)) {
-                purchasePrice = 0d;
-            }
-            product.setPurchasePrice(purchasePrice);
-        } else {
-           product.setStockQuantity(product.getStockQuantity() + productTransaction.getUnit());
-        }
-        productService.addProduct(product);
-        productTransactionService.deleteProductTransaction(id);
-        if (isProductLowStock(product)) {
-            business.setLowStockProducts(business.getLowStockProducts() + 1);
-            businessService.saveBusiness(business);
 
-        }
-//        business.setTotalProductsStock(business.getTotalProductsStock() + updateStockQuantity(productDB,productTransaction.getProduct()));
+        productTransactionService.deleteProductTransaction(id);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -109,13 +73,8 @@ public class ProductTransactionController {
     public String updateTransaction(@ModelAttribute ProductTransactionForm productTransactionForm) {
         Product product = productService.getProductById(productTransactionForm.getProductId());
         ProductTransaction productTransactionDB = productTransactionService.getProductTransactionById(productTransactionForm.getId());
-        Product productDB = new Product();
-        productDB.setStockQuantity(product.getStockQuantity());
-        productDB.setSalePrice(product.getSalePrice());
-        Business business = product.getBusiness();
-        if(isProductLowStock(product)){
-            business.setLowStockProducts(business.getLowStockProducts() - 1);
-        }
+
+
         ProductTransaction productTransaction = new ProductTransaction();
         productTransaction.setId(productTransactionForm.getId());
         productTransaction.setAmount(productTransactionForm.getAmount());
@@ -127,30 +86,9 @@ public class ProductTransactionController {
 
 
         productTransactionService.updateProductTransaction(productTransaction);
-        if(isProductLowStock(product)){
-            business.setLowStockProducts(business.getLowStockProducts() + 1);
-        }
-        business.setTotalProductsStock(business.getTotalProductsStock() + updateStockQuantity(productDB,productTransactionDB.getProduct()));
-        businessService.saveBusiness(business);
         return "redirect:/users/inventory/products/details/" + product.getId();
     }
 
-    public boolean isProductLowStock(Product product){
-        return product.getStockQuantity() < product.getLowStock();
-    }
-
-    public int updateStockQuantity(Product product,Product newProduct){
-        int stockValue = 0;
-        if(product.getSalePrice() != 0){
-            stockValue -= ((int) (product.getStockQuantity() * product.getSalePrice()));
-            System.out.println(stockValue);
-        }
-        if(newProduct.getSalePrice() != 0){
-            stockValue += (int) (newProduct.getStockQuantity() * newProduct.getSalePrice());
-            System.out.println(stockValue);
-        }
-        return stockValue;
-    }
 
 
 }

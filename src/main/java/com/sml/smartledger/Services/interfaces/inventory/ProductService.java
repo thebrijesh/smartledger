@@ -13,4 +13,5 @@ public interface ProductService {
         Product getProductById(Long id);
 
     void updateProduct(Product product);
+    void updateBusiness(int oldQuantity, int newQuantity, Product product);
 }

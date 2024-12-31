@@ -96,10 +96,7 @@ public class ProductController {
 
         }
 
-        if (isProductLowStock(product)) {
-            business.setLowStockProducts(business.getLowStockProducts() + 1);
-        }
-        businessService.saveBusiness(business);
+
         return "redirect:/users/inventory/products/view";
 
     }
@@ -131,9 +128,6 @@ public class ProductController {
         return "/user/item/products";
     }
 
-    public boolean isProductLowStock(Product product) {
-        return product.getStockQuantity() < product.getLowStock();
-    }
 
     @GetMapping("/details/{id}")
     public String productDetails(@PathVariable("id") Long id, Model model, Authentication authentication) {

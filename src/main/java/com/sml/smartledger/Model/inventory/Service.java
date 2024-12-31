@@ -23,6 +23,8 @@ public class Service extends BaseModel {
     double servicePrice;
     int totalSoldUnits;
     @ManyToOne(cascade = CascadeType.MERGE)
+    @JsonIgnore
+
     Business business;
     @Enumerated(EnumType.ORDINAL)
     UnitType unitType;

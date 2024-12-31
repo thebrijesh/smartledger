@@ -37,4 +37,5 @@ public interface PartyRepository extends JpaRepository<Party, Long> {
     //get list of customers who have due date not null
     List<Party> findAllByBusinessIdAndDueDateNotNull(Long businessId);
 
+    Party findByMobile(String mobileNumber);
 }

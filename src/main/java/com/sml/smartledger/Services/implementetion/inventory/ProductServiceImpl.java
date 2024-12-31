@@ -30,11 +30,7 @@ public class ProductServiceImpl implements ProductService {
     }
     @Override
     public void addProduct(Product product) {
-            Business business = product.getBusiness();
-        business.setTotalProductsStock((int) (business.getTotalProductsStock() + ( product.getStockQuantity() * product.getSalePrice())));
-
         productRepository.save(product);
-        businessRepository.save(business);
 
     }
 
@@ -47,11 +43,8 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void deleteProduct(Long id) {
         Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product Not Found"));
-        Business business = product.getBusiness();
-        business.setTotalProductsStock((int) (business.getTotalProductsStock() -( product.getStockQuantity() * product.getSalePrice())));
         productTransactionRepository.deleteAllByProductId(id);
         productRepository.deleteById(id);
-        businessRepository.save(business);
     }
 
     @Override
@@ -63,21 +56,32 @@ public class ProductServiceImpl implements ProductService {
     public void updateProduct(Product product) {
         Optional<Product> productOptional = productRepository.findById(product.getId());
         Product productDB = productOptional.orElseThrow(() -> new RuntimeException("Product not found"));
-        Business business = productDB.getBusiness();
-        business.setTotalProductsStock((int) (business.getTotalProductsStock() -( productDB.getStockQuantity() * productDB.getSalePrice())));
+
         productDB.setName(product.getName());
         productDB.setSalePrice(product.getSalePrice());
         productDB.setLowStock(product.getLowStock());
         productDB.setUnitType(product.getUnitType());
         productDB.setPurchasePrice(product.getPurchasePrice());
         productDB.setDate(product.getDate());
+        productDB.setStockQuantity(product.getStockQuantity());
         if(product.getImage() != null) {
             productDB.setCloudinaryImagePublicId(product.getCloudinaryImagePublicId());
             productDB.setImage(product.getImage());
         }
-        business.setTotalProductsStock((int) (business.getTotalProductsStock() + ( productDB.getStockQuantity() * productDB.getSalePrice())));
 
         productRepository.save(productDB);
+    }
+
+    public void updateBusiness(int oldQuantity,int newQuantity,Product product){
+        Business business = product.getBusiness();
+        business.setTotalProductsStock((int) (business.getTotalProductsStock() -( oldQuantity * product.getSalePrice())));
+        if(product.getLowStock() >= oldQuantity){
+            business.setLowStockProducts(business.getLowStockProducts() - 1);
+        }
+        business.setTotalProductsStock((int) (business.getTotalProductsStock() + ( newQuantity * product.getSalePrice())));
+        if(product.getLowStock() >= newQuantity){
+            business.setLowStockProducts(business.getLowStockProducts() + 1);
+        }
         businessRepository.save(business);
     }
 }

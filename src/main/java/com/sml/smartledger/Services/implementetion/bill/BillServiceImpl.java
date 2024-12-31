@@ -75,26 +75,26 @@ public class BillServiceImpl implements BillService {
     }
 
     private void processBillProducts(Bill bill, StockTransactionType transactionType) {
-        for (Product billProduct : bill.getProducts().keySet()) {
-            ProductTransaction productTransaction = new ProductTransaction();
-            productTransaction.setProduct(billProduct);
-            productTransaction.setDate(new Date());
-            productTransaction.setUnit(bill.getProducts().get(billProduct));
-            productTransaction.setAmount(billProduct.getSalePrice() * bill.getProducts().get(billProduct));
-            productTransaction.setDescription("Stock Balance" + billProduct.getStockQuantity());
-            productTransaction.setStockTransactionType(transactionType);
-            productTransactionService.addProductTransaction(productTransaction);
-        }
+//        for (Product billProduct : bill.get().keySet()) {
+//            ProductTransaction productTransaction = new ProductTransaction();
+//            productTransaction.setProduct(billProduct);
+//            productTransaction.setDate(new Date());
+//            productTransaction.setUnit(bill.getProducts().get(billProduct));
+//            productTransaction.setAmount(billProduct.getSalePrice() * bill.getProducts().get(billProduct));
+//            productTransaction.setDescription("Stock Balance" + billProduct.getStockQuantity());
+//            productTransaction.setStockTransactionType(transactionType);
+//            productTransactionService.addProductTransaction(productTransaction);
+//        }
     }
 
     private void processBillServices(Bill bill, StockTransactionType transactionType) {
-        for (Service billService : bill.getServices()) {
-            ServiceTransaction serviceTransaction = new ServiceTransaction();
-            serviceTransaction.setService(billService);
-            serviceTransaction.setDate(new Date());
-            serviceTransaction.setUnit(bill.getProducts().get(billService));
-            serviceTransaction.setAmount(billService.getServicePrice() * bill.getProducts().get(billService));
-            serviceTransactionService.addServiceTransaction(serviceTransaction);
-        }
+//        for (Service billService : bill.getServices()) {
+//            ServiceTransaction serviceTransaction = new ServiceTransaction();
+//            serviceTransaction.setService(billService);
+//            serviceTransaction.setDate(new Date());
+//            serviceTransaction.setUnit(bill.getProducts().get(billService));
+//            serviceTransaction.setAmount(billService.getServicePrice() * bill.getProducts().get(billService));
+//            serviceTransactionService.addServiceTransaction(serviceTransaction);
+//        }
     }
 }

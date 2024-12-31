@@ -1,0 +1,115 @@
+
+
+<!-- drawer component -->
+
+
+<div th:fragment="addPartyBillDrawer" id="drawer-right-addPartyBill"
+     class=" fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform translate-x-full bg-white w-80 dark:bg-gray-800"
+     tabindex="-1" aria-labelledby="drawer-right-label">
+
+
+    <div class="max-w-md mx-auto bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 rounded-lg shadow-lg p-6">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-semibold text-indigo-600 dark:text-indigo-400">Add New Party</h2>
+            <button type="button" data-drawer-hide="drawer-right-addPartyBill"
+                    aria-controls="drawer-right-addPartyBill"
+                    class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                     stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Form -->
+        <form id="createPartyForm">
+
+            <div id="response"></div>
+            <!-- Party Name -->
+            <div class="mt-4">
+                <label for="party-name"
+                       class="flex justify-start text-sm font-medium text-gray-700 dark:text-gray-300">Party
+                    Name  <span class="text-gray-500 dark:text-gray-400">(Required)</span>
+                </label>
+                <input  type="text" id="party-name" required
+                       class="mt-2 block w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none px-4 py-2 text-sm"
+                       placeholder="Enter Party Name">
+            </div>
+
+            <!-- Phone Number -->
+            <div class="mt-4">
+                <label for="phone-number"
+                       class="flex justify-start text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Phone Number <span class="text-gray-500 dark:text-gray-400">(Required)</span>
+                </label>
+                <div class="flex items-center mt-2">
+                                <span class="inline-flex p-2 items-center px-3 rounded-l-lg border border-r-0 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-sm">
+                                  +91
+                                </span>
+                    <input  type="text" id="phone-number" required
+                           class="flex-1 border border-r-0 block w-full rounded-r-lg border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none px-4 py-2 text-sm"
+                           placeholder="Enter Phone Number">
+                </div>
+                <p id="mobileNumberError" class="flex justify-start text-sm text-red-500 hidden">Invalid Number</p>
+            </div>
+
+            <!-- Party Type -->
+            <input type="text" id="partyType" class="hidden">
+
+            <!-- Add Customer Button -->
+            <div>
+                <button data-drawer-hide="drawer-right-addPartyBill"
+                        aria-controls="drawer-right-addPartyBill" id="submitBtn" type="submit"
+                        class="mt-4 w-full bg-blue-600  text-white shadow-md hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 mb-2">
+                    Add New Party
+                </button>
+            </div>
+        </form>
+    </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const form = document.getElementById("createPartyForm");
+        const responseDiv = document.getElementById("response");
+
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault(); // Prevent form from submitting traditionally
+
+            // Collect form data
+            const name = document.getElementById("party-name").value;
+            const number = document.getElementById("phone-number").value;
+            const partyType = 'CUSTOMER';
+
+            // Prepare data for the API call
+            const data = { name, number, partyType };
+
+            try {
+                // Call the API
+                const response = await fetch('/users/api/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to create party");
+                }
+
+                const party1 = await response.json();
+                console.log(party1);
+                responseDiv.setAttribute('data-name', party1.name);
+                responseDiv.setAttribute('data-mobile', party1.mobile);
+                responseDiv.setAttribute('data-id', party1.id);
+                setPartyData(responseDiv);
+            } catch (error) {
+                console.error("Error:", error);
+                responseDiv.innerHTML = `<p class="text-red-500">Error creating party: ${error.message}</p>`;
+            }
+        });
+    });
+
+</script>
+</div>

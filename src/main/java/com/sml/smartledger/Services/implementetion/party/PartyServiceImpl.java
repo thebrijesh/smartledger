@@ -84,4 +84,9 @@ public class PartyServiceImpl implements PartyService {
         return partyRepository.findAllByBusinessIdAndDueDateNotNull(id);
     }
 
+    @Override
+    public Party getPartyByMobileNumber(String mobileNumber) {
+       return partyRepository.findByMobile(mobileNumber);
+    }
+
 }

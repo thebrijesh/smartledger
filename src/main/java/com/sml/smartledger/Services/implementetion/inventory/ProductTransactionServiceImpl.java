@@ -8,6 +8,7 @@ import com.sml.smartledger.Model.inventory.StockTransactionType;
 import com.sml.smartledger.Repository.business.BusinessRepository;
 import com.sml.smartledger.Repository.inventory.ProductRepository;
 import com.sml.smartledger.Repository.inventory.ProductTransactionRepository;
+import com.sml.smartledger.Services.interfaces.inventory.ProductService;
 import com.sml.smartledger.Services.interfaces.inventory.ProductTransactionService;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -22,41 +23,34 @@ import java.util.Optional;
 @Service
 public class ProductTransactionServiceImpl implements ProductTransactionService {
     ProductTransactionRepository productTransactionRepository;
+    ProductService productService;
     ProductRepository productRepository;
     Logger logger = org.slf4j.LoggerFactory.getLogger(ProductTransactionServiceImpl.class);
 
     BusinessRepository businessRepository;
     @Autowired
-    public ProductTransactionServiceImpl( BusinessRepository businessRepository , ProductTransactionRepository productTransactionRepository, ProductRepository productRepository) {
+    public ProductTransactionServiceImpl( ProductService productService,BusinessRepository businessRepository , ProductTransactionRepository productTransactionRepository, ProductRepository productRepository) {
         this.productTransactionRepository = productTransactionRepository;
-        this.productRepository = productRepository;
+        this.productService = productService;
         this.businessRepository = businessRepository;
+        this.productRepository = productRepository;
     }
     @Override
     public void addProductTransaction(ProductTransaction productTransaction) {
         Optional<Product> billProductOptional = productRepository.findById(productTransaction.getProduct().getId());
         if(billProductOptional.isEmpty()) throw new RuntimeException("Product not found");
         Product billProduct = billProductOptional.get();
-        Business business = billProduct.getBusiness();
         productTransactionRepository.save(productTransaction);
-
         if(productTransaction.getStockTransactionType() == StockTransactionType.IN){
              int quantity = billProduct.getStockQuantity();
              billProduct.setStockQuantity(billProduct.getStockQuantity()+productTransaction.getUnit());
              billProduct.setPurchasePrice(((billProduct.getPurchasePrice()*quantity)+(productTransaction.getAmount()*productTransaction.getUnit()))/billProduct.getStockQuantity());
 
-             if(billProduct.getSalePrice() != 0){
-                 business.setTotalProductsStock((int) (business.getTotalProductsStock() + (billProduct.getSalePrice() * productTransaction.getUnit())));
-             }
         }else{
             billProduct.setStockQuantity(billProduct.getStockQuantity()-productTransaction.getUnit());
-            if(billProduct.getSalePrice() != 0){
-                business.setTotalProductsStock((int) (business.getTotalProductsStock() - (billProduct.getSalePrice() * productTransaction.getUnit())));
-            }
         }
-
-        productRepository.save(billProduct);
-        businessRepository.save(business);
+        productService.updateBusiness(0,billProduct.getStockQuantity(),billProduct);
+        productService.updateProduct(billProduct);
     }
 
     @Override
@@ -67,8 +61,26 @@ public class ProductTransactionServiceImpl implements ProductTransactionService 
     @Override
     @Transactional
     public void deleteProductTransaction(Long id) {
+        ProductTransaction productTransactionDB = productTransactionRepository.findById(id).orElseThrow(() -> new RuntimeException("Product Transaction not found"));
+        Product product = productTransactionDB.getProduct();
+
+        int oldQuantity = product.getStockQuantity();
+        if (productTransactionDB.getStockTransactionType().equals(StockTransactionType.IN)) {
+            double totalAmount = product.getPurchasePrice() * oldQuantity;
+            double totalTransactionAmount = productTransactionDB.getAmount() * productTransactionDB.getUnit();
+            product.setStockQuantity(oldQuantity - productTransactionDB.getUnit());
+            double purchasePrice = (totalAmount - totalTransactionAmount) / (oldQuantity - productTransactionDB.getUnit());
+            if (Double.isNaN(purchasePrice)) {
+                purchasePrice = 0d;
+            }
+            product.setPurchasePrice(purchasePrice);
+        } else {
+            product.setStockQuantity(product.getStockQuantity() + productTransactionDB.getUnit());
+        }
+        productService.updateBusiness(oldQuantity,0,product);
         try {
             productTransactionRepository.deleteById(id);
+            productService.updateProduct(product);
         } catch (Exception e) {
             logger.error("Error deleting product transaction with id {}", id, e);
             throw new RuntimeException("Error deleting product transaction: " + e.getMessage());
@@ -80,8 +92,7 @@ public class ProductTransactionServiceImpl implements ProductTransactionService 
     public void updateProductTransaction(ProductTransaction productTransaction) {
         ProductTransaction productTransactionDB = productTransactionRepository.findById(productTransaction.getId()).orElseThrow(() -> new RuntimeException("Product Transaction not found"));
         Product product = productTransactionDB.getProduct();
-        Business business = product.getBusiness();
-
+     int oldQuantity = product.getStockQuantity();
         if (productTransaction.getStockTransactionType().equals(StockTransactionType.IN)) {
             int quantity = product.getStockQuantity();
             double totalAmount = product.getPurchasePrice() * quantity;
@@ -106,8 +117,9 @@ public class ProductTransactionServiceImpl implements ProductTransactionService 
             product.setStockQuantity(product.getStockQuantity()-productTransaction.getUnit());
         }
 
+        productService.updateBusiness(oldQuantity,product.getStockQuantity(),product);
 
-        productRepository.save(product);
+        productService.updateProduct(product);
         productTransactionDB.setAmount(productTransaction.getAmount());
         productTransactionDB.setProduct(product);
         productTransactionDB.setDate(productTransaction.getDate());

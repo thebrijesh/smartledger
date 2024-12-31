@@ -1,0 +1,154 @@
+<div th:fragment="billFragment"
+     class="max-w-5xl mx-auto bg-white dark:bg-gray-800 shadow-xl rounded-lg overflow-hidden transform">
+    <div class="p-6">
+        <!-- Header Summary -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+            <div>
+                <h1 class="text-lg font-bold text-gray-700 dark:text-gray-100 tracking-wide">TRANSACTIONS SUMMARY</h1>
+                <div class="flex flex-wrap gap-4 mt-4">
+                    <div class="hover:shadow-md p-2 rounded-md transition-shadow duration-300">
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Sales</p>
+                        <p class="text-2xl font-bold bg-gradient-to-r from-green-400 to-green-600 text-transparent bg-clip-text">
+                            ₹1,33,366</p>
+                    </div>
+                    <div class="hover:shadow-md p-2 rounded-md transition-shadow duration-300">
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Expenses</p>
+                        <p class="text-2xl font-bold bg-gradient-to-r from-red-400 to-red-600 text-transparent bg-clip-text">
+                            ₹2,759</p>
+                    </div>
+                    <div class="hover:shadow-md p-2 rounded-md transition-shadow duration-300">
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Purchases</p>
+                        <p class="text-2xl font-bold bg-gradient-to-r from-pink-400 to-pink-600 text-transparent bg-clip-text">
+                            ₹9,595</p>
+                    </div>
+                </div>
+            </div>
+            <button
+                    class="mt-4 sm:mt-0 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-lg shadow-md hover:from-purple-500 hover:to-blue-500 transition-colors duration-300">
+                View Reports
+            </button>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex flex-wrap justify-start sm:justify-start items-center border-b border-gray-200 dark:border-gray-700 text-sm">
+            <!--            Active Button-->
+            <a href="/users/transactions/sales">
+                <div data-th-unless="${'Sales'.equals(billType)}"
+                     class="py-2 px-4 text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 border-b-2 border-transparent hover:border-blue-500 transition-colors">
+                    Sales
+                </div>
+                <div data-th-if="${'Sales'.equals(billType)}"
+                     class="py-2 px-4 text-blue-500 dark:text-blue-400 font-medium border-b-2 border-blue-500 transition-colors">
+                    Sales
+                </div>
+            </a>
+            <a href="/users/transactions/purchase">
+                <div data-th-unless="${'Purchase'.equals(billType)}"
+                     class="py-2 px-4 text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 border-b-2 border-transparent hover:border-blue-500 transition-colors">
+                    Purchase
+                </div>
+                <div data-th-if="${'Purchase'.equals(billType)}"
+                     class="py-2 px-4 text-blue-500 dark:text-blue-400 font-medium border-b-2 border-blue-500 transition-colors">
+                    Purchase
+                </div>
+            </a>
+            <a href="/users/transaction/expanse">
+                <div data-th-unless="${'Expanse'.equals(billType)}"
+                     class="py-2 px-4 text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 border-b-2 border-transparent hover:border-blue-500 transition-colors">
+                    Expenses
+                </div>
+                <div data-th-if="${'Expanse'.equals(billType)}"
+                     class="py-2 px-4 text-blue-500 dark:text-blue-400 font-medium border-b-2 border-blue-500 transition-colors">
+                    Expenses
+                </div>
+            </a>
+        </div>
+
+        <!-- Filters -->
+        <div class="flex flex-wrap items-center gap-4 py-4">
+            <input type="text" placeholder="Search Customer Name, Transaction No."
+                   class="w-full sm:w-auto flex-grow sm:flex-grow-0 px-4 py-2 border rounded-lg shadow focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-300 focus:outline-none text-sm dark:bg-gray-800 dark:text-gray-200">
+            <select
+                    class="w-full sm:w-auto flex-grow sm:flex-grow-0 px-4 py-2 border rounded-lg shadow focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-300 focus:outline-none text-sm dark:bg-gray-800 dark:text-gray-200">
+                <option>Filter Transactions by</option>
+                <option>All Transactions</option>
+            </select>
+            <select
+                    class="w-full sm:w-auto flex-grow sm:flex-grow-0 px-4 py-2 border rounded-lg shadow focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-300 focus:outline-none text-sm dark:bg-gray-800 dark:text-gray-200">
+                <option>Sort By</option>
+                <option>Latest First</option>
+            </select>
+        </div>
+
+        <!-- Transactions Table -->
+        <div style="height: 300px" class="overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-400 hover:scrollbar-thumb-gray-500 scrollbar-track-gray-200 dark:scrollbar-thumb-gray-600 dark:hover:scrollbar-thumb-gray-500 dark:scrollbar-track-gray-800">
+            <table class="w-full border-collapse text-left text-sm">
+                <thead class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-200">
+                <tr>
+                    <th class="py-3 px-4">TRANSACTION</th>
+                    <th class="py-3 px-4 text-right">AMOUNT</th>
+                </tr>
+                </thead>
+                <tbody data-th-each="bill : ${bills}" data-th-object="${bill}"
+
+                       class="overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-400 hover:scrollbar-thumb-gray-500 scrollbar-track-gray-200 dark:scrollbar-thumb-gray-600 dark:hover:scrollbar-thumb-gray-500 dark:scrollbar-track-gray-800">
+                <tr class="border-b hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                    <td class="py-4 px-4">
+                        <div class="flex items-center gap-3">
+                            <!-- First Character with Dynamic Color -->
+                            <div id="logoTransactionType"
+                                 class="w-12 h-12 text-black dark:text-white size-4 rounded-full flex justify-center items-center font-medium shadow-md transition-transform transform hover:scale-105">
+                                <div class="css-1gd4aaw">
+                                    <svg width="21" height="20" viewBox="0 0 21 20" fill="none"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M8.92553 5.77331H10.4865L10.7881 4.72674H4.66832L4.3579 5.77331H6.22043C6.64845 5.7184 7.08181 5.8214 7.43935 6.06303C7.79689 6.30465 8.05409 6.66833 8.16278 7.08594H4.61511L4.30468 8.12364H8.14504C8.06338 8.51089 7.83847 8.85301 7.51533 9.08151C7.11416 9.33128 6.64848 9.45772 6.17608 9.44515H4.52641V10.27L8.03861 14.403H9.55524V14.3232L6.29138 10.5183C7.09156 10.5608 7.88513 10.3531 8.56189 9.92408C8.83732 9.71444 9.06345 9.44697 9.22435 9.1405C9.38525 8.83403 9.477 8.49601 9.49315 8.15025H10.4954L10.7969 7.11255H9.46655C9.41314 6.62479 9.2259 6.1613 8.92553 5.77331Z"
+                                              fill="#2661C5"></path>
+                                        <path fill-rule="evenodd" clip-rule="evenodd"
+                                              d="M10.7969 7.11255L10.4954 8.15025H9.49315C9.4892 8.23493 9.48071 8.31915 9.46778 8.40255C9.46737 8.40517 9.46696 8.40778 9.46655 8.4104C9.4518 8.50344 9.43153 8.59545 9.40586 8.68594C9.40334 8.69483 9.40077 8.7037 9.39814 8.71255C9.35442 8.86009 9.2963 9.00345 9.22435 9.1405C9.06345 9.44697 8.83732 9.71444 8.56189 9.92408C8.45738 9.99034 8.35008 10.0513 8.24041 10.1069C8.21842 10.1181 8.19634 10.129 8.17416 10.1397C8.15063 10.1511 8.12698 10.1622 8.10324 10.1731C7.70106 10.3574 7.27014 10.4711 6.82949 10.5093C6.65129 10.5248 6.4715 10.5279 6.29138 10.5183L9.55524 14.3232V14.403H8.03861L4.52641 10.27V9.44515H6.17608C6.23368 9.44668 6.29119 9.44615 6.34848 9.44357C6.76109 9.42505 7.16308 9.30082 7.51533 9.08151C7.60416 9.01869 7.68557 8.94729 7.75863 8.86872C7.78555 8.83977 7.81133 8.80985 7.83593 8.77902C7.86002 8.74884 7.88298 8.71779 7.90476 8.68594C7.9436 8.62915 7.9787 8.56982 8.0098 8.50832C8.01053 8.50689 8.01126 8.50545 8.01198 8.504C8.07203 8.38439 8.11699 8.25668 8.14504 8.12364H4.30468L4.61511 7.08594H8.16278C8.15725 7.06469 8.15133 7.04358 8.14504 7.02262C8.10168 6.87821 8.04038 6.74086 7.9632 6.61349C7.95014 6.59194 7.93663 6.57067 7.92267 6.54971C7.91685 6.54096 7.91095 6.53227 7.90498 6.52364C7.85709 6.45441 7.80429 6.3886 7.74694 6.32674C7.65546 6.22807 7.55242 6.13944 7.43935 6.06303C7.08181 5.8214 6.64845 5.7184 6.22043 5.77331H4.3579L4.66832 4.72674H10.7881L10.4865 5.77331H8.92553C9.0581 5.94455 9.16863 6.13049 9.25535 6.32674C9.28388 6.39131 9.30983 6.457 9.33314 6.52364C9.33624 6.53249 9.33929 6.54136 9.34229 6.55025C9.35937 6.60079 9.37494 6.65186 9.38897 6.7034C9.39434 6.72313 9.39948 6.74293 9.4044 6.7628C9.43279 6.87747 9.4536 6.9943 9.46655 7.11255H10.7969Z"
+                                              fill="#2661C5"></path>
+                                        <path fill-rule="evenodd" clip-rule="evenodd"
+                                              d="M2.75785 2.60009C2.60564 2.598 2.45455 2.62635 2.31345 2.68348C2.17235 2.7406 2.04409 2.82536 1.93621 2.93275C1.82833 3.04015 1.743 3.16802 1.68524 3.30886C1.62748 3.4497 1.59845 3.60066 1.59985 3.75288L1.59992 3.76026L1.59988 15.3523C1.59987 15.5036 1.62993 15.6535 1.68831 15.7932C1.7467 15.9328 1.83225 16.0594 1.93998 16.1657C2.04772 16.272 2.17551 16.3558 2.31592 16.4123C2.45633 16.4688 2.60656 16.4968 2.75788 16.4947L2.76884 16.4945L11.2999 16.4946C11.7418 16.4946 12.0999 16.8528 12.0999 17.2946C12.0999 17.7365 11.7418 18.0946 11.2999 18.0946H2.77391C2.41262 18.0988 2.05405 18.0315 1.71881 17.8967C1.38175 17.7611 1.07498 17.5599 0.816337 17.3047C0.557692 17.0496 0.352326 16.7456 0.212168 16.4104C0.0720182 16.0752 -0.000139851 15.7156 -0.000115712 15.3523C-0.000115712 15.3522 -0.000115712 15.3523 -0.000115712 15.3523V3.76362C-0.00294216 3.39957 0.0667493 3.03858 0.204909 2.70172C0.343576 2.36362 0.548418 2.05664 0.8074 1.79883C1.06638 1.54101 1.37428 1.33756 1.713 1.20042C2.04988 1.06403 2.41049 0.995965 2.77387 1.00017H12.2999C12.7418 1.00017 13.0999 1.35834 13.0999 1.80017C13.0999 2.242 12.7418 2.60017 12.2999 2.60017L2.75785 2.60009ZM16.3209 3.96026C16.7628 3.96026 17.1209 4.31843 17.1209 4.76026V13.8C17.1209 14.2418 16.7628 14.6 16.3209 14.6C15.8791 14.6 15.5209 14.2418 15.5209 13.8V4.76026C15.5209 4.31843 15.8791 3.96026 16.3209 3.96026Z"
+                                              fill="#2661C5"></path>
+                                        <path fill-rule="evenodd" clip-rule="evenodd"
+                                              d="M20.0169 7.60102C19.7044 7.91344 19.1979 7.91344 18.8855 7.60102L15.7547 4.4702C15.4422 4.15778 15.4422 3.65125 15.7547 3.33883C16.0671 3.02641 16.5736 3.02641 16.886 3.33883L20.0169 6.46965C20.3293 6.78207 20.3293 7.2886 20.0169 7.60102Z"
+                                              fill="#2661C5"></path>
+                                        <path fill-rule="evenodd" clip-rule="evenodd"
+                                              d="M12.6151 7.60022C12.3031 7.28736 12.3038 6.78083 12.6167 6.46885L15.7564 3.33803C16.0693 3.02605 16.5758 3.02677 16.8878 3.33963C17.1997 3.65249 17.199 4.15902 16.8862 4.471L13.7465 7.60182C13.4336 7.9138 12.9271 7.91308 12.6151 7.60022Z"
+                                              fill="#2661C5"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div>
+                                <p data-th-text="*{party.name}" class="font-medium text-gray-800 dark:text-gray-100">
+                                    Brijesh Wi</p>
+                                <p data-th-text="*{}" class="text-gray-500 dark:text-gray-400 text-xs">Payment Out
+                                    #6</p>
+                                <p data-th-text="*{date}" class="text-gray-400 dark:text-gray-500 text-xs mt-1">27 Dec
+                                    2024</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-4 px-4 text-right">
+                        <p class="font-medium text-gray-800 dark:text-gray-100">₹7,840</p>
+                        <p class="text-gray-500 dark:text-gray-400 text-xs">Cash</p>
+                    </td>
+                </tr>
+                <!-- Repeat rows as needed -->
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-6 flex flex-wrap gap-4 justify-between">
+            <a data-th-href="@{/users/party/bulk_upload}">
+                <button class="w-full md:w-auto bg-blue-50 dark:bg-gray-700 text-blue-600 dark:text-white border border-blue-600 dark:border-white px-6 py-2 rounded-full shadow-md hover:bg-blue-600 dark:hover:bg-blue-600 hover:text-white transition">
+                    Payment & Return
+                </button>
+            </a>
+            <button type="button"
+                    onclick="addBillClickListener(this)"
+                    th:data-bill-type="${billType}"
+                    class="w-full md:w-auto bg-blue-600  text-white px-6 py-2 rounded-full shadow-md hover:bg-blue-700  transition">
+                + Add <span data-th-text=" ${billType}">6546</span>
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,11 +1,17 @@
 package com.sml.smartledger.Controller;
 
+import com.sml.smartledger.Forms.PartyForm;
+import com.sml.smartledger.Helper.Helper;
+import com.sml.smartledger.Model.User;
 import com.sml.smartledger.Model.business.Business;
 import com.sml.smartledger.Model.inventory.Product;
 import com.sml.smartledger.Model.inventory.ProductTransaction;
 import com.sml.smartledger.Model.inventory.StockTransactionType;
+import com.sml.smartledger.Model.party.Party;
 import com.sml.smartledger.Model.party.PartyTransaction;
+import com.sml.smartledger.Model.party.PartyType;
 import com.sml.smartledger.Repository.business.BusinessRepository;
+import com.sml.smartledger.Services.interfaces.UserService;
 import com.sml.smartledger.Services.interfaces.business.BusinessService;
 import com.sml.smartledger.Services.interfaces.inventory.ProductService;
 import com.sml.smartledger.Services.interfaces.inventory.ProductTransactionService;
@@ -14,29 +20,35 @@ import com.sml.smartledger.Services.interfaces.party.PartyTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.sml.smartledger.Helper.Helper.getEmailOfLoggedInUser;
+
 @RestController()
-@RequestMapping("/api")
+@RequestMapping("/users/api")
 public class ApiController {
     final PartyTransactionService partyTransactionService;
     PartyService partyService;
     BusinessService businessService;
     ProductTransactionService productTransactionService;
     ProductService productService;
+    UserService userService;
+
     @Autowired
-    public ApiController(PartyTransactionService partyTransactionService , PartyService partyService, BusinessService businessService, ProductTransactionService productTransactionService, ProductService productService) {
+    public ApiController(UserService userService, PartyTransactionService partyTransactionService, PartyService partyService, BusinessService businessService, ProductTransactionService productTransactionService, ProductService productService) {
         this.partyService = partyService;
         this.partyTransactionService = partyTransactionService;
         this.businessService = businessService;
         this.productTransactionService = productTransactionService;
         this.productService = productService;
+        this.userService = userService;
     }
 
     @DeleteMapping("/delete-transaction/{id}")
-    public ResponseEntity<Void> deleteTransaction(@PathVariable("id") Long id){
+    public ResponseEntity<Void> deleteTransaction(@PathVariable("id") Long id) {
         partyTransactionService.deleteTransaction(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -46,11 +58,12 @@ public class ApiController {
         partyService.deleteParty(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
     @DeleteMapping("delete-product-transactions/{id}")
     public ResponseEntity<Void> deleteProductTransactions(@PathVariable("id") Long id) {
         ProductTransaction productTransaction = productTransactionService.getProductTransactionById(id);
         Product product = productTransaction.getProduct();
-        if(productTransaction.getStockTransactionType().equals(StockTransactionType.IN)) {
+        if (productTransaction.getStockTransactionType().equals(StockTransactionType.IN)) {
             int quantity = product.getStockQuantity();
             System.out.println("quantity " + quantity);
             double totalAmount = product.getPurchasePrice() * quantity;
@@ -75,9 +88,34 @@ public class ApiController {
     }
 
     @GetMapping("/get-all-transaction/{id}")
-    public ResponseEntity<List<PartyTransaction>> getAllTransaction(@PathVariable("id") Long id){
-        Business business =  businessService.getBusinessById(id);
-        return new ResponseEntity<>(partyTransactionService.getAllTransactionsByPartyIds( business.getParties()), HttpStatus.OK);
+    public ResponseEntity<List<PartyTransaction>> getAllTransaction(@PathVariable("id") Long id) {
+        Business business = businessService.getBusinessById(id);
+        return new ResponseEntity<>(partyTransactionService.getAllTransactionsByPartyIds(business.getParties()), HttpStatus.OK);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<Party> createParty(@RequestBody PartyForm partyRequest, Authentication authentication) {
+
+        String email = getEmailOfLoggedInUser(authentication);
+        User saveUser = userService.getUserByEmail(email);
+        Business business = saveUser.getSelectedBusiness();
+        // Simulating saving and returning a Party object
+        System.out.println("number" + partyRequest.getNumber());
+        System.out.println("number" + partyRequest.getName());
+        System.out.println("number" + partyRequest.getPartyType());
+
+        Party party = partyService.getPartyByMobileNumber(partyRequest.getNumber());
+        if (party != null) {
+            return ResponseEntity.ok(party);
+        }
+        party = new Party();
+        party.setName(partyRequest.getName());
+        party.setBusiness(business);
+        party.setMobile(partyRequest.getNumber());
+        party.setPartyType(PartyType.valueOf(partyRequest.getPartyType()));
+        partyService.createParty(party);
+        // Return the created Party object
+        return ResponseEntity.ok(party);
     }
 
 }

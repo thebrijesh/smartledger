@@ -25,4 +25,6 @@ public interface PartyService {
     Party getPartyByShortCode(String shortCode);
 
     List<Party> getDueParties(@NonNull Long id);
+
+    Party getPartyByMobileNumber(String mobileNumber);
 }

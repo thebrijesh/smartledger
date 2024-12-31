@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sml.smartledger.Model.BaseModel;
 import com.sml.smartledger.Model.User;
 import com.sml.smartledger.Model.bill.Bill;
+import com.sml.smartledger.Model.bill.CustomFields;
 import com.sml.smartledger.Model.inventory.Product;
 import com.sml.smartledger.Model.inventory.Service;
 import com.sml.smartledger.Model.bill.Expanses;
@@ -41,7 +42,6 @@ public class Business extends BaseModel implements Serializable {
 
     @Builder.Default
     @OneToMany(cascade = CascadeType.ALL)
-    @JsonIgnore
     List<Bill> bills = new ArrayList<>();
 
     @Builder.Default
@@ -50,16 +50,15 @@ public class Business extends BaseModel implements Serializable {
     List<Expanses> expansesList = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(cascade = CascadeType.ALL)
-    @JsonIgnore
+    @OneToMany(mappedBy = "business", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     List<Product> products = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(cascade = CascadeType.ALL)
-    @JsonIgnore
+    @OneToMany(mappedBy = "business", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     List<Service> services = new ArrayList<>();
 
-
+    @ElementCollection
+    List<String> customFields = new ArrayList<>();
     private String logo;
 
     double totalCredit;

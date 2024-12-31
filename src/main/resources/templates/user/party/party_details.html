@@ -401,10 +401,10 @@
         const partyId = element.getAttribute('data-partyid');
         let url = null;
         if (transactionId !== null) {
-            url = 'http://localhost:8184/api/delete-transaction/' + transactionId;
+            url = 'http://localhost:8184/users/api/delete-transaction/' + transactionId;
             console.log(url);
         } else {
-            url = 'http://localhost:8184/api/delete-party/' + partyId;
+            url = 'http://localhost:8184/users/api/delete-party/' + partyId;
             console.log(url);
         }
 

@@ -3,6 +3,7 @@ package com.sml.smartledger.Model.inventory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sml.smartledger.Model.BaseModel;
+import com.sml.smartledger.Model.bill.Bill;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,4 +27,13 @@ public class ProductTransaction extends BaseModel {
     @ManyToOne(cascade = CascadeType.ALL )
     @JsonIgnore
     Product product;
+
+    DiscountType discountType;
+    double discount;
+    double discountAmount;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
+    Bill bill;
+
 }

@@ -40,7 +40,7 @@ public class SecurityConfig {
 
 
         provider.setUserDetailsService(securityCustomUserDetailService);
-        provider.setPasswordEncoder(passwordEncoder());
+//        provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
 
