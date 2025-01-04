@@ -23,10 +23,11 @@ public class ServiceTransaction extends BaseModel {
     @JsonIgnore
     Service service;
     @Enumerated(EnumType.ORDINAL)
-    ServiceTransactionType type;
+    ServiceTransactionType serviceTransactionType;
 
     DiscountType discountType;
     double discount;
+    double discountAmount;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JsonIgnore

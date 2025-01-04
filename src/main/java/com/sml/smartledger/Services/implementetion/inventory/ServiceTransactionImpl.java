@@ -36,7 +36,7 @@ public class ServiceTransactionImpl implements ServiceTransactionService {
 
         ServiceTransaction savedServiceTransaction = serviceTransactionRepository.save(serviceTransaction);
         billService.getServiceTransactions().add(savedServiceTransaction);
-        if(serviceTransaction.getType() == ServiceTransactionType.SALE){
+        if(serviceTransaction.getServiceTransactionType() == ServiceTransactionType.SALE){
             billService.setTotalSoldUnits(billService.getTotalSoldUnits()+serviceTransaction.getUnit());
             billService.setServicePrice((billService.getServicePrice()+serviceTransaction.getAmount())/billService.getTotalSoldUnits());
         }else{

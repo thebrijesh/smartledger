@@ -19,8 +19,8 @@ import java.util.List;
 public class Service extends BaseModel {
     String name;
     String image;
-    private String cloudinaryImagePublicId;
     double servicePrice;
+    private String cloudinaryImagePublicId;
     int totalSoldUnits;
     @ManyToOne(cascade = CascadeType.MERGE)
     @JsonIgnore

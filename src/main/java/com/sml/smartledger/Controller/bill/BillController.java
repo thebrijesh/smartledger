@@ -85,26 +85,26 @@ public class BillController {
         List<Product> productList = business.getProducts();
         List<Service> serviceList = business.getServices();
 
-        Map<Long,ProductTransaction> productTransactionList = new HashMap<>();
-        Map<Long,ServiceTransaction> serviceTransactionList = new HashMap<>();
+        List<ProductTransaction> productTransactionList = new ArrayList<>();
+        List<ServiceTransaction> serviceTransactionList = new ArrayList<>();
 
         for (Product product : productList) {
             System.out.println("product: " + product);
             ProductTransaction productTransaction = new ProductTransaction();
             productTransaction.setProduct(product);
             productTransaction.setUnit(0);
-            productTransactionList.put(product.getId(),productTransaction);
+            productTransactionList.add(productTransaction);
         }
         for (Service service : serviceList) {
             ServiceTransaction serviceTransaction = new ServiceTransaction();
             serviceTransaction.setService(service);
             serviceTransaction.setUnit(0);
-            serviceTransactionList.put(service.getId(),serviceTransaction);
+            serviceTransactionList.add(serviceTransaction);
+
         }
 
 
-        billForm.setProducts(productTransactionList);
-        billForm.setServices(serviceTransactionList);
+
         billForm.setDate(new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
 
         List<Party> parties;
@@ -117,12 +117,12 @@ public class BillController {
         }
 
         System.out.println("parties: " + parties);
-        System.out.println("products: " + productTransactionList);
-        System.out.println("services: " + serviceTransactionList);
+        System.out.println("productTransactions: " + productTransactionList);
+        System.out.println("serviceTransactions: " + serviceTransactionList);
         model.addAttribute("billForm", billForm);
         model.addAttribute("partyList", parties);
-        model.addAttribute("products", productTransactionList);
-        model.addAttribute("services", serviceTransactionList);
+        model.addAttribute("productTransactions", productTransactionList);
+        model.addAttribute("serviceTransactions", serviceTransactionList);
         model.addAttribute("selectedBusiness", business);
 
         return "/user/bill/add_bill";

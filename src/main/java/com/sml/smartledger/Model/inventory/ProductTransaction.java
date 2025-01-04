@@ -19,14 +19,14 @@ import java.util.Date;
 public class ProductTransaction extends BaseModel {
 
     Date date;
-    @Enumerated(EnumType.ORDINAL)
-    StockTransactionType stockTransactionType;
     double amount;
     int unit;
     String description;
-    @ManyToOne(cascade = CascadeType.ALL )
+    @ManyToOne(cascade = CascadeType.ALL)
     @JsonIgnore
     Product product;
+    @Enumerated(EnumType.ORDINAL)
+    StockTransactionType stockTransactionType;
 
     DiscountType discountType;
     double discount;

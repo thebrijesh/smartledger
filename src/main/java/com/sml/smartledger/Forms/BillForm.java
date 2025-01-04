@@ -4,6 +4,7 @@ import com.sml.smartledger.Model.inventory.ProductTransaction;
 import com.sml.smartledger.Model.inventory.ServiceTransaction;
 import lombok.*;
 
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -19,7 +20,7 @@ public class BillForm {
     private String date;
     private String paymentType;
     private String billType;
-    private Map<Long, ProductTransaction> products;
-    private Map<Long, ServiceTransaction> services;
+    private List<ProductTransaction> products;
+    private List<ServiceTransaction> services;
 
 }
