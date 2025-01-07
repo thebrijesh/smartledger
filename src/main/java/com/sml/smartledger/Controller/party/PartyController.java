@@ -34,8 +34,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -89,6 +87,16 @@ public class PartyController {
     public String customer(Model model, Authentication authentication) {
         String email = getEmailOfLoggedInUser(authentication);
         User user = userService.getUserByEmail(email);
+        Business business = user.getSelectedBusiness();
+        if (business == null) {
+            business = businessService.createBusiness(Business.builder()
+                    .name(user.getName())
+                    .logo(user.getProfilePic())
+                    .user(user)
+                    .build());
+            user.setSelectedBusiness(business);
+            user = userService.saveUser(user);
+        }
         List<Party> partyList = partyService.getCustomerParties(user.getSelectedBusiness().getId());
 
         PartyForm partyForm = new PartyForm();
@@ -229,7 +237,7 @@ public class PartyController {
         PartyTransaction transaction = PartyTransaction.builder()
                 .amount(partyTransactionForm.getAmount())
                 .party(party)
-                .transactionDate(Helper.combineDate(partyTransactionForm.getDate(),new Date()))
+                .transactionDate(Helper.combineDate(partyTransactionForm.getDate(), new Date()))
                 .transactionType(TransactionType.valueOf(partyTransactionForm.getTransactionType()))
                 .description(partyTransactionForm.getDescription())
                 .build();
@@ -247,7 +255,7 @@ public class PartyController {
         newPartyTransaction.setDescription(partyTransactionForm.getDescription());
 
         PartyTransaction partyTransaction = partyTransactionService.getTransactionById(partyTransactionForm.getId());
-            newPartyTransaction.setTransactionDate(Helper.combineDate(partyTransactionForm.getDate(), partyTransaction.getCreatedAt()));
+        newPartyTransaction.setTransactionDate(Helper.combineDate(partyTransactionForm.getDate(), partyTransaction.getCreatedAt()));
 
         PartyTransaction updatedTransaction = partyTransactionService.updateTransaction(newPartyTransaction);
         return "redirect:/users/party/view/" + partyTransaction.getParty().getId();

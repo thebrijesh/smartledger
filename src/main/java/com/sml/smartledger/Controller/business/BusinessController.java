@@ -66,7 +66,7 @@ public class BusinessController {
         user.setSelectedBusiness(savedBusiness);
         userService.saveUser(user);
 
-        return "redirect:/users/dashboard";
+        return "redirect:/users/party/customer";
     }
     @DeleteMapping("/businesses/{id}")
     public ResponseEntity<Void> deleteBusiness(@PathVariable("id") Long businessId){

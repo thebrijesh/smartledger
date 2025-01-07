@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en" th:replace="~{base ::parent(~{::#content}, ~{::title}, ~{::script})}">
+<head>
+    <title data-th-text="${loggedInUser.name}">Dashboard</title>
+</head>
+<body>
+<div id="content" class="h-screen">
+
+
+    <div class="md:pt-10 sm:pl-64">
+        <div class="flex justify-center flex-col">
+
+            <div class="min-h-screen p-4 flex justify-center">
+                <div class="w-full max-w-xl bg-white dark:bg-gray-900 shadow-lg rounded-2xl overflow-hidden">
+                    <!-- Header -->
+                    <div class="bg-gradient-to-r from-indigo-500 to-purple-500 dark:from-gray-800 dark:to-gray-700 text-white p-4">
+                        <h1 class="text-xl md:text-2xl font-bold text-center">Settings</h1>
+                    </div>
+
+                    <!-- Sections -->
+                    <div class="p-4 space-y-6">
+                        <!-- User Section -->
+                        <div>
+                            <h2 class="text-sm font-medium text-gray-600 dark:text-gray-400" data-th-text="${loggedInUser.name}">User Name</h2>
+                            <div class="mt-4 flex items-center justify-between">
+                                <div>
+                                    <p class="text-base font-semibold text-gray-800 dark:text-gray-100">Delete Business</p>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">Delete currently selected business</p>
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     class="flex-shrink-0 w-5 h-5 text-indigo-500 transition duration-75 dark:text-indigo-400 group-hover:text-indigo-900 dark:group-hover:text-white"
+                                     viewBox="0 0 512 512">
+                                    <g>
+                                        <path d="M256 0C114.837 0 0 114.837 0 256s114.837 256 256 256 256-114.837 256-256S397.163 0 256 0zm79.083 271.083L228.416 377.749A21.275 21.275 0 0 1 213.333 384a21.277 21.277 0 0 1-15.083-6.251c-8.341-8.341-8.341-21.824 0-30.165L289.835 256l-91.584-91.584c-8.341-8.341-8.341-21.824 0-30.165s21.824-8.341 30.165 0l106.667 106.667c8.341 8.341 8.341 21.823 0 30.165z"
+                                              fill="currentColor"></path>
+                                    </g>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Account Settings Section -->
+                        <div>
+                            <h2 class="text-sm font-medium text-gray-600 dark:text-gray-400">Account Settings</h2>
+                            <div class="mt-4 space-y-4">
+                                <!-- Update Profile -->
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-base font-semibold text-gray-800 dark:text-gray-100">Update
+                                            Profile</p>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">Change your profile
+                                            details</p>
+                                    </div>
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         class="flex-shrink-0 w-5 h-5 text-indigo-500 transition duration-75 dark:text-indigo-400 group-hover:text-indigo-900 dark:group-hover:text-white"
+                                         viewBox="0 0 512 512">
+                                        <g>
+                                            <path d="M256 0C114.837 0 0 114.837 0 256s114.837 256 256 256 256-114.837 256-256S397.163 0 256 0zm79.083 271.083L228.416 377.749A21.275 21.275 0 0 1 213.333 384a21.277 21.277 0 0 1-15.083-6.251c-8.341-8.341-8.341-21.824 0-30.165L289.835 256l-91.584-91.584c-8.341-8.341-8.341-21.824 0-30.165s21.824-8.341 30.165 0l106.667 106.667c8.341 8.341 8.341 21.823 0 30.165z"
+                                                  fill="currentColor"></path>
+                                        </g>
+                                    </svg>
+                                </div>
+
+                                <!-- Other Options (Same Dark Mode Support) -->
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-base font-semibold text-gray-800 dark:text-gray-100">Plans and
+                                            Billing</p>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">Manage your plans and
+                                            download invoices</p>
+                                    </div>
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         class="flex-shrink-0 w-5 h-5 text-indigo-500 transition duration-75 dark:text-indigo-400 group-hover:text-indigo-900 dark:group-hover:text-white"
+                                         viewBox="0 0 512 512">
+                                        <g>
+                                            <path d="M256 0C114.837 0 0 114.837 0 256s114.837 256 256 256 256-114.837 256-256S397.163 0 256 0zm79.083 271.083L228.416 377.749A21.275 21.275 0 0 1 213.333 384a21.277 21.277 0 0 1-15.083-6.251c-8.341-8.341-8.341-21.824 0-30.165L289.835 256l-91.584-91.584c-8.341-8.341-8.341-21.824 0-30.165s21.824-8.341 30.165 0l106.667 106.667c8.341 8.341 8.341 21.823 0 30.165z"
+                                                  fill="currentColor"></path>
+                                        </g>
+                                    </svg>
+                                </div>
+
+                                <!-- Recycle Bin -->
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-base font-semibold text-gray-800 dark:text-gray-100">Recycle
+                                            Bin</p>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">Access deleted data</p>
+                                    </div>
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         class="flex-shrink-0 w-5 h-5 text-indigo-500 transition duration-75 dark:text-indigo-400 group-hover:text-indigo-900 dark:group-hover:text-white"
+                                         viewBox="0 0 512 512">
+                                        <g>
+                                            <path d="M256 0C114.837 0 0 114.837 0 256s114.837 256 256 256 256-114.837 256-256S397.163 0 256 0zm79.083 271.083L228.416 377.749A21.275 21.275 0 0 1 213.333 384a21.277 21.277 0 0 1-15.083-6.251c-8.341-8.341-8.341-21.824 0-30.165L289.835 256l-91.584-91.584c-8.341-8.341-8.341-21.824 0-30.165s21.824-8.341 30.165 0l106.667 106.667c8.341 8.341 8.341 21.823 0 30.165z"
+                                                  fill="currentColor"></path>
+                                        </g>
+                                    </svg>
+                                </div>
+
+                                <!-- Help & Support -->
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-base font-semibold text-gray-800 dark:text-gray-100">Help &
+                                            Support</p>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">Understand how Khatabook
+                                            works</p>
+                                    </div>
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         class="flex-shrink-0 w-5 h-5 text-indigo-500 transition duration-75 dark:text-indigo-400 group-hover:text-indigo-900 dark:group-hover:text-white"
+                                         viewBox="0 0 512 512">
+                                        <g>
+                                            <path d="M256 0C114.837 0 0 114.837 0 256s114.837 256 256 256 256-114.837 256-256S397.163 0 256 0zm79.083 271.083L228.416 377.749A21.275 21.275 0 0 1 213.333 384a21.277 21.277 0 0 1-15.083-6.251c-8.341-8.341-8.341-21.824 0-30.165L289.835 256l-91.584-91.584c-8.341-8.341-8.341-21.824 0-30.165s21.824-8.341 30.165 0l106.667 106.667c8.341 8.341 8.341 21.823 0 30.165z"
+                                                  fill="currentColor"></path>
+                                        </g>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Logout -->
+                        <a href="/logout" class="flex items-center justify-between">
+                            <div>
+                                <p class="text-base font-semibold text-red-600 dark:text-red-500">Logout</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">You will be logged out after data
+                                    backup is complete</p>
+                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="flex-shrink-0 w-5 h-5 text-indigo-500 transition duration-75 dark:text-indigo-400 group-hover:text-indigo-900 dark:group-hover:text-white"
+                                 viewBox="0 0 512 512">
+                                <g>
+                                    <path d="M256 0C114.837 0 0 114.837 0 256s114.837 256 256 256 256-114.837 256-256S397.163 0 256 0zm79.083 271.083L228.416 377.749A21.275 21.275 0 0 1 213.333 384a21.277 21.277 0 0 1-15.083-6.251c-8.341-8.341-8.341-21.824 0-30.165L289.835 256l-91.584-91.584c-8.341-8.341-8.341-21.824 0-30.165s21.824-8.341 30.165 0l106.667 106.667c8.341 8.341 8.341 21.823 0 30.165z"
+                                          fill="currentColor"></path>
+                                </g>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+</div>
+<script>console.log("Dashboard")</script>
+</body>
+</html>

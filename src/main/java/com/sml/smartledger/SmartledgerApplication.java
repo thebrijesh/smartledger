@@ -8,10 +8,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @SpringBootApplication
 @EnableJpaAuditing
 @EnableCaching
-public class SmartledgerApplication {
+public class SmartLedgerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SmartledgerApplication.class, args);
+		SpringApplication.run(SmartLedgerApplication.class, args);
 	}
 
 }
