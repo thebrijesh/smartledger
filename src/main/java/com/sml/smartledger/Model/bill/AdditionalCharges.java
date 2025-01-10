@@ -2,6 +2,7 @@ package com.sml.smartledger.Model.bill;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sml.smartledger.Model.BaseModel;
+import com.sml.smartledger.Model.business.Business;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
@@ -19,6 +20,9 @@ public class AdditionalCharges  extends BaseModel {
     @ManyToOne(cascade = CascadeType.ALL)
     @JsonIgnore
     Bill bill;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    Business business;
 
 
 }

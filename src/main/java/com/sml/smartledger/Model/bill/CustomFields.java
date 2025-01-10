@@ -23,4 +23,8 @@ public class CustomFields extends BaseModel {
     @ManyToOne(cascade = CascadeType.ALL)
     @JsonIgnore
     Bill bill;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
+    Business business;
 }

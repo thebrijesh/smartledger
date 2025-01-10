@@ -57,77 +57,83 @@
                              th:data-product-transaction-list="${productTransactions}">
 
                             <!-- Product Card -->
-                            <div class="  bg-white dark:bg-gray-800 shadow-lg rounded-lg w-full max-w-md p-4 hover:shadow-xl">
+                            <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg w-full max-w-md p-4 hover:shadow-xl">
                                 <!-- Product Details -->
-                                <div class="flex items-start">
+                                <div class="flex items-center">
                                     <img th:src="${transaction.getProduct().getImage()}" alt="item Image"
-                                         class="w-14 h-14 rounded-full border-2 border-blue-500 dark:border-yellow-400">
+                                         class="w-14 h-14 items-start rounded-full border-2 border-blue-500 dark:border-yellow-400">
                                     <div class="ml-4 flex-1">
-                                        <h3 id="itemName" class="font-bold text-lg text-gray-800 dark:text-gray-100"
+                                        <h3 id="itemName" class="items-start font-bold text-lg text-gray-800 dark:text-gray-100"
                                             data-th-text="${transaction.getProduct().getName()}">ghhj</h3>
-                                        <p class="text-gray-600 dark:text-gray-400 text-sm">Current Stock: <span
+                                        <p class="items-start text-gray-600 dark:text-gray-400 text-sm">Current Stock: <span
                                                 class="text-red-500 font-semibold"
                                                 data-th-text="${transaction.getProduct().getStockQuantity()}">-6</span>
                                         </p>
                                     </div>
-
-                                </div>
-
-                                <div class="mt-6 flex">
-                                    <button onclick="decreaseBtn(this)"
-                                            class="minus items-center bg-blue-100 dark:bg-gray-700 text-blue-600 dark:text-gray-300 hover:bg-blue-500 dark:hover:bg-blue-600 hover:text-white px-3 py-1 rounded-l-md transition duration-200">
-                                        -
-                                    </button>
-
-                                    <input
-                                            type="number"
-                                            min="0"
-                                            th:value="${transaction.getUnit()}"
-                                            class="quantity items-center appearance-text w-full py-1 text-center border-y border-gray-300 dark:border-gray-600 dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
-                                    <button onclick="increaseBtn(this)"
-                                            class="plus items-center mr-3 bg-blue-100 dark:bg-gray-700 text-blue-600 dark:text-gray-300 hover:bg-blue-500 dark:hover:bg-blue-600 hover:text-white px-3 py-1 rounded-r-md transition duration-200">
-                                        +
-                                    </button>
-                                    <button type="button"
-                                            id="itemAddEditBtnFromDrawer"
-                                            th:data-item-name="${transaction.getProduct().getName()}"
-                                            th:data-product-id="${transaction.getProduct().getId()}"
-                                            th:data-item-sale-price="${transaction.getProduct().getSalePrice()}"
-                                            th:data-discount-type="${transaction.getDiscountType()}"
-                                            th:data-discount-amount="${transaction.getDiscountAmount()}"
-                                            onclick="modifyItem(this)"
-                                            data-modal-target="discount-modal" data-modal-toggle="discount-modal"
-                                            class="flex items-center px-3 py-2 text-sm text-gray-500 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400  rounded-lg border border-gray-300 dark:border-gray-700 hover:border-blue-600 dark:hover:border-blue-400 transition">
-
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
-                                             viewBox="0 0 24 24"
-                                             stroke="currentColor" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                  d="M15.232 4.232a1 1 0 011.415 0l3.182 3.182a1 1 0 010 1.415l-9.9 9.9a1 1 0 01-.415.263l-3.993 1.033a.25.25 0 01-.307-.308l1.034-3.992a1 1 0 01.263-.415l9.9-9.9z"/>
-                                        </svg>
-                                        Edit
+                                    <button onclick="quantityLayoutSet(this.parentNode)" type="button"
+                                            class="addBtn px-4 py-2 text-sm text-gray-500 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400  rounded-lg border border-gray-300 dark:border-gray-700 hover:border-blue-600 dark:hover:border-blue-400 transition">
+                                        Add
                                     </button>
                                 </div>
-                                <!-- Sales Price Section -->
-                                <div class=" mt-4 bg-gray-50 dark:bg-gray-700 p-5 rounded-lg shadow-inner">
-                                    <div class=" flex justify-between">
-                                        <p class="text-gray-600 dark:text-gray-300 font-medium">Sales Price (₹)</p>
-                                        <p id="itemPrice" class="font-bold text-gray-800 dark:text-gray-100"
-                                           th:data-price="${transaction.getProduct().getSalePrice()}">₹ 0</p>
-                                    </div>
-                                    <hr class="my-3 border-gray-200 dark:border-gray-600">
-                                    <div class="flex justify-between">
-                                        <p class="text-gray-600 dark:text-gray-300 font-medium">Item Discount</p>
-                                        <p id="itemDiscount" class="text-gray-400 dark:text-gray-500"
-                                           th:data-discount="${transaction.getDiscountAmount()}">--</p>
-                                    </div>
-                                    <div class="flex justify-between mt-3">
-                                        <p class="text-gray-600 dark:text-gray-300 font-medium">Final Price</p>
-                                        <p id="itemFinalPrice" class="font-bold text-gray-800 dark:text-gray-100"
-                                           th:data-final-price="${transaction.getProduct().getSalePrice() - transaction.getDiscountAmount()}">
-                                            ₹ 56</p>
-                                    </div>
 
+                                <div  style="display: none" class="QuantitySelectedLayout">
+
+                                    <div class="mt-6 flex">
+                                        <button onclick="decreaseBtn(this)"
+                                                class="minus items-center bg-blue-100 dark:bg-gray-700 text-blue-600 dark:text-gray-300 hover:bg-blue-500 dark:hover:bg-blue-600 hover:text-white px-3 py-1 rounded-l-md transition duration-200">
+                                            -
+                                        </button>
+
+                                        <input
+                                                type="number"
+                                                min="0"
+                                                th:value="${transaction.getUnit()}"
+                                                class="quantity items-center appearance-text w-full py-1 text-center border-y border-gray-300 dark:border-gray-600 dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
+                                        <button onclick="increaseBtn(this)"
+                                                class="plus items-center mr-3 bg-blue-100 dark:bg-gray-700 text-blue-600 dark:text-gray-300 hover:bg-blue-500 dark:hover:bg-blue-600 hover:text-white px-3 py-1 rounded-r-md transition duration-200">
+                                            +
+                                        </button>
+                                        <button type="button"
+                                                id="itemAddEditBtnFromDrawer"
+                                                th:data-item-name="${transaction.getProduct().getName()}"
+                                                th:data-product-id="${transaction.getProduct().getId()}"
+                                                th:data-item-sale-price="${transaction.getProduct().getSalePrice()}"
+                                                th:data-discount-type="${transaction.getDiscountType()}"
+                                                th:data-discount-amount="${transaction.getDiscountAmount()}"
+                                                onclick="modifyItem(this)"
+                                                data-modal-target="discount-modal" data-modal-toggle="discount-modal"
+                                                class="flex items-center px-3 py-2 text-sm text-gray-500 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400  rounded-lg border border-gray-300 dark:border-gray-700 hover:border-blue-600 dark:hover:border-blue-400 transition">
+
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
+                                                 viewBox="0 0 24 24"
+                                                 stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                      d="M15.232 4.232a1 1 0 011.415 0l3.182 3.182a1 1 0 010 1.415l-9.9 9.9a1 1 0 01-.415.263l-3.993 1.033a.25.25 0 01-.307-.308l1.034-3.992a1 1 0 01.263-.415l9.9-9.9z"/>
+                                            </svg>
+                                            Edit
+                                        </button>
+                                    </div>
+                                    <!-- Sales Price Section -->
+                                    <div class=" mt-4 bg-gray-50 dark:bg-gray-700 p-5 rounded-lg shadow-inner">
+                                        <div class=" flex justify-between">
+                                            <p class="text-gray-600 dark:text-gray-300 font-medium">Sales Price (₹)</p>
+                                            <p id="itemPrice" class="font-bold text-gray-800 dark:text-gray-100"
+                                               th:data-price="${transaction.getProduct().getSalePrice()}">₹ 0</p>
+                                        </div>
+                                        <hr class="my-3 border-gray-200 dark:border-gray-600">
+                                        <div class="flex justify-between">
+                                            <p class="text-gray-600 dark:text-gray-300 font-medium">Item Discount</p>
+                                            <p id="itemDiscount" class="text-gray-400 dark:text-gray-500"
+                                               th:data-discount="${transaction.getDiscountAmount()}">--</p>
+                                        </div>
+                                        <div class="flex justify-between mt-3">
+                                            <p class="text-gray-600 dark:text-gray-300 font-medium">Final Price</p>
+                                            <p id="itemFinalPrice" class="font-bold text-gray-800 dark:text-gray-100"
+                                               th:data-final-price="${transaction.getProduct().getSalePrice() - transaction.getDiscountAmount()}">
+                                                ₹ 56</p>
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
 
@@ -138,77 +144,84 @@
                 <div id="servicesListLayout">
                     <div data-th-each="transaction : ${serviceTransactions}" data-th-object="${transaction} ">
                         <div th:data-service-id="${transaction.getService().getId()}"
-                             class=" serviceTransactionsList bg-gray-100 dark:bg-gray-900 mb-4 flex justify-center"
+                             class="serviceTransactionsList bg-gray-100 dark:bg-gray-900 mb-4 flex justify-center"
                              th:data-service-transaction-list="${serviceTransactions}">
 
                             <!-- Product Card -->
                             <div class="  bg-white dark:bg-gray-800 shadow-lg rounded-lg w-full max-w-md p-4 hover:shadow-xl">
                                 <!-- Product Details -->
-                                <div class="flex items-start">
+                                <div class="flex items-center">
                                     <img th:src="${transaction.getService().getImage()}" alt="item Image"
-                                         class="w-14 h-14 rounded-full border-2 border-blue-500 dark:border-yellow-400">
-                                    <div class="ml-4 flex-1">
+                                         class="items-start w-14 h-14 rounded-full border-2 border-blue-500 dark:border-yellow-400">
+                                    <div class="items-start ml-4 flex-1">
                                         <h3 id="itemNameService"
                                             class="font-bold text-lg text-gray-800 dark:text-gray-100"
                                             data-th-text="${transaction.getService().getName()}">ghhj</h3>
                                     </div>
 
+                                    <button onclick="quantityLayoutSet(this.parentNode)" type="button"
+                                            class="addBtn px-4 py-2 text-sm text-gray-500 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400  rounded-lg border border-gray-300 dark:border-gray-700 hover:border-blue-600 dark:hover:border-blue-400 transition">
+                                        Add
+                                    </button>
+
                                 </div>
+                                <div style="display: none" class="QuantitySelectedLayout">
+                                    <div class="mt-6 flex">
+                                        <button onclick="decreaseBtn(this)"
+                                                class="minus items-center bg-blue-100 dark:bg-gray-700 text-blue-600 dark:text-gray-300 hover:bg-blue-500 dark:hover:bg-blue-600 hover:text-white px-3 py-1 rounded-l-md transition duration-200">
+                                            -
+                                        </button>
 
-                                <div class="mt-6 flex">
-                                    <button onclick="decreaseBtn(this)"
-                                            class="minus items-center bg-blue-100 dark:bg-gray-700 text-blue-600 dark:text-gray-300 hover:bg-blue-500 dark:hover:bg-blue-600 hover:text-white px-3 py-1 rounded-l-md transition duration-200">
-                                        -
-                                    </button>
+                                        <input
+                                                type="number"
+                                                min="0"
+                                                th:value="${transaction.getUnit()}"
+                                                class="quantity items-center appearance-text w-full py-1 text-center border-y border-gray-300 dark:border-gray-600 dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
+                                        <button onclick="increaseBtn(this)"
+                                                class="plus items-center mr-3 bg-blue-100 dark:bg-gray-700 text-blue-600 dark:text-gray-300 hover:bg-blue-500 dark:hover:bg-blue-600 hover:text-white px-3 py-1 rounded-r-md transition duration-200">
+                                            +
+                                        </button>
+                                        <button type="button"
+                                                th:data-item-name="${transaction.getService().getName()}"
+                                                th:data-service-id="${transaction.getService().getId()}"
+                                                th:data-item-sale-price="${transaction.getService().getServicePrice()}"
+                                                th:data-discount-type="${transaction.getDiscountType()}"
+                                                th:data-discount-amount="${transaction.getDiscountAmount()}"
+                                                onclick="modifyItem(this)"
+                                                data-modal-target="discount-modal" data-modal-toggle="discount-modal"
+                                                class="flex items-center px-3 py-2 text-sm text-gray-500 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400  rounded-lg border border-gray-300 dark:border-gray-700 hover:border-blue-600 dark:hover:border-blue-400 transition">
 
-                                    <input
-                                            type="number"
-                                            min="0"
-                                            th:value="${transaction.getUnit()}"
-                                            class="quantity items-center appearance-text w-full py-1 text-center border-y border-gray-300 dark:border-gray-600 dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
-                                    <button onclick="increaseBtn(this)"
-                                            class="plus items-center mr-3 bg-blue-100 dark:bg-gray-700 text-blue-600 dark:text-gray-300 hover:bg-blue-500 dark:hover:bg-blue-600 hover:text-white px-3 py-1 rounded-r-md transition duration-200">
-                                        +
-                                    </button>
-                                    <button type="button"
-                                            th:data-item-name="${transaction.getService().getName()}"
-                                            th:data-service-id="${transaction.getService().getId()}"
-                                            th:data-item-sale-price="${transaction.getService().getServicePrice()}"
-                                            th:data-discount-type="${transaction.getDiscountType()}"
-                                            th:data-discount-amount="${transaction.getDiscountAmount()}"
-                                            onclick="modifyItem(this)"
-                                            data-modal-target="discount-modal" data-modal-toggle="discount-modal"
-                                            class="flex items-center px-3 py-2 text-sm text-gray-500 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400  rounded-lg border border-gray-300 dark:border-gray-700 hover:border-blue-600 dark:hover:border-blue-400 transition">
-
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
-                                             viewBox="0 0 24 24"
-                                             stroke="currentColor" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                  d="M15.232 4.232a1 1 0 011.415 0l3.182 3.182a1 1 0 010 1.415l-9.9 9.9a1 1 0 01-.415.263l-3.993 1.033a.25.25 0 01-.307-.308l1.034-3.992a1 1 0 01.263-.415l9.9-9.9z"/>
-                                        </svg>
-                                        Edit
-                                    </button>
-                                </div>
-                                <!-- Sales Price Section -->
-                                <div class=" mt-4 bg-gray-50 dark:bg-gray-700 p-5 rounded-lg shadow-inner">
-                                    <div class=" flex justify-between">
-                                        <p class="text-gray-600 dark:text-gray-300 font-medium">Sales Price (₹)</p>
-                                        <p id="itemPriceService" class="font-bold text-gray-800 dark:text-gray-100"
-                                           th:data-price="${transaction.getService().getServicePrice()}">₹ 0</p>
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
+                                                 viewBox="0 0 24 24"
+                                                 stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                      d="M15.232 4.232a1 1 0 011.415 0l3.182 3.182a1 1 0 010 1.415l-9.9 9.9a1 1 0 01-.415.263l-3.993 1.033a.25.25 0 01-.307-.308l1.034-3.992a1 1 0 01.263-.415l9.9-9.9z"/>
+                                            </svg>
+                                            Edit
+                                        </button>
                                     </div>
-                                    <hr class="my-3 border-gray-200 dark:border-gray-600">
-                                    <div class="flex justify-between">
-                                        <p class="text-gray-600 dark:text-gray-300 font-medium">Item Discount</p>
-                                        <p id="itemDiscountService" class="text-gray-400 dark:text-gray-500"
-                                           th:data-discount="${transaction.getDiscountAmount()}">--</p>
-                                    </div>
-                                    <div class="flex justify-between mt-3">
-                                        <p class="text-gray-600 dark:text-gray-300 font-medium">Final Price</p>
-                                        <p id="itemFinalPriceService" class="font-bold text-gray-800 dark:text-gray-100"
-                                           th:data-final-price="${transaction.getService().getServicePrice() - transaction.getDiscountAmount()}">
-                                            ₹ 56</p>
-                                    </div>
+                                    <!-- Sales Price Section -->
+                                    <div class=" mt-4 bg-gray-50 dark:bg-gray-700 p-5 rounded-lg shadow-inner">
+                                        <div class=" flex justify-between">
+                                            <p class="text-gray-600 dark:text-gray-300 font-medium">Sales Price (₹)</p>
+                                            <p id="itemPriceService" class="font-bold text-gray-800 dark:text-gray-100"
+                                               th:data-price="${transaction.getService().getServicePrice()}">₹ 0</p>
+                                        </div>
+                                        <hr class="my-3 border-gray-200 dark:border-gray-600">
+                                        <div class="flex justify-between">
+                                            <p class="text-gray-600 dark:text-gray-300 font-medium">Item Discount</p>
+                                            <p id="itemDiscountService" class="text-gray-400 dark:text-gray-500"
+                                               th:data-discount="${transaction.getDiscountAmount()}">--</p>
+                                        </div>
+                                        <div class="flex justify-between mt-3">
+                                            <p class="text-gray-600 dark:text-gray-300 font-medium">Final Price</p>
+                                            <p id="itemFinalPriceService"
+                                               class="font-bold text-gray-800 dark:text-gray-100"
+                                               th:data-final-price="${transaction.getService().getServicePrice() - transaction.getDiscountAmount()}">
+                                                ₹ 56</p>
+                                        </div>
 
+                                    </div>
                                 </div>
                             </div>
 
@@ -234,16 +247,34 @@
         function increaseBtn(element) {
             let quantity = element.parentElement.getElementsByClassName('quantity')[0];
             quantity.value = parseInt(quantity.value) + 1;
-
-
         }
 
         function decreaseBtn(element) {
             let quantity = element.parentElement.getElementsByClassName('quantity')[0];
+            let addBtn = element.parentElement.parentElement.parentElement.getElementsByClassName('addBtn')[0];
+            const quantityLayout = element.parentElement.parentElement;
+            console.log('quantityLayout' + quantityLayout);
             if (parseInt(quantity.value) > 0) {
                 quantity.value = parseInt(quantity.value) - 1;
             }
+            if (parseInt(quantity.value) === 0) {
+                console.log('val == 0  quantityLayout: ' + quantityLayout.style.display);
 
+                addBtn.style.display = '';
+                quantityLayout.style.display = 'none';
+            }
+            console.log('val == 0  updated quantityLayout: ' + quantityLayout.style.display);
+
+        }
+    </script>
+
+    <script>
+        function quantityLayoutSet(element) {
+            let quantityLayout = element.parentElement.getElementsByClassName('QuantitySelectedLayout')[0];
+            let addBtn = element.getElementsByClassName('addBtn')[0];
+            addBtn.style.display = 'none';
+            quantityLayout.style.display = '';
+            increaseBtn(element.parentElement.getElementsByClassName('plus')[0]);
         }
     </script>
 

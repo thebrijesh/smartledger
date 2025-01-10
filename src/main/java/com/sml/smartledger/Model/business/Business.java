@@ -3,6 +3,7 @@ package com.sml.smartledger.Model.business;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sml.smartledger.Model.BaseModel;
 import com.sml.smartledger.Model.User;
+import com.sml.smartledger.Model.bill.AdditionalCharges;
 import com.sml.smartledger.Model.bill.Bill;
 import com.sml.smartledger.Model.bill.CustomFields;
 import com.sml.smartledger.Model.inventory.Product;
@@ -57,8 +58,15 @@ public class Business extends BaseModel implements Serializable {
     @OneToMany(mappedBy = "business", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     List<Service> services = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "business", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    List<AdditionalCharges> additionalCharges = new ArrayList<>();
+    @Builder.Default
+    @OneToMany(mappedBy = "business", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    List<CustomFields> customFields = new ArrayList<>();
+
     @ElementCollection
-    List<String> customFields = new ArrayList<>();
+    List<String> termsAndConditions;
     private String logo;
 
     double totalCredit;

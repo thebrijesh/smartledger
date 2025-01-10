@@ -22,6 +22,7 @@
                     <div class="mb-4 sm:mb-0">
                         <span class="text-gray-500 dark:text-gray-400 text-sm">Sale Bill Number</span>
                         <h2 class="text-2xl font-semibold text-blue-600 dark:text-blue-400">14</h2>
+                        <p id="billtype" data-th-text="${billType}" class="hidden"> </p>
                     </div>
                     <button class="text-blue-600 dark:text-blue-400 text-sm flex items-center space-x-1">
                         <i data-feather="edit" class="w-4 h-4"></i>
@@ -97,51 +98,199 @@
                 </div>
 
 
-                <div class="selectedItemView border-t pt-4 dark:border-gray-600">
+                <div class="selectedItemView">
                 </div>
 
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-t py-4 dark:border-gray-600">
+                <div id="editOrAddItemLayout" style="display:none"
+                     class="flex flex-col w-full sm:flex-row justify-between items-start sm:items-center border-t py-4 dark:border-gray-600">
                     <button data-drawer-target="drawer-right-add-item"
                             data-drawer-show="drawer-right-add-item"
                             aria-controls="drawer-right-add-item"
                             data-drawer-placement="right"
                             class="text-blue-600 dark:text-blue-400 text-sm flex items-center space-x-1 mb-4 sm:mb-0">
-                        <i data-feather="edit-2" class="w-4 h-4"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                             viewBox="0 0 24 24"
+                             stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M15.232 4.232a1 1 0 011.415 0l3.182 3.182a1 1 0 010 1.415l-9.9 9.9a1 1 0 01-.415.263l-3.993 1.033a.25.25 0 01-.307-.308l1.034-3.992a1 1 0 01.263-.415l9.9-9.9z"/>
+                        </svg>
                         <span>Edit or Add Items</span>
                     </button>
-                    <p class="font-semibold text-gray-800 dark:text-gray-200">Item Sub-Total: &#8377; <span
-                            id="totalAmount"></span></p>
+                    <div class="flex justify-between">
+                        <p class="font-semibold text-gray-800 dark:text-gray-200">Item Sub-Total: &#8377; </p>
+                        <p id="totalAmount"></p>
+                    </div>
                 </div>
 
-                <div class="mb-4">
-                    <div class="flex flex-col sm:flex-row justify-between mb-4">
-                        <label class="flex items-center space-x-2 mb-2 sm:mb-0">
-                            <input type="radio" name="payment"
-                                   class="form-radio text-blue-500 dark:bg-gray-700 dark:border-gray-600">
-                            <span class="text-sm text-gray-800 dark:text-gray-200">Unpaid</span>
-                        </label>
+                <div id="AdditionalChargesLayout" style="display:none"
+                     class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-y  dark:border-gray-600 w-full">
+                    <div class="flex-col w-full">
+                        <button data-modal-target="charges-modal" data-modal-toggle="charges-modal"
+                                class="text-gray-800 dark:text-gray-200 text-sm flex items-center space-x-1 py-4 sm:mb-0 w-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" x="0" y="0"
+                                 viewBox="0 0 64 64" xml:space="preserve"><g><g fill="currentColor"><path d="M56.526 16.467H7.474a2.317 2.317 0 0 0-2.316 2.316v26.433a2.317 2.317 0 0 0 2.316 2.316h49.052a2.317 2.317 0 0 0 2.316-2.316V18.783a2.317 2.317 0 0 0-2.316-2.316zm-.409 28.341H7.883V19.192h48.234z" fill="currentColor"></path><path
+                                    d="M32 21.1c-6.02 0-10.9 4.881-10.9 10.9S25.98 42.9 32 42.9 42.9 38.02 42.9 32 38.02 21.1 32 21.1zm4.712 15.849a4.048 4.048 0 0 1-1.215 1.463 5.522 5.522 0 0 1-1.859.883 7.368 7.368 0 0 1-.875.185v1.278h-1.676v-1.172a9.04 9.04 0 0 1-1.215-.109 8.654 8.654 0 0 1-1.232-.289 6.163 6.163 0 0 1-.905-.354 2.267 2.267 0 0 1-.529-.338c-.112-.106-.196-.273-.256-.499s-.09-.561-.09-1.006c0-.292.008-.526.03-.7.019-.177.049-.319.09-.422.041-.106.09-.177.15-.213a.445.445 0 0 1 .226-.052c.112 0 .275.063.491.188.218.125.488.264.809.414.322.153.698.292 1.125.422.428.131.913.196 1.455.196.343 0 .646-.033.913-.104s.499-.172.695-.302c.196-.131.346-.297.447-.499s.15-.433.15-.695c0-.302-.093-.561-.278-.777-.188-.218-.433-.406-.741-.567s-.654-.311-1.041-.452a27.587 27.587 0 0 1-1.194-.469 11.252 11.252 0 0 1-1.191-.589 4.52 4.52 0 0 1-1.044-.815 3.72 3.72 0 0 1-.739-1.164c-.188-.452-.281-.995-.281-1.63 0-.643.125-1.234.379-1.774a3.878 3.878 0 0 1 1.087-1.382c.471-.382 1.049-.679 1.728-.891.302-.093.624-.166.959-.218v-1.259h1.676v1.169a8.961 8.961 0 0 1 1.962.308c.322.09.594.191.815.294.221.106.382.196.477.273.095.076.164.15.202.226a.993.993 0 0 1 .093.273c.019.106.038.237.052.392.016.155.022.349.022.58 0 .273-.005.493-.022.665a1.698 1.698 0 0 1-.076.409c-.035.098-.082.166-.142.202a.416.416 0 0 1-.213.055c-.09 0-.232-.055-.422-.158-.191-.106-.431-.221-.717-.341s-.619-.234-.997-.341a4.768 4.768 0 0 0-1.289-.158c-.343 0-.64.035-.891.106a1.705 1.705 0 0 0-.619.302 1.212 1.212 0 0 0-.362.461 1.316 1.316 0 0 0-.123.564c0 .313.095.575.289.785.191.213.441.398.755.559.311.164.665.313 1.063.455.398.139.801.294 1.207.461.409.166.812.36 1.21.58a4.58 4.58 0 0 1 1.063.815c.313.322.564.709.755 1.155.191.447.286.978.286 1.591.001.771-.141 1.447-.427 2.03z"
+                                    fill="currentColor"></path><circle cx="13.333" cy="32" r="3.633"
+                                                                       fill="currentColor"></circle><circle cx="50.667"
+                                                                                                            cy="32"
+                                                                                                            r="3.633"
+                                                                                                            fill="currentColor"></circle><path
+                                    d="M56.526 16.467H7.474a2.317 2.317 0 0 0-2.316 2.316v26.433a2.317 2.317 0 0 0 2.316 2.316h49.052a2.317 2.317 0 0 0 2.316-2.316V18.783a2.317 2.317 0 0 0-2.316-2.316zm-.409 28.341H7.883V19.192h48.234z"
+                                    fill="currentColor"></path><path
+                                    d="M32 21.1c-6.02 0-10.9 4.881-10.9 10.9S25.98 42.9 32 42.9 42.9 38.02 42.9 32 38.02 21.1 32 21.1zm4.712 15.849a4.048 4.048 0 0 1-1.215 1.463 5.522 5.522 0 0 1-1.859.883 7.368 7.368 0 0 1-.875.185v1.278h-1.676v-1.172a9.04 9.04 0 0 1-1.215-.109 8.654 8.654 0 0 1-1.232-.289 6.163 6.163 0 0 1-.905-.354 2.267 2.267 0 0 1-.529-.338c-.112-.106-.196-.273-.256-.499s-.09-.561-.09-1.006c0-.292.008-.526.03-.7.019-.177.049-.319.09-.422.041-.106.09-.177.15-.213a.445.445 0 0 1 .226-.052c.112 0 .275.063.491.188.218.125.488.264.809.414.322.153.698.292 1.125.422.428.131.913.196 1.455.196.343 0 .646-.033.913-.104s.499-.172.695-.302c.196-.131.346-.297.447-.499s.15-.433.15-.695c0-.302-.093-.561-.278-.777-.188-.218-.433-.406-.741-.567s-.654-.311-1.041-.452a27.587 27.587 0 0 1-1.194-.469 11.252 11.252 0 0 1-1.191-.589 4.52 4.52 0 0 1-1.044-.815 3.72 3.72 0 0 1-.739-1.164c-.188-.452-.281-.995-.281-1.63 0-.643.125-1.234.379-1.774a3.878 3.878 0 0 1 1.087-1.382c.471-.382 1.049-.679 1.728-.891.302-.093.624-.166.959-.218v-1.259h1.676v1.169a8.961 8.961 0 0 1 1.962.308c.322.09.594.191.815.294.221.106.382.196.477.273.095.076.164.15.202.226a.993.993 0 0 1 .093.273c.019.106.038.237.052.392.016.155.022.349.022.58 0 .273-.005.493-.022.665a1.698 1.698 0 0 1-.076.409c-.035.098-.082.166-.142.202a.416.416 0 0 1-.213.055c-.09 0-.232-.055-.422-.158-.191-.106-.431-.221-.717-.341s-.619-.234-.997-.341a4.768 4.768 0 0 0-1.289-.158c-.343 0-.64.035-.891.106a1.705 1.705 0 0 0-.619.302 1.212 1.212 0 0 0-.362.461 1.316 1.316 0 0 0-.123.564c0 .313.095.575.289.785.191.213.441.398.755.559.311.164.665.313 1.063.455.398.139.801.294 1.207.461.409.166.812.36 1.21.58a4.58 4.58 0 0 1 1.063.815c.313.322.564.709.755 1.155.191.447.286.978.286 1.591.001.771-.141 1.447-.427 2.03z"
+                                    fill="currentColor"></path><circle cx="13.333" cy="32" r="3.633"
+                                                                       fill="currentColor"></circle><circle cx="50.667"
+                                                                                                            cy="32"
+                                                                                                            r="3.633"
+                                                                                                            fill="currentColor"></circle></g></g></svg>
+                            <span>Additional Charges</span>
+                        </button>
 
-                        <label class="flex items-center space-x-2 mb-2 sm:mb-0">
-                            <input type="radio" name="payment"
-                                   class="form-radio text-blue-500 dark:bg-gray-700 dark:border-gray-600">
-                            <span class="text-sm text-gray-800 dark:text-gray-200">Cash</span>
-                        </label>
-
-                        <label class="flex items-center space-x-2">
-                            <input type="radio" name="payment"
-                                   class="form-radio text-blue-500 dark:bg-gray-700 dark:border-gray-600">
-                            <span class="text-sm text-gray-800 dark:text-gray-200">Online</span>
-                        </label>
+                        <div id="AdditionalChargeRow"></div>
                     </div>
+                    <p id="totalCharges" class="hidden">0</p>
+                </div>
+
+                <div id="DiscountLayout" style="display:none"
+                     class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b  dark:border-gray-600 w-full">
+                    <div class="flex-col w-full">
+                        <button data-modal-target="total-discount-modal" data-modal-toggle="total-discount-modal"
+                                class="text-gray-800 dark:text-gray-200 text-sm flex items-center space-x-1 py-4 sm:mb-0 w-full">
+                            + ADD DISCOUNT
+                        </button>
+
+                        <div id="AddDiscount"></div>
+                    </div>
+                </div>
+
+                <div id="SelectDiscountLayout" style="display:none"
+                     class="flex flex-col w-full sm:flex-row justify-between items-start sm:items-center border-t py-4 dark:border-gray-600">
+                    <button data-modal-target="total-discount-modal" data-modal-toggle="total-discount-modal"
+                            class="text-blue-600 dark:text-blue-400 text-sm flex items-center space-x-1 mb-4 sm:mb-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                             viewBox="0 0 24 24"
+                             stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M15.232 4.232a1 1 0 011.415 0l3.182 3.182a1 1 0 010 1.415l-9.9 9.9a1 1 0 01-.415.263l-3.993 1.033a.25.25 0 01-.307-.308l1.034-3.992a1 1 0 01.263-.415l9.9-9.9z"/>
+                        </svg>
+                        <span>Discount</span>
+                    </button>
+                    <div class="flex justify-between">
+                        <p class="font-semibold text-gray-800 dark:text-gray-200">&#8377; </p>
+                        <p id="totalDiscount">0</p>
+                    </div>
+                </div>
+
+
+                <div class="border-b py-4 dark:border-gray-600 w-full">
 
                     <div class="flex justify-between">
-                        <p class="text-gray-500 dark:text-gray-400">Balance Due:</p>
-                        <p class="font-semibold text-gray-800 dark:text-gray-200">&#8377; 0</p>
+                        <p>Sale Bill Amount</p>
+                        <p class="text-black dark:text-white text-2xl font-semibold">₹ <span
+                                id="finalPayableBillAmount">0</span></p>
+                    </div>
+
+                </div>
+
+                <div id="CustomFieldsLayout" style="display:none"
+                     class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-y  dark:border-gray-600 w-full">
+                    <div class="flex-col w-full">
+                        <button data-modal-target="custom-fields-modal" data-modal-toggle="custom-fields-modal"
+                                class="text-gray-800 dark:text-gray-200 text-sm flex items-center space-x-1 py-4 sm:mb-0 w-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" x="0" y="0"
+                                 viewBox="0 0 64 64" xml:space="preserve"><g><g fill="currentColor"><path d="M56.526 16.467H7.474a2.317 2.317 0 0 0-2.316 2.316v26.433a2.317 2.317 0 0 0 2.316 2.316h49.052a2.317 2.317 0 0 0 2.316-2.316V18.783a2.317 2.317 0 0 0-2.316-2.316zm-.409 28.341H7.883V19.192h48.234z" fill="currentColor"></path><path
+                                    d="M32 21.1c-6.02 0-10.9 4.881-10.9 10.9S25.98 42.9 32 42.9 42.9 38.02 42.9 32 38.02 21.1 32 21.1zm4.712 15.849a4.048 4.048 0 0 1-1.215 1.463 5.522 5.522 0 0 1-1.859.883 7.368 7.368 0 0 1-.875.185v1.278h-1.676v-1.172a9.04 9.04 0 0 1-1.215-.109 8.654 8.654 0 0 1-1.232-.289 6.163 6.163 0 0 1-.905-.354 2.267 2.267 0 0 1-.529-.338c-.112-.106-.196-.273-.256-.499s-.09-.561-.09-1.006c0-.292.008-.526.03-.7.019-.177.049-.319.09-.422.041-.106.09-.177.15-.213a.445.445 0 0 1 .226-.052c.112 0 .275.063.491.188.218.125.488.264.809.414.322.153.698.292 1.125.422.428.131.913.196 1.455.196.343 0 .646-.033.913-.104s.499-.172.695-.302c.196-.131.346-.297.447-.499s.15-.433.15-.695c0-.302-.093-.561-.278-.777-.188-.218-.433-.406-.741-.567s-.654-.311-1.041-.452a27.587 27.587 0 0 1-1.194-.469 11.252 11.252 0 0 1-1.191-.589 4.52 4.52 0 0 1-1.044-.815 3.72 3.72 0 0 1-.739-1.164c-.188-.452-.281-.995-.281-1.63 0-.643.125-1.234.379-1.774a3.878 3.878 0 0 1 1.087-1.382c.471-.382 1.049-.679 1.728-.891.302-.093.624-.166.959-.218v-1.259h1.676v1.169a8.961 8.961 0 0 1 1.962.308c.322.09.594.191.815.294.221.106.382.196.477.273.095.076.164.15.202.226a.993.993 0 0 1 .093.273c.019.106.038.237.052.392.016.155.022.349.022.58 0 .273-.005.493-.022.665a1.698 1.698 0 0 1-.076.409c-.035.098-.082.166-.142.202a.416.416 0 0 1-.213.055c-.09 0-.232-.055-.422-.158-.191-.106-.431-.221-.717-.341s-.619-.234-.997-.341a4.768 4.768 0 0 0-1.289-.158c-.343 0-.64.035-.891.106a1.705 1.705 0 0 0-.619.302 1.212 1.212 0 0 0-.362.461 1.316 1.316 0 0 0-.123.564c0 .313.095.575.289.785.191.213.441.398.755.559.311.164.665.313 1.063.455.398.139.801.294 1.207.461.409.166.812.36 1.21.58a4.58 4.58 0 0 1 1.063.815c.313.322.564.709.755 1.155.191.447.286.978.286 1.591.001.771-.141 1.447-.427 2.03z"
+                                    fill="currentColor"></path><circle cx="13.333" cy="32" r="3.633"
+                                                                       fill="currentColor"></circle><circle cx="50.667"
+                                                                                                            cy="32"
+                                                                                                            r="3.633"
+                                                                                                            fill="currentColor"></circle><path
+                                    d="M56.526 16.467H7.474a2.317 2.317 0 0 0-2.316 2.316v26.433a2.317 2.317 0 0 0 2.316 2.316h49.052a2.317 2.317 0 0 0 2.316-2.316V18.783a2.317 2.317 0 0 0-2.316-2.316zm-.409 28.341H7.883V19.192h48.234z"
+                                    fill="currentColor"></path><path
+                                    d="M32 21.1c-6.02 0-10.9 4.881-10.9 10.9S25.98 42.9 32 42.9 42.9 38.02 42.9 32 38.02 21.1 32 21.1zm4.712 15.849a4.048 4.048 0 0 1-1.215 1.463 5.522 5.522 0 0 1-1.859.883 7.368 7.368 0 0 1-.875.185v1.278h-1.676v-1.172a9.04 9.04 0 0 1-1.215-.109 8.654 8.654 0 0 1-1.232-.289 6.163 6.163 0 0 1-.905-.354 2.267 2.267 0 0 1-.529-.338c-.112-.106-.196-.273-.256-.499s-.09-.561-.09-1.006c0-.292.008-.526.03-.7.019-.177.049-.319.09-.422.041-.106.09-.177.15-.213a.445.445 0 0 1 .226-.052c.112 0 .275.063.491.188.218.125.488.264.809.414.322.153.698.292 1.125.422.428.131.913.196 1.455.196.343 0 .646-.033.913-.104s.499-.172.695-.302c.196-.131.346-.297.447-.499s.15-.433.15-.695c0-.302-.093-.561-.278-.777-.188-.218-.433-.406-.741-.567s-.654-.311-1.041-.452a27.587 27.587 0 0 1-1.194-.469 11.252 11.252 0 0 1-1.191-.589 4.52 4.52 0 0 1-1.044-.815 3.72 3.72 0 0 1-.739-1.164c-.188-.452-.281-.995-.281-1.63 0-.643.125-1.234.379-1.774a3.878 3.878 0 0 1 1.087-1.382c.471-.382 1.049-.679 1.728-.891.302-.093.624-.166.959-.218v-1.259h1.676v1.169a8.961 8.961 0 0 1 1.962.308c.322.09.594.191.815.294.221.106.382.196.477.273.095.076.164.15.202.226a.993.993 0 0 1 .093.273c.019.106.038.237.052.392.016.155.022.349.022.58 0 .273-.005.493-.022.665a1.698 1.698 0 0 1-.076.409c-.035.098-.082.166-.142.202a.416.416 0 0 1-.213.055c-.09 0-.232-.055-.422-.158-.191-.106-.431-.221-.717-.341s-.619-.234-.997-.341a4.768 4.768 0 0 0-1.289-.158c-.343 0-.64.035-.891.106a1.705 1.705 0 0 0-.619.302 1.212 1.212 0 0 0-.362.461 1.316 1.316 0 0 0-.123.564c0 .313.095.575.289.785.191.213.441.398.755.559.311.164.665.313 1.063.455.398.139.801.294 1.207.461.409.166.812.36 1.21.58a4.58 4.58 0 0 1 1.063.815c.313.322.564.709.755 1.155.191.447.286.978.286 1.591.001.771-.141 1.447-.427 2.03z"
+                                    fill="currentColor"></path><circle cx="13.333" cy="32" r="3.633"
+                                                                       fill="currentColor"></circle><circle cx="50.667"
+                                                                                                            cy="32"
+                                                                                                            r="3.633"
+                                                                                                            fill="currentColor"></circle></g></g></svg>
+                            <span>Custom Fields</span>
+                        </button>
+
+                        <div id="CustomFieldsRow"></div>
+                    </div>
+                </div>
+                <div id="TermsAndConditionFieldsLayout" style="display:none"
+                     class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-y  dark:border-gray-600 w-full">
+                    <div class="flex-col w-full">
+                        <button data-modal-target="terms-condition-modal" data-modal-toggle="terms-condition-modal"
+                                class="text-gray-800 dark:text-gray-200 text-sm flex items-center space-x-1 py-4 sm:mb-0 w-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" x="0" y="0"
+                                 viewBox="0 0 64 64" xml:space="preserve"><g><g fill="currentColor"><path d="M56.526 16.467H7.474a2.317 2.317 0 0 0-2.316 2.316v26.433a2.317 2.317 0 0 0 2.316 2.316h49.052a2.317 2.317 0 0 0 2.316-2.316V18.783a2.317 2.317 0 0 0-2.316-2.316zm-.409 28.341H7.883V19.192h48.234z" fill="currentColor"></path><path
+                                    d="M32 21.1c-6.02 0-10.9 4.881-10.9 10.9S25.98 42.9 32 42.9 42.9 38.02 42.9 32 38.02 21.1 32 21.1zm4.712 15.849a4.048 4.048 0 0 1-1.215 1.463 5.522 5.522 0 0 1-1.859.883 7.368 7.368 0 0 1-.875.185v1.278h-1.676v-1.172a9.04 9.04 0 0 1-1.215-.109 8.654 8.654 0 0 1-1.232-.289 6.163 6.163 0 0 1-.905-.354 2.267 2.267 0 0 1-.529-.338c-.112-.106-.196-.273-.256-.499s-.09-.561-.09-1.006c0-.292.008-.526.03-.7.019-.177.049-.319.09-.422.041-.106.09-.177.15-.213a.445.445 0 0 1 .226-.052c.112 0 .275.063.491.188.218.125.488.264.809.414.322.153.698.292 1.125.422.428.131.913.196 1.455.196.343 0 .646-.033.913-.104s.499-.172.695-.302c.196-.131.346-.297.447-.499s.15-.433.15-.695c0-.302-.093-.561-.278-.777-.188-.218-.433-.406-.741-.567s-.654-.311-1.041-.452a27.587 27.587 0 0 1-1.194-.469 11.252 11.252 0 0 1-1.191-.589 4.52 4.52 0 0 1-1.044-.815 3.72 3.72 0 0 1-.739-1.164c-.188-.452-.281-.995-.281-1.63 0-.643.125-1.234.379-1.774a3.878 3.878 0 0 1 1.087-1.382c.471-.382 1.049-.679 1.728-.891.302-.093.624-.166.959-.218v-1.259h1.676v1.169a8.961 8.961 0 0 1 1.962.308c.322.09.594.191.815.294.221.106.382.196.477.273.095.076.164.15.202.226a.993.993 0 0 1 .093.273c.019.106.038.237.052.392.016.155.022.349.022.58 0 .273-.005.493-.022.665a1.698 1.698 0 0 1-.076.409c-.035.098-.082.166-.142.202a.416.416 0 0 1-.213.055c-.09 0-.232-.055-.422-.158-.191-.106-.431-.221-.717-.341s-.619-.234-.997-.341a4.768 4.768 0 0 0-1.289-.158c-.343 0-.64.035-.891.106a1.705 1.705 0 0 0-.619.302 1.212 1.212 0 0 0-.362.461 1.316 1.316 0 0 0-.123.564c0 .313.095.575.289.785.191.213.441.398.755.559.311.164.665.313 1.063.455.398.139.801.294 1.207.461.409.166.812.36 1.21.58a4.58 4.58 0 0 1 1.063.815c.313.322.564.709.755 1.155.191.447.286.978.286 1.591.001.771-.141 1.447-.427 2.03z"
+                                    fill="currentColor"></path><circle cx="13.333" cy="32" r="3.633"
+                                                                       fill="currentColor"></circle><circle cx="50.667"
+                                                                                                            cy="32"
+                                                                                                            r="3.633"
+                                                                                                            fill="currentColor"></circle><path
+                                    d="M56.526 16.467H7.474a2.317 2.317 0 0 0-2.316 2.316v26.433a2.317 2.317 0 0 0 2.316 2.316h49.052a2.317 2.317 0 0 0 2.316-2.316V18.783a2.317 2.317 0 0 0-2.316-2.316zm-.409 28.341H7.883V19.192h48.234z"
+                                    fill="currentColor"></path><path
+                                    d="M32 21.1c-6.02 0-10.9 4.881-10.9 10.9S25.98 42.9 32 42.9 42.9 38.02 42.9 32 38.02 21.1 32 21.1zm4.712 15.849a4.048 4.048 0 0 1-1.215 1.463 5.522 5.522 0 0 1-1.859.883 7.368 7.368 0 0 1-.875.185v1.278h-1.676v-1.172a9.04 9.04 0 0 1-1.215-.109 8.654 8.654 0 0 1-1.232-.289 6.163 6.163 0 0 1-.905-.354 2.267 2.267 0 0 1-.529-.338c-.112-.106-.196-.273-.256-.499s-.09-.561-.09-1.006c0-.292.008-.526.03-.7.019-.177.049-.319.09-.422.041-.106.09-.177.15-.213a.445.445 0 0 1 .226-.052c.112 0 .275.063.491.188.218.125.488.264.809.414.322.153.698.292 1.125.422.428.131.913.196 1.455.196.343 0 .646-.033.913-.104s.499-.172.695-.302c.196-.131.346-.297.447-.499s.15-.433.15-.695c0-.302-.093-.561-.278-.777-.188-.218-.433-.406-.741-.567s-.654-.311-1.041-.452a27.587 27.587 0 0 1-1.194-.469 11.252 11.252 0 0 1-1.191-.589 4.52 4.52 0 0 1-1.044-.815 3.72 3.72 0 0 1-.739-1.164c-.188-.452-.281-.995-.281-1.63 0-.643.125-1.234.379-1.774a3.878 3.878 0 0 1 1.087-1.382c.471-.382 1.049-.679 1.728-.891.302-.093.624-.166.959-.218v-1.259h1.676v1.169a8.961 8.961 0 0 1 1.962.308c.322.09.594.191.815.294.221.106.382.196.477.273.095.076.164.15.202.226a.993.993 0 0 1 .093.273c.019.106.038.237.052.392.016.155.022.349.022.58 0 .273-.005.493-.022.665a1.698 1.698 0 0 1-.076.409c-.035.098-.082.166-.142.202a.416.416 0 0 1-.213.055c-.09 0-.232-.055-.422-.158-.191-.106-.431-.221-.717-.341s-.619-.234-.997-.341a4.768 4.768 0 0 0-1.289-.158c-.343 0-.64.035-.891.106a1.705 1.705 0 0 0-.619.302 1.212 1.212 0 0 0-.362.461 1.316 1.316 0 0 0-.123.564c0 .313.095.575.289.785.191.213.441.398.755.559.311.164.665.313 1.063.455.398.139.801.294 1.207.461.409.166.812.36 1.21.58a4.58 4.58 0 0 1 1.063.815c.313.322.564.709.755 1.155.191.447.286.978.286 1.591.001.771-.141 1.447-.427 2.03z"
+                                    fill="currentColor"></path><circle cx="13.333" cy="32" r="3.633"
+                                                                       fill="currentColor"></circle><circle cx="50.667"
+                                                                                                            cy="32"
+                                                                                                            r="3.633"
+                                                                                                            fill="currentColor"></circle></g></g></svg>
+                            <span>Terms & Condition</span>
+                        </button>
+
+                        <div id="TermsAndConditionFieldsRow"></div>
+                    </div>
+                </div>
+                <div class="w-full  bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-200 dark:border-gray-700 mx-4 sm:mx-0">
+                    <!-- Payment Methods -->
+                    <div id="paymentMethodLayout" class="flex flex-col sm:flex-row justify-between mb-4 gap-3 sm:gap-0">
+                        <label class="flex items-center space-x-2 group">
+                            <input type="radio" name="payment_method" value="unpaid"
+                                   class="w-4 h-4 text-blue-600 focus:ring-blue-500 group-hover:scale-110 transition duration-200">
+                            <span class="text-gray-700 dark:text-gray-300 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition duration-200">Unpaid</span>
+                        </label>
+                        <label class="flex items-center space-x-2 group">
+                            <input type="radio" name="payment_method" value="cash"
+                                   class="w-4 h-4 text-blue-600 focus:ring-blue-500 group-hover:scale-110 transition duration-200">
+                            <span class="text-gray-700 dark:text-gray-300 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition duration-200">Cash</span>
+                        </label>
+                        <label class="flex items-center space-x-2 group">
+                            <input type="radio" name="payment_method" value="online"
+                                   class="w-4 h-4 text-blue-600 focus:ring-blue-500 group-hover:scale-110 transition duration-200">
+                            <span class="text-gray-700 dark:text-gray-300 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition duration-200">Online</span>
+                        </label>
+                    </div>
+
+                    <!-- Notes/Reference -->
+                    <div id="dueDateLayout" style="display: none" class="mb-4">
+                        <a href="#"
+                           class="text-blue-500 dark:text-blue-400 text-sm hover:underline hover:text-blue-700 dark:hover:text-blue-300 transition duration-200">+
+                            DUE DATE</a>
+                    </div>
+
+                    <!-- Received Section -->
+                    <div id="receivedLayout" style="display: none"
+                         class="mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
+                        <label for="received" class="text-gray-700 dark:text-gray-300 text-sm">Received</label>
+                        <input type="number" id="received"
+                               class="w-full sm:w-24 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 hover:border-blue-400 dark:hover:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200"
+                               value="0.0">
+                    </div>
+
+                    <!-- Balance Due -->
+                    <div class="flex justify-between items-center mb-6">
+                        <span class="text-gray-700 dark:text-gray-300 text-sm">Balance Due</span>
+                        <span id="balanceDue" class="text-gray-900 dark:text-gray-200 text-sm font-medium">₹ 0</span>
                     </div>
                 </div>
 
-                <button class="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 rounded-lg font-semibold shadow-md hover:from-blue-600 hover:to-blue-700 transition dark:from-blue-700 dark:to-blue-800 dark:hover:from-blue-800 dark:hover:to-blue-900">
-                    Generate Sale Bill &#8377; 280
+                <button id="generateBillBtn" class="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 rounded-lg font-semibold shadow-md hover:from-blue-600 hover:to-blue-700 transition dark:from-blue-700 dark:to-blue-800 dark:hover:from-blue-800 dark:hover:to-blue-900">
+                    Generate Sale Bill &#8377; <span id="finalBillAmount">0 </span>
                 </button>
             </div>
         </div>
@@ -150,318 +299,16 @@
     <div th:replace="~{user/bill/select_party_drawer ::selectParty}"></div>
     <div th:replace="~{user/bill/add_party_bill_drawer ::addPartyBillDrawer}"></div>
     <div th:replace="~{user/bill/select_item_drawer ::addItemBillDrawer}"></div>
+    <div th:replace="~{user/bill/charges_modal ::charges_modal}"></div>
+    <div th:replace="~{user/bill/totalDiscountModal ::total_discount_modal}"></div>
+    <div th:replace="~{user/bill/custom_fields_modal :: custom_fields_modal}"></div>
+    <div th:replace="~{user/bill/terms_condition_modal :: terms_condition_modal}"></div>
 
 
 </div>
 <script>console.log("Dashboard")</script>
-<script>
+<script data-th-src="@{/js/addBill.js}"></script>
 
-    function setPartyData(element) {
-
-        const colorMap = {
-            A: "bg-yellow-500",
-            B: "bg-blue-500",
-            C: "bg-green-500",
-            D: "bg-yellow-500",
-            E: "bg-indigo-500",
-            F: "bg-pink-500",
-            G: "bg-purple-500",
-            H: "bg-gray-500",
-            I: "bg-red-500",
-            J: "bg-blue-500",
-            K: "bg-green-500",
-            L: "bg-yellow-500",
-            M: "bg-indigo-500",
-            N: "bg-pink-500",
-            O: "bg-purple-500",
-            P: "bg-gray-500",
-            Q: "bg-red-500",
-            R: "bg-blue-500",
-            S: "bg-green-500",
-            T: "bg-yellow-500",
-            U: "bg-indigo-500",
-            V: "bg-pink-500",
-            W: "bg-purple-500",
-            X: "bg-gray-500",
-            Y: "bg-red-500",
-            Z: "bg-blue-500",
-        };
-        const partyName = element.getAttribute('data-name');
-        const partyMobile = element.getAttribute('data-mobile');
-        const partyId = element.getAttribute('data-id');
-        const firstChar = partyName.charAt(0).toUpperCase();
-        const bgColor = colorMap[firstChar] || "bg-gray-500";
-        const div = document.createElement("div");
-        div.className = `w-12 h-12 text-black dark:text-white size-4 rounded-full flex justify-center items-center font-medium shadow-md transition-transform transform hover:scale-105 ${bgColor}`;
-        div.innerHTML = `<span class="text-xl">${firstChar}</span>`;
-
-        document.getElementById('firstChar').appendChild(div);
-        document.getElementById('partyName').textContent = partyName;
-        document.getElementById('partyMobile').textContent = partyMobile;
-        document.getElementById('partyId').value = partyId;
-
-        document.getElementById('drawer-right-select-party');
-        document.getElementById('noPartySelectedLayout').style.display = 'none';
-        document.getElementById('showSelectedPartyLayout').style.display = 'block';
-    }
-</script>
-<script>
-    function removeParty() {
-        document.getElementById('firstChar').innerHTML = '';
-        document.getElementById('noPartySelectedLayout').style.display = 'block';
-        document.getElementById('showSelectedPartyLayout').style.display = 'none';
-        document.getElementById('partyId').value = '';
-    }
-</script>
-
-
-<script>
-
-    let currItem;
-
-    function modifyItem(element) {
-        currItem = element;
-        const productId = element.getAttribute('data-product-id');
-        const serviceId = element.getAttribute('data-service-id');
-        const productName = element.getAttribute('data-item-name');
-        const productSalePrice = element.getAttribute('data-item-sale-price');
-        let discountType = element.getAttribute('data-discount-type');
-        let discount = element.getAttribute('data-discount-amount');
-
-        document.getElementById('itemName').textContent = productName;
-        document.getElementById('itemSalePrice').value = parseInt(productSalePrice, 0);
-        document.getElementById('amount').textContent = productSalePrice;
-        document.getElementById('totalCalculatedAmount').textContent = `${productSalePrice - discount}`;
-        document.getElementById('discountAmount').textContent = `${discount}`;
-        if (discountType === 'PERCENTAGE') {
-            discount = (discount * 100) / productSalePrice;
-        }
-        document.getElementById('itemDiscountFromDiscountModel').value = discount;
-        console.log(discountType);
-
-        if (discountType === null) {
-            discountType = 'FLAT';
-        }
-        document.getElementById('discountType').value = discountType;
-        console.log(discountType);
-        const btnSave = document.getElementById('btnSave');
-        btnSave.setAttribute('data-discount-type', discountType);
-        btnSave.setAttribute('data-product-id', productId);
-        btnSave.setAttribute('data-service-id', serviceId);
-    }
-
-    function finalPriceCalculation() {
-        const itemPrice = parseInt(document.getElementById('itemSalePrice').value);
-        let discount = parseInt(document.getElementById('itemDiscountFromDiscountModel').value);
-        const discountType = document.getElementById('discountType').value;
-        let finalPrice = 0, discountAmount = 0;
-        document.getElementById('amount').textContent = `${itemPrice}`;
-        if (discount === null) {
-            discount = 0;
-        }
-        if (discountType === 'PERCENTAGE') {
-            if (discount > 100) {
-                discount = 100;
-            }
-            discountAmount = (itemPrice * discount) / 100;
-        } else {
-            if (discount > itemPrice) {
-                discount = itemPrice;
-            }
-            discountAmount = discount;
-        }
-        document.getElementById('itemDiscount').value = discount;
-
-        finalPrice = itemPrice - discountAmount;
-        document.getElementById('discountAmount').textContent = `${discountAmount}`;
-        document.getElementById('totalCalculatedAmount').textContent = `${finalPrice}` ? `${finalPrice}` : 0;
-        console.log('' + (parseInt(itemPrice, 0) - parseInt(discount ? discount : 0)));
-
-    }
-
-    function editProductTransaction(element) {
-        const productId = element.getAttribute('data-product-id');
-        const serviceId = element.getAttribute('data-service-id');
-        const itemSalePrice = document.getElementById('itemSalePrice').value;
-        const itemDiscount = document.getElementById('discountAmount').textContent;
-        const  discountType = document.getElementById('discountType').value;
-        currItem.setAttribute('data-item-sale-price', itemSalePrice);
-        currItem.setAttribute('data-discount-amount', itemDiscount);
-        currItem.setAttribute('data-discount-type', discountType);
-        console.log("=========" + currItem.getAttribute('data-item-sale-price'));
-
-        //if productId is not null then it is a product
-        if (productId !== 'null') {
-            const productTransactionsList = document.getElementsByClassName('productTransactionsList');
-            Array.from(productTransactionsList).forEach(item => {
-                console.log("item.getAttribute; " + item.getAttribute('data-product-id'));
-                if (item.getAttribute('data-product-id') === productId) {
-                    const itemPrice = item.querySelector('#itemPrice');
-                    const discount = item.querySelector('#itemDiscount');
-                    const finalPrice = item.querySelector('#itemFinalPrice');
-                    const itemAddEditBtnFromDrawer = item.querySelector('#itemAddEditBtnFromDrawer');
-
-                    itemPrice.textContent = '₹ ' + currItem.getAttribute('data-item-sale-price');
-                    itemPrice.setAttribute('data-price', currItem.getAttribute('data-item-sale-price'));
-
-                    discount.textContent = '₹ ' + itemDiscount;
-                    discount.setAttribute('data-discount', itemDiscount);
-
-                    finalPrice.textContent = '₹ ' + (parseInt(itemPrice.getAttribute('data-price'), 0) - parseInt(itemDiscount, 0));
-                    finalPrice.setAttribute('data-final-price', '' + (parseInt(itemPrice.getAttribute('data-price'), 0) - parseInt(itemDiscount, 0)));
-
-
-                    itemAddEditBtnFromDrawer.setAttribute('data-discount-type', document.getElementById('discountType').value);
-                    console.log(itemAddEditBtnFromDrawer.getAttribute('data-discount-type'));
-
-                }
-            });
-        } else {
-            const serviceTransactionsList = document.getElementsByClassName('serviceTransactionsList');
-            Array.from(serviceTransactionsList).forEach(item => {
-                if (item.getAttribute('data-service-id') === serviceId) {
-                    const itemPrice = item.querySelector('#itemPriceService');
-                    const discount = item.querySelector('#itemDiscountService');
-                    const finalPrice = item.querySelector('#itemFinalPriceService');
-                    const itemAddEditBtnFromDrawer = item.querySelector('#itemAddEditBtnFromDrawer');
-
-                    itemPrice.textContent = '₹ ' + currItem.getAttribute('data-item-sale-price');
-                    itemPrice.setAttribute('data-price', currItem.getAttribute('data-item-sale-price'));
-
-                    discount.textContent = '₹ ' + itemDiscount;
-                    discount.setAttribute('data-discount', itemDiscount);
-
-                    finalPrice.textContent = '₹ ' + (parseInt(itemPrice.getAttribute('data-price'), 0) - parseInt(itemDiscount, 0));
-                    finalPrice.setAttribute('data-final-price', '' + (parseInt(itemPrice.getAttribute('data-price'), 0) - parseInt(itemDiscount, 0)));
-
-                    itemAddEditBtnFromDrawer.setAttribute('data-discount-type', document.getElementById('discountType').value);
-                    console.log(itemAddEditBtnFromDrawer.getAttribute('data-discount-type'));
-                }
-            });
-        }
-        element.setAttribute('data-discount-type', null);
-        element.setAttribute('data-product-id', null);
-        element.setAttribute('data-service-id', null);
-
-        document.getElementById('itemSalePrice').value = 0;
-        document.getElementById('discountAmount').textContent = '0';
-        document.getElementById('discountType').value = null;
-
-    }
-
-
-</script>
-
-<script>
-    function setData() {
-
-        const productTransactionsList = document.getElementsByClassName('productTransactionsList');
-        Array.from(productTransactionsList).forEach(item => {
-            const itemPrice = item.querySelector('#itemPrice');
-            const discount = item.querySelector('#itemDiscount');
-            const finalPrice = item.querySelector('#itemFinalPrice');
-            itemPrice.textContent = '₹ ' + itemPrice.getAttribute('data-price');
-            discount.textContent = '₹ ' + discount.getAttribute('data-discount');
-            finalPrice.textContent = '₹ ' + finalPrice.getAttribute('data-final-price');
-        });
-
-        const serviceTransactionsList = document.getElementsByClassName('serviceTransactionsList');
-        Array.from(serviceTransactionsList).forEach(item => {
-            const itemPrice = item.querySelector('#itemPriceService');
-            const discount = item.querySelector('#itemDiscountService');
-            const finalPrice = item.querySelector('#itemFinalPriceService');
-            itemPrice.textContent = '₹ ' + itemPrice.getAttribute('data-price');
-            discount.textContent = '₹ ' + discount.getAttribute('data-discount');
-            finalPrice.textContent = '₹ ' + finalPrice.getAttribute('data-final-price');
-        });
-    }
-</script>
-
-<script>
-    let productTransactions = [];
-
-    function updateList(layout) {
-        if (layout === 'ServicesListLayout') {
-            document.getElementById('servicesListLayout').style.display = '';
-            document.getElementById('productsListLayout').style.display = 'none';
-        } else {
-            document.getElementById('servicesListLayout').style.display = 'none';
-            document.getElementById('productsListLayout').style.display = '';
-        }
-    }
-
-    function addItemsList() {
-        transactions = [];
-        let productTransactionsList = document.getElementsByClassName('productTransactionsList');
-        Array.from(productTransactionsList).forEach(productTransaction => {
-            let quantity = productTransaction.querySelector('.quantity').value;
-            if (parseInt(quantity) > 0) {
-                let product = {
-                    id: productTransaction.getAttribute('data-product-id'),
-                    name: productTransaction.querySelector('#itemName').textContent,
-                    quantity: quantity,
-                    salePrice: productTransaction.querySelector('#itemPrice').textContent,
-                    discount: productTransaction.querySelector('#itemDiscount').textContent,
-                    finalPrice: productTransaction.querySelector('#itemFinalPrice').textContent.split(' ')[1]
-                };
-                transactions.push(product);
-            }
-        });
-        console.log(transactions);
-
-        let serviceTransactionsList = document.getElementsByClassName('serviceTransactionsList');
-        Array.from(serviceTransactionsList).forEach(productTransaction => {
-            let quantity = productTransaction.querySelector('.quantity').value;
-            if (parseInt(quantity) > 0) {
-                let service = {
-                    id: productTransaction.getAttribute('data-product-id'),
-                    name: productTransaction.querySelector('#itemNameService').textContent,
-                    quantity: quantity,
-                    salePrice: productTransaction.querySelector('#itemPriceService').textContent,
-                    discount: productTransaction.querySelector('#itemDiscountService').textContent,
-                    finalPrice: productTransaction.querySelector('#itemFinalPriceService').textContent.split(' ')[1]
-                };
-                transactions.push(service);
-            }
-        });
-        console.log(transactions);
-
-        const itemView = document.getElementById('noItemSelectedLayout');
-
-        itemView.style.display = (transactions.length > 0) ? 'none' : '';
-
-        setProductTransactions();
-    }
-
-    // set the productTransactions data in this view :
-    // <div class="flex justify-between items-center mb-2">
-    // <p className="text-gray-800 dark:text-gray-200">mouse</p>
-    // <p className="text-gray-800 dark:text-gray-200 font-semibold">&#8377; 224</p>
-    // </div>
-    // <p className="text-sm text-gray-500 dark:text-gray-400">4.0 x &#8377; 56</p>
-    //and show this view in the selected item view
-    function setProductTransactions() {
-        const selectedItemView = document.querySelector('.selectedItemView');
-        selectedItemView.innerHTML = '';
-        let totalAmount = 0;
-        transactions.forEach(product => {
-            const div = document.createElement('div');
-            div.className = 'flex justify-between items-center mb-2';
-            div.innerHTML = `<p class="hidden text-gray-800 dark:text-gray-200">${product.id}</p>
-                             <p class="text-gray-800 dark:text-gray-200">${product.name}</p>
-                             <p class="text-gray-800 dark:text-gray-200 font-semibold">&#8377; ${product.finalPrice * product.quantity}</p>`;
-            selectedItemView.appendChild(div);
-            const p = document.createElement('p');
-            p.className = 'text-sm text-gray-500 dark:text-gray-400';
-            p.textContent = `${product.quantity} x ${product.finalPrice}`;
-            totalAmount += product.finalPrice * product.quantity;
-            selectedItemView.appendChild(p);
-        });
-        document.getElementById('totalAmount').textContent = totalAmount;
-    }
-
-
-</script>
 
 </body>
 </html>

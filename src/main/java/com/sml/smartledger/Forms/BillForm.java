@@ -19,8 +19,14 @@ public class BillForm {
     private double amount;
     private String date;
     private String paymentType;
+    private double dueAmount;
+    private double paidAmount;
+    private List<String> terms;
+    private List<chargesForm> additionalCharges;
+    private List<customFieldsForm> customFields;
+    private double totalDiscount;
     private String billType;
-    private List<ProductTransaction> products;
-    private List<ServiceTransaction> services;
+    private List<ProductTransactionForm> products;
+    private List<ServiceTransactionForm> services;
 
 }

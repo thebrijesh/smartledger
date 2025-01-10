@@ -1,0 +1,75 @@
+<div th:fragment="charges_modal" id="charges-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+
+    <div class="max-w-md mx-auto p-6 rounded-lg shadow-lg bg-white dark:bg-gray-800 hover:shadow-2xl transition-shadow duration-300 sm:max-w-lg md:max-w-xl">
+        <div class="flex">
+        <h2 class="text-lg font-semibold mb-3 text-gray-700 dark:text-gray-100 text-center md:text-left">
+            Additional Charges
+        </h2>
+        <button type="button"
+                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                data-modal-toggle="charges-modal">
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                 viewBox="0 0 14 14">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+            </svg>
+            <span class="sr-only">Close modal</span>
+        </button>
+        </div>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4 text-center md:text-left">
+            Add up to 3 types (e.g., Shipping Charges, Packaging Charges, etc.)
+        </p>
+
+        <!-- Charge Item Row -->
+
+        <div class="chargesList" >
+
+        <div data-th-each="charge : ${AdditionalCharges}" data-th-object="${charge}" class="chargeRow flex flex-wrap gap-4 mb-4">
+            <!-- Checkbox -->
+            <div class="flex-shrink-0">
+                <input
+                        type="checkbox"
+                        th:value="${charge.getName()}"
+                        class="w-5 h-5 items-center border-gray-300 dark:border-gray-600 rounded focus:ring-blue-500 dark:focus:ring-blue-400 hover:scale-105 transition-transform duration-200"
+                >
+            </div>
+
+            <!-- Text Input -->
+            <input
+                    type="text"
+                    placeholder="Name of Charge"
+                    min="0"
+                    class="flex-1 min-w-[40%] items-center px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 hover:shadow-md transition-shadow duration-200 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600"
+            >
+
+            <!-- Number Input -->
+            <input
+                    type="number"
+                    placeholder="999"
+                    class="flex-1 w-52 items-center px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 hover:shadow-md transition-shadow duration-200 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600"
+            >
+        </div>
+        </div>
+        <!-- Add New Charge Button -->
+        <button id="addNewChargeBtn" onclick="addNewChargeRow(this)"
+                type="button"
+                class="w-full flex items-start text-blue-500 dark:text-blue-400 text-sm mb-4 text-center hover:underline hover:text-blue-600 dark:hover:text-blue-300 transition-colors duration-200"
+        >
+            + Add New Charge
+        </button>
+
+        <!-- Save Button -->
+        <button onclick="saveCharge()"
+                type="button"
+                data-modal-toggle="charges-modal"
+                class="block w-full px-4 py-2 bg-blue-500 dark:bg-blue-600 text-white font-semibold rounded shadow-md hover:bg-blue-600 dark:hover:bg-blue-500 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-300 transition-transform duration-200"
+        >
+            Save
+        </button>
+    </div>
+
+
+
+
+</div>
+
