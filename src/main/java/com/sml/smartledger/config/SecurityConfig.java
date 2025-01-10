@@ -63,7 +63,7 @@ public class SecurityConfig {
             formLogin.usernameParameter("email");
             formLogin.passwordParameter("password");
             formLogin.failureUrl("/login?error=true");
-            formLogin.defaultSuccessUrl("/users/dashboard");
+            formLogin.defaultSuccessUrl("/users/party/customer");
         });
 
         httpSecurity.csrf(AbstractHttpConfigurer::disable);

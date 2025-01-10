@@ -49,8 +49,8 @@ public class OAuthAuthenticationSuccessHandler implements AuthenticationSuccessH
 
         logger.info("OAuth Authentication Success Handler");
         DefaultOAuth2User oauthUser = (DefaultOAuth2User) authentication.getPrincipal();
-        var oauth2AuthenicationToken = (OAuth2AuthenticationToken) authentication;
-        String authorizedClientRegistrationId = oauth2AuthenicationToken.getAuthorizedClientRegistrationId();
+        var auth2AuthenticationToken = (OAuth2AuthenticationToken) authentication;
+        String authorizedClientRegistrationId = auth2AuthenticationToken.getAuthorizedClientRegistrationId();
         User user = new User();
         List<String> roles = new ArrayList<>();
         roles.add(AppConstants.DEFAULT_ROLE);
@@ -97,6 +97,6 @@ public class OAuthAuthenticationSuccessHandler implements AuthenticationSuccessH
 
             System.out.println("user saved:" + saveUser.getEmail());
         }
-        new DefaultRedirectStrategy().sendRedirect(request, response, "/users/dashboard");
+        new DefaultRedirectStrategy().sendRedirect(request, response, "/users/party/customer");
     }
 }
