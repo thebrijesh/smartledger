@@ -33,7 +33,7 @@ public class ProductTransaction extends BaseModel {
     double discountAmount;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JsonIgnore
+            @JsonIgnore
     Bill bill;
 
 }

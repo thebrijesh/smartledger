@@ -14,7 +14,14 @@
                     <h1 class="text-xl font-bold text-gray-800 dark:text-gray-200">Sale Bill</h1>
                     <span class="text-sm text-gray-500 dark:text-gray-400 flex items-center space-x-1">
         <i data-feather="calendar" class="w-4 h-4 text-gray-500 dark:text-gray-400"></i>
-        <span>28 Dec 24</span>
+         <div class="relative max-w-sm mt-4">
+                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                    </svg>
+                </div>
+                <input id="datepicker" th:value="${date}" datepicker datepicker-format="dd-mm-yyyy" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date">
+            </div>
       </span>
                 </div>
 
@@ -50,13 +57,12 @@
                         <span>+ Add New Party</span>
                     </button>
                 </div>
-
+                <div data-th-if="${bill != null}" id = "billId" class="hidden" data-th-text="${bill.getId()}"></div>
                 <div id="showSelectedPartyLayout"
                      class="hidden inline-flex mb-4 items-center justify-between w-full p-4 text-gray-900 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-500 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-900 hover:bg-gray-100 dark:text-white dark:bg-gray-600 dark:hover:bg-gray-500">
                     <input type="text" id="partyId" name="selectedPartyId"
                            class="hidden peer"/>
                     <div class="flex items-center gap-2">
-
                         <div id="firstChar">
 
                         </div>
@@ -64,7 +70,7 @@
                             <div id="partyName" class="w-full text-md font-semibold"></div>
                             <div id="partyMobile" class="w-full text-gray-500 dark:text-gray-400"></div>
                         </div>
-                        <button type="button" onclick="removeParty()"
+                        <button id="removePartyBtn" type="button" onclick="removeParty()"
                                 class="ml-auto text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                  stroke="currentColor" class="w-5 h-5">
@@ -93,7 +99,6 @@
                             aria-controls="drawer-right-addItemBill"
                             data-drawer-placement="right"
                             class="text-blue-600 dark:text-blue-400 text-sm mt-2 flex items-center">
-                        <span>+ Add New Item</span>
                     </button>
                 </div>
 

@@ -9,16 +9,160 @@ const billForm = {
     billType: "SALE",
     additionalCharges: [],
     customFields: [],
-    terms:[],
+    terms: [],
     products: [],
     services: [],
 
 };
 
+document.addEventListener('DOMContentLoaded', (event) => {
+    addItemsList();
+    saveCustomField();
+    saveCharge();
+    saveTerms();
+});
+
+const handleResponse = async (response) => {
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Something went wrong");
+    }
+    return response.json();
+};
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    let newBill;
+
+    const billId = document.getElementById('billId').textContent;
+    console.log(billId);
+    //get bill by id
+    fetch('/users/transactions/get-bill/' + billId)
+        .then(response => response.json())
+        .then(data => {
+            newBill = data;
+            //print the data of the bill
+
+            console.log(newBill);
+            console.log(newBill.productTransactions);
+            document.getElementById('totalDiscount').textContent = "0";
+            setTotalBillAmount();
+
+            const totalDiscount = document.getElementById('TotalDiscountFromDiscountModel');
+            totalDiscount.value = newBill.totalDiscount;
+
+            let discountAmount = newBill.discount;
+            console.log(newBill.discount);
+            let totalAmount = parseInt(document.getElementById('finalPayableBillAmount').textContent, 0);
+
+
+            document.getElementById('totalDiscount').textContent = discountAmount;
+            document.getElementById('DiscountLayout').style.display = 'none';
+            document.getElementById('SelectDiscountLayout').style.display = '';
+            billForm.totalDiscount = discountAmount;
+            setTotalBillAmount();
+
+
+            const colorMap = {
+                A: "bg-yellow-500",
+                B: "bg-blue-500",
+                C: "bg-green-500",
+                D: "bg-yellow-500",
+                E: "bg-indigo-500",
+                F: "bg-pink-500",
+                G: "bg-purple-500",
+                H: "bg-gray-500",
+                I: "bg-red-500",
+                J: "bg-blue-500",
+                K: "bg-green-500",
+                L: "bg-yellow-500",
+                M: "bg-indigo-500",
+                N: "bg-pink-500",
+                O: "bg-purple-500",
+                P: "bg-gray-500",
+                Q: "bg-red-500",
+                R: "bg-blue-500",
+                S: "bg-green-500",
+                T: "bg-yellow-500",
+                U: "bg-indigo-500",
+                V: "bg-pink-500",
+                W: "bg-purple-500",
+                X: "bg-gray-500",
+                Y: "bg-red-500",
+                Z: "bg-blue-500",
+            };
+            const partyName = newBill.party.name;
+            const partyMobile = newBill.party.mobile;
+            const partyId = newBill.party.id;
+            const firstChar = partyName.charAt(0).toUpperCase();
+            const bgColor = colorMap[firstChar] || "bg-gray-500";
+            const div = document.createElement("div");
+            div.className = `w-12 h-12 text-black dark:text-white size-4 rounded-full flex justify-center items-center font-medium shadow-md transition-transform transform hover:scale-105 ${bgColor}`;
+            div.innerHTML = `<span class="text-xl">${firstChar}</span>`;
+            document.getElementById('removePartyBtn').style.display = 'none';
+            billForm.partyId = partyId;
+            billForm.billType = newBill.billType;
+            document.getElementById('firstChar').appendChild(div);
+            document.getElementById('partyName').textContent = partyName;
+            document.getElementById('partyMobile').textContent = partyMobile;
+            document.getElementById('partyId').value = partyId;
+
+            document.getElementById('drawer-right-select-party');
+            document.getElementById('noPartySelectedLayout').style.display = 'none';
+            document.getElementById('showSelectedPartyLayout').style.display = 'block';
+
+            const paymentMethods = document.querySelectorAll('input[name="payment_method"]');
+            const paymentType = newBill.paymentType;
+            paymentMethods.forEach(radio => {
+                if (radio.value.toUpperCase() === paymentType) {
+                    radio.checked = true;
+                }
+
+                const total = document.getElementById('finalBillAmount').textContent;
+
+                    if (paymentType === 'UNPAID') {
+                        console.log("Unpaid");
+                        document.getElementById('dueDateLayout').style.display = '';
+                        document.getElementById('receivedLayout').style.display = 'none';
+                        console.log("total : " + total);
+                        console.log(document.getElementById('balanceDue').textContent);
+                        document.getElementById('balanceDue').textContent = '₹' + total;
+                        billForm.paymentType = "UNPAID";
+                        billForm.dueAmount = total;
+                    } else if (paymentType === 'CASH') {
+                        document.getElementById('dueDateLayout').style.display = 'none';
+                        document.getElementById('receivedLayout').style.display = '';
+                        billForm.paymentType = "CASH";
+                    } else if (paymentType === 'ONLINE') {
+                        document.getElementById('dueDateLayout').style.display = 'none';
+                        document.getElementById('receivedLayout').style.display = '';
+                        billForm.paymentType = "ONLINE";
+                    }
+
+            });
+
+        });
+
+
+});
 
 document.getElementById('generateBillBtn').addEventListener('click', (event) => {
     console.log(billForm);
-    fetch('/users/transactions/create-bill', {
+    billForm.date = document.getElementById('datepicker').value;
+   let billId;
+    if(document.getElementById('billId') == null){
+        billId = null;
+    }else{
+         billId = document.getElementById('billId').textContent;
+    }
+    let url;
+    if(billId === null){
+        url = '/users/transactions/create-bill';
+    }else{
+        url = '/users/transactions/update-bill/' + billId;
+    }
+    console.log(url);
+    console.log(billForm.date);
+    fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -27,8 +171,9 @@ document.getElementById('generateBillBtn').addEventListener('click', (event) => 
     })
         .then(data => {
             console.log('Success:', data);
-
-            window.location.href = (document.getElementById('billtype').textContent === 'Sales') ? '/users/transactions/sales' : '/users/transactions/purchases';
+              const redirectValue = document.getElementById('billtype').textContent;
+              console.log(redirectValue);
+            window.location.href = ( redirectValue === 'Sales' ) ? '/users/transactions/sales' : '/users/transactions/purchases';
         })
         .catch(error => {
             console.error('Error:', error);
@@ -121,30 +266,36 @@ paymentMethods.forEach(radio => {
                 document.getElementById('dueDateLayout').style.display = 'none';
                 document.getElementById('receivedLayout').style.display = '';
                 billForm.paymentType = "CASH";
+                setReceivedAmount();
             } else if (value === 'online') {
                 document.getElementById('dueDateLayout').style.display = 'none';
                 document.getElementById('receivedLayout').style.display = '';
                 billForm.paymentType = "ONLINE";
+                setReceivedAmount();
             }
         }
     });
 });
 
-document.getElementById('received').addEventListener('input', (event) => {
-    console.log("Received");
-    const received = event.target.value;
-    const total = document.getElementById('finalBillAmount').textContent;
-    const balance = parseFloat(total) - parseFloat(received);
-    console.log(balance);
-    document.getElementById('balanceDue').textContent = balance;
-    billForm.paidAmount = received;
-    billForm.dueAmount = balance;
-    if (balance > 0) {
-        document.getElementById('dueDateLayout').style.display = '';
-    }
-});
+document.getElementById('received').addEventListener('input', setReceivedAmount);
 
+    function setReceivedAmount() {
+        console.log("Received");
+        let received = (document.getElementById('received').value) ? document.getElementById('received').value : 0;
+        const total = document.getElementById('finalBillAmount').textContent;
+        let balance = parseFloat(total) - parseFloat(received);
+        console.log(balance);
+        if(balance < 0){ balance = 0};
+        document.getElementById('balanceDue').textContent = balance;
+        billForm.paidAmount = received;
+        billForm.dueAmount = balance;
+        if (balance > 0) {
+            document.getElementById('dueDateLayout').style.display = '';
+        }else{
+            document.getElementById('dueDateLayout').style.display = 'none';
 
+        }
+    };
 let terms = [];
 
 function addNewTermRow() {
@@ -512,6 +663,7 @@ function addItemsList() {
         if (parseInt(quantity) > 0) {
             let product = {
                 productId: productTransaction.getAttribute('data-product-id'),
+                name: productTransaction.querySelector('#itemName').textContent,
                 stockQuantity: quantity,
                 amount: productTransaction.querySelector('#itemFinalPrice').textContent.split(' ')[1]
             };
@@ -528,6 +680,7 @@ function addItemsList() {
         if (parseInt(quantity) > 0) {
             let service = {
                 serviceId: productTransaction.getAttribute('data-product-id'),
+                name: productTransaction.querySelector('#itemNameService').textContent,
                 stockQuantity: quantity,
                 amount: productTransaction.querySelector('#itemFinalPriceService').textContent.split(' ')[1]
             };
@@ -565,15 +718,17 @@ function setProductTransactions() {
     selectedItemView.classList.add('border-t', 'dark:border-gray-600');
     transactions.forEach(product => {
         const div = document.createElement('div');
+        console.log("product " + product);
         div.className = 'flex justify-between items-center mt-2';
-        div.innerHTML = `<p class="hidden text-gray-800 dark:text-gray-200">${product.id}</p>
+        div.innerHTML = `<p class="hidden text-gray-800 dark:text-gray-200">${product.productId}</p>
                              <p class="text-gray-800 dark:text-gray-200">${product.name}</p>
-                             <p class="text-gray-800 dark:text-gray-200 font-semibold">&#8377; ${product.finalPrice * product.quantity}</p>`;
+                             <p class="text-gray-800 dark:text-gray-200 font-semibold">&#8377; ${product.amount * product.stockQuantity}</p>`;
         selectedItemView.appendChild(div);
         const p = document.createElement('p');
         p.className = 'text-sm text-gray-500 dark:text-gray-400 mb-2';
-        p.textContent = `${product.quantity} x ${product.finalPrice}`;
-        totalAmount += product.finalPrice * product.quantity;
+        p.textContent = `${product.stockQuantity} x ${product.amount}`;
+        console.log("amount" + product.amount);
+        totalAmount += product.amount * product.stockQuantity;
         selectedItemView.appendChild(p);
     });
     document.getElementById('totalAmount').textContent = totalAmount;
@@ -595,8 +750,11 @@ function setTotalBillAmount() {
     const totalCharges = parseInt(document.getElementById('totalCharges').textContent, 0);
     console.log(totalCharges);
 
+
     document.getElementById('finalPayableBillAmount').textContent = parseInt((totalAmount + totalCharges - totalDiscount), 0);
     billForm.amount = document.getElementById('finalPayableBillAmount').textContent;
     document.getElementById('finalBillAmount').textContent = parseInt((totalAmount + totalCharges - totalDiscount), 0);
+    setReceivedAmount();
 }
+
 

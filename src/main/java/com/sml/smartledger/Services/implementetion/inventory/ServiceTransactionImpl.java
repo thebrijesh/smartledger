@@ -1,12 +1,11 @@
 package com.sml.smartledger.Services.implementetion.inventory;
 
 
-import com.sml.smartledger.Model.inventory.Service;
-import com.sml.smartledger.Model.inventory.ServiceTransaction;
-import com.sml.smartledger.Model.inventory.ServiceTransactionType;
+import com.sml.smartledger.Model.inventory.*;
 import com.sml.smartledger.Repository.inventory.ServicesRepository;
 import com.sml.smartledger.Repository.inventory.ServiceTransactionRepository;
 import com.sml.smartledger.Services.interfaces.inventory.ServiceTransactionService;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -45,5 +44,14 @@ public class ServiceTransactionImpl implements ServiceTransactionService {
         }
         servicesRepository.save(billService);
         return savedServiceTransaction;
+    }
+
+    @Override
+    public void deleteServiceTransaction(@NonNull Long id) {
+        try {
+            serviceTransactionRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new RuntimeException("Error deleting service transaction: " + e.getMessage());
+        }
     }
 }

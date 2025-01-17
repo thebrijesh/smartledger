@@ -11,4 +11,5 @@ public interface CustomFieldsService {
    CustomFields getCustomFieldsById(Long customFieldsId);
     CustomFields createCustomField(CustomFields customFields);
     CustomFields updateCustomField(CustomFields customFields);
+    void deleteCustomField(CustomFields customFields);
 }

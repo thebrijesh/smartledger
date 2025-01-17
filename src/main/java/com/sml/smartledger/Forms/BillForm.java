@@ -15,6 +15,7 @@ import java.util.Map;
 @ToString
 public class BillForm {
 
+    private Long id;
     private Long partyId;
     private double amount;
     private String date;
@@ -25,6 +26,7 @@ public class BillForm {
     private List<chargesForm> additionalCharges;
     private List<customFieldsForm> customFields;
     private double totalDiscount;
+    private String discountType;
     private String billType;
     private List<ProductTransactionForm> products;
     private List<ServiceTransactionForm> services;

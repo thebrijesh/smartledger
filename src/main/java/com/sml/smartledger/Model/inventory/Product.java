@@ -25,7 +25,7 @@ public class Product extends BaseModel {
     int stockQuantity;
     int lowStock;
     @ManyToOne(cascade = CascadeType.ALL)
-            @JsonIgnore
+    @JsonIgnore
     Business business;
     @Enumerated(EnumType.ORDINAL)
     UnitType unitType;

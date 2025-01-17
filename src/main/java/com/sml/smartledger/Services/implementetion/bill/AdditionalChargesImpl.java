@@ -5,6 +5,7 @@ import com.sml.smartledger.Repository.bill.AdditionalChargesRepository;
 import com.sml.smartledger.Services.interfaces.bill.AdditionalChargesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 @Service
@@ -30,5 +31,11 @@ public class AdditionalChargesImpl implements AdditionalChargesService {
     @Override
     public AdditionalCharges updateAdditionalCharges(AdditionalCharges additionalCharges) {
             return additionalChargesRepository.save(additionalCharges);
+    }
+
+    @Override
+    @Transactional
+    public void deleteAdditionalCharges(AdditionalCharges additionalCharges) {
+        additionalChargesRepository.deleteById(additionalCharges.getId());
     }
 }

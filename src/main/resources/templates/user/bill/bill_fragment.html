@@ -92,7 +92,8 @@
                 <tbody data-th-each="bill : ${bills}" data-th-object="${bill}"
 
                        class="overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-400 hover:scrollbar-thumb-gray-500 scrollbar-track-gray-200 dark:scrollbar-thumb-gray-600 dark:hover:scrollbar-thumb-gray-500 dark:scrollbar-track-gray-800">
-                <tr class="border-b hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                <tr id="billRow" th:data-id = "${bill.id}" onclick="redirectToBill(this)" class="border-b hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                    <p id="dataid" data-th-text="${bill.id}" class="hidden"></p>
                     <td class="py-4 px-4">
                         <div class="flex items-center gap-3">
                             <!-- First Character with Dynamic Color -->
@@ -121,7 +122,7 @@
                             <div>
                                 <p data-th-text="*{party.name}" class="font-medium text-gray-800 dark:text-gray-100">
                                     Brijesh Wi</p>
-                                <p data-th-text="*{}" class="text-gray-500 dark:text-gray-400 text-xs">Payment Out
+                                <p data-th-text="*{id}" class="text-gray-500 dark:text-gray-400 text-xs">Payment Out
                                     #6</p>
                                 <p data-th-text="*{date}" class="text-gray-400 dark:text-gray-500 text-xs mt-1">27 Dec
                                     2024</p>
@@ -129,8 +130,8 @@
                         </div>
                     </td>
                     <td class="py-4 px-4 text-right">
-                        <p class="font-medium text-gray-800 dark:text-gray-100">₹7,840</p>
-                        <p class="text-gray-500 dark:text-gray-400 text-xs">Cash</p>
+                        <p data-th-text="*{amount}" class="font-medium text-gray-800 dark:text-gray-100">₹7,840</p>
+                        <p data-th-text="*{paymentType}" class="text-gray-500 dark:text-gray-400 text-xs">Cash</p>
                     </td>
                 </tr>
                 <!-- Repeat rows as needed -->
@@ -151,4 +152,10 @@
             </button>
         </div>
     </div>
+    <script>
+        function redirectToBill(element) {
+            window.location.href = "/users/transactions/view-bill/" + element.getAttribute('data-id');
+        }
+    </script>
 </div>
+

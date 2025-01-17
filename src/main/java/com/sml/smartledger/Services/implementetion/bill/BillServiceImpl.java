@@ -1,43 +1,54 @@
 package com.sml.smartledger.Services.implementetion.bill;
 
 import com.sml.smartledger.Model.bill.Bill;
-import com.sml.smartledger.Model.inventory.Product;
-import com.sml.smartledger.Model.inventory.Service;
-import com.sml.smartledger.Model.bill.BillType;
-import com.sml.smartledger.Model.business.Business;
 import com.sml.smartledger.Model.inventory.ProductTransaction;
 import com.sml.smartledger.Model.inventory.ServiceTransaction;
 import com.sml.smartledger.Model.inventory.StockTransactionType;
 import com.sml.smartledger.Repository.bill.BillRepository;
 import com.sml.smartledger.Repository.business.BusinessRepository;
+import com.sml.smartledger.Repository.inventory.ProductTransactionRepository;
+import com.sml.smartledger.Services.interfaces.bill.AdditionalChargesService;
 import com.sml.smartledger.Services.interfaces.bill.BillService;
+import com.sml.smartledger.Services.interfaces.bill.CustomFieldsService;
 import com.sml.smartledger.Services.interfaces.inventory.ProductTransactionService;
 import com.sml.smartledger.Services.interfaces.inventory.ServiceTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Service
 public class BillServiceImpl implements BillService {
 
 
+    private final ProductTransactionRepository productTransactionRepository;
     BillRepository billRepository;
     BusinessRepository businessRepository;
     ProductTransactionService productTransactionService;
     ServiceTransactionService serviceTransactionService;
+    AdditionalChargesService additionalChargesService;
+    CustomFieldsService customFieldsService;
     @Autowired
-    public BillServiceImpl(BillRepository billRepository, BusinessRepository businessRepository, ProductTransactionService productTransactionService, ServiceTransactionService serviceTransactionService) {
+    public BillServiceImpl(AdditionalChargesService additionalChargesService , CustomFieldsService customFieldsService ,BillRepository billRepository, BusinessRepository businessRepository, ProductTransactionService productTransactionService, ServiceTransactionService serviceTransactionService, ProductTransactionRepository productTransactionRepository) {
         this.billRepository = billRepository;
         this.businessRepository = businessRepository;
         this.productTransactionService = productTransactionService;
         this.serviceTransactionService = serviceTransactionService;
+        this.productTransactionRepository = productTransactionRepository;
+        this.customFieldsService = customFieldsService;
+        this.additionalChargesService = additionalChargesService;
     }
 
     @Override
     public List<Bill> getAllBills(Long businessId) {
         return billRepository.findAllBillByBusinessId(businessId);
+    }
+
+    @Override
+    public List<Bill> getPurchaseBills(Long businessId) {
+        return billRepository.findAllPurchaseBillByBusinessId(businessId);
     }
 
     @Override
@@ -47,31 +58,29 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public Bill createBill(Bill bill) {
-        Optional<Business> businessOptional = businessRepository.findById(bill.getBusiness().getId());
-        if (businessOptional.isEmpty()) throw new RuntimeException("Business not found");
-        Business business = businessOptional.get();
-
-        if (bill.getBillType() == BillType.SALE) {
-            processBillProducts(bill, StockTransactionType.OUT);
-            processBillServices(bill, StockTransactionType.OUT);
-        } else if (bill.getBillType() == BillType.SALE_RETURN) {
-            processBillProducts(bill, StockTransactionType.IN);
-            processBillServices(bill, StockTransactionType.IN);
-        } else if (bill.getBillType() == BillType.PURCHASE_RETURN) {
-            processBillProducts(bill, StockTransactionType.IN);
-        } else {
-            processBillProducts(bill, StockTransactionType.OUT);
-        }
-
-        Bill savedBill = billRepository.save(bill);
-        business.getBills().add(savedBill);
-        businessRepository.save(business);
-        return savedBill;
+        return billRepository.save(bill);
     }
 
     @Override
     public Bill updateBill(Bill bill) {
-        return null;
+        System.out.println("billlll" + bill);
+        return billRepository.save(bill);
+    }
+
+    @Override
+    public Bill getBillById(Long id) {
+        return billRepository.findById(id).orElseThrow(() -> new RuntimeException("Bill not found"));
+    }
+
+    @Override
+    @Transactional
+    public void deleteBill(Long id) {
+        Bill bill = getBillById(id);
+        bill.getProductTransactions().forEach(productTransaction -> productTransactionService.deleteProductTransaction(productTransaction.getId()));
+        bill.getServiceTransactions().forEach(serviceTransaction -> serviceTransactionService.deleteServiceTransaction(serviceTransaction.getId()));
+        bill.getAdditionalCharges().forEach(additionalCharges -> additionalChargesService.deleteAdditionalCharges(additionalCharges));
+        bill.getCustomFields().forEach(customFields -> customFieldsService.deleteCustomField(customFields));
+        billRepository.deleteById(id);
     }
 
     private void processBillProducts(Bill bill, StockTransactionType transactionType) {

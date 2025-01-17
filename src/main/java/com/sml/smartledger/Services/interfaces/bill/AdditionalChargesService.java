@@ -11,4 +11,5 @@ public interface AdditionalChargesService {
     AdditionalCharges getAdditionalChargesById(Long additionalChargesId);
     AdditionalCharges createAdditionalCharges(AdditionalCharges additionalCharges);
     AdditionalCharges updateAdditionalCharges(AdditionalCharges additionalCharges);
+    void deleteAdditionalCharges(AdditionalCharges additionalCharges);
 }

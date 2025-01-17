@@ -6,6 +6,7 @@ import com.sml.smartledger.Repository.bill.CustomFieldsRepository;
 import com.sml.smartledger.Services.interfaces.bill.CustomFieldsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 @Service
@@ -34,5 +35,11 @@ public class CustomFieldsServiceImpl implements CustomFieldsService {
     @Override
     public CustomFields updateCustomField(CustomFields customFields) {
         return customFieldsRepository.save(customFields);
+    }
+
+    @Override
+    @Transactional
+    public void deleteCustomField(CustomFields customFields) {
+        customFieldsRepository.deleteById(customFields.getId());
     }
 }

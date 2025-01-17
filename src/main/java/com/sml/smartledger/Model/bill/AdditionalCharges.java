@@ -22,6 +22,7 @@ public class AdditionalCharges  extends BaseModel {
     Bill bill;
 
     @ManyToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
     Business business;
 
 

@@ -42,7 +42,7 @@ public class Business extends BaseModel implements Serializable {
     List<Party> parties = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "business", fetch = FetchType.EAGER, orphanRemoval = true,cascade = CascadeType.ALL)
     List<Bill> bills = new ArrayList<>();
 
     @Builder.Default
@@ -65,8 +65,6 @@ public class Business extends BaseModel implements Serializable {
     @OneToMany(mappedBy = "business", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     List<CustomFields> customFields = new ArrayList<>();
 
-    @ElementCollection
-    List<String> termsAndConditions;
     private String logo;
 
     double totalCredit;

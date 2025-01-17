@@ -22,12 +22,14 @@
 
         <div class="termAndConditionList" >
 
-            <div class="termsRow flex flex-wrap items-center gap-4 mb-4">
+            <div data-th-each="term : ${Terms}" data-th-object="${term}" class="termsRow flex flex-wrap gap-4 mb-4">
+
                 <!-- Text Input -->
                 <input
                         type="text"
-                        placeholder="Type Here"
-                        class="term w-[400px] items-center px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 hover:shadow-md transition-shadow duration-200 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600"
+                        placeholder="Name of field"
+                        th:value="${term}"
+                        class="term flex-1 min-w-[40%] items-center px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 hover:shadow-md transition-shadow duration-200 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600"
                 >
             </div>
         </div>
