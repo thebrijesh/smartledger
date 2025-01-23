@@ -22,7 +22,7 @@
                     <!-- Right-Side Buttons -->
                     <div class="flex gap-4">
                         <button data-th-if="${'CUSTOMER'.equals(party.getPartyType().toString())}"
-                                onclick="window.location.href = 'http://localhost:8184/users/other/report/transaction/customer'"
+                                onclick="window.location.href = '/users/other/report/transaction/customer'"
                                 class="flex items-center px-4 py-2 text-sm text-gray-500 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-2 py-1 rounded-lg border border-gray-300 dark:border-gray-700 hover:border-blue-600 dark:hover:border-blue-400 transition">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
                                  stroke="currentColor">
@@ -32,7 +32,7 @@
                             Report
                         </button>
                         <button data-th-if="${'SUPPLIER'.equals(party.getPartyType().toString())}"
-                                onclick="window.location.href = 'http://localhost:8184/users/other/report/transaction/supplier'"
+                                onclick="window.location.href = '/users/other/report/transaction/supplier'"
                                 class="flex items-center px-4 py-2 text-sm text-gray-500 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-2 py-1 rounded-lg border border-gray-300 dark:border-gray-700 hover:border-blue-600 dark:hover:border-blue-400 transition">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
                                  stroke="currentColor">
@@ -401,10 +401,10 @@
         const partyId = element.getAttribute('data-partyid');
         let url = null;
         if (transactionId !== null) {
-            url = 'http://localhost:8184/users/api/delete-transaction/' + transactionId;
+            url = '/users/api/delete-transaction/' + transactionId;
             console.log(url);
         } else {
-            url = 'http://localhost:8184/users/api/delete-party/' + partyId;
+            url = '/users/api/delete-party/' + partyId;
             console.log(url);
         }
 
@@ -422,7 +422,7 @@
                     if (transactionId !== null) {
                         window.location.reload();
                     } else {
-                        window.location.href = 'http://localhost:8184/users/party/customer';
+                        window.location.href = '/users/party/customer';
                     }
 
                 })
@@ -458,7 +458,7 @@
         const shortCode = document.getElementById('reminderBtn').getAttribute('data-shortCode');
         const balance = document.getElementById('reminderBtn').getAttribute('data-balance');
         const businessName = document.getElementById('reminderBtn').getAttribute('data-businessName');
-        const message = `Dear ${name}, your payment of Rs. ${balance * (-1)} is pending with ${businessName}. Check details here: http://localhost:8184/${shortCode}`;
+        const message = `Dear ${name}, your payment of Rs. ${balance * (-1)} is pending with ${businessName}. Check details here: /${shortCode}`;
         const url = `https://wa.me/+91${mobile}?text=${encodeURIComponent(message)}`;
         window.open(url, '_blank');
     });
@@ -469,7 +469,7 @@
         const shortCode = document.getElementById('reminderBtn').getAttribute('data-shortCode');
         const balance = document.getElementById('reminderBtn').getAttribute('data-balance');
         const businessName = document.getElementById('reminderBtn').getAttribute('data-businessName');
-            const message = `Dear ${name},Payment of Rs. ${balance * (-1)} pending with ${businessName} Check details here: http://localhost:8184/${shortCode}`;
+            const message = `Dear ${name},Payment of Rs. ${balance * (-1)} pending with ${businessName} Check details here: /${shortCode}`;
 
         const url = `sms:+91${mobile}?body=${encodeURIComponent(message)}`;
         window.open(url, '_blank');

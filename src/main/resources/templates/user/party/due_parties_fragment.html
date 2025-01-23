@@ -84,7 +84,7 @@
                                             const balance = input.getAttribute('data-balance');
                                             const businessName = input.getAttribute('data-businessName');
 
-                                            const message = `Dear ${name}, your payment of Rs. ${balance * (-1)} is pending with ${businessName}. Check details here: http://localhost:8184/${shortCode}`;
+                                            const message = `Dear ${name}, your payment of Rs. ${balance * (-1)} is pending with ${businessName}. Check details here: /${shortCode}`;
                                             const url = `https://wa.me/+91${mobile}?text=${encodeURIComponent(message)}`;
                                             window.open(url, '_blank');
                                         }

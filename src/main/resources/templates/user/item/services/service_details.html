@@ -258,11 +258,11 @@
         let url = null;
         if (value === 'serviceTransaction') {
             const transactionId = document.getElementById('editProductTransactionId').value;
-            url = 'http://localhost:8184/users/inventory/serviceTransaction/delete-service-transactions/' + transactionId;
+            url = '/users/inventory/serviceTransaction/delete-service-transactions/' + transactionId;
             console.log(url);
         } else {
             const serviceId = document.getElementById('serviceId').value;
-            url = 'http://localhost:8184/users/inventory/services/delete/' + serviceId;
+            url = '/users/inventory/services/delete/' + serviceId;
             console.log(url);
         }
 
@@ -280,7 +280,7 @@
                     if (value === 'serviceTransaction') {
                         window.location.reload();
                     } else {
-                        window.location.href = 'http://localhost:8184/users/inventory/services/view';
+                        window.location.href = '/users/inventory/services/view';
                     }
 
                 })
