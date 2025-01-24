@@ -12,6 +12,7 @@ import com.sml.smartledger.Services.interfaces.bill.BillService;
 import com.sml.smartledger.Services.interfaces.bill.CustomFieldsService;
 import com.sml.smartledger.Services.interfaces.inventory.ProductTransactionService;
 import com.sml.smartledger.Services.interfaces.inventory.ServiceTransactionService;
+import com.sml.smartledger.Services.interfaces.party.PartyTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,8 +31,9 @@ public class BillServiceImpl implements BillService {
     ServiceTransactionService serviceTransactionService;
     AdditionalChargesService additionalChargesService;
     CustomFieldsService customFieldsService;
+    PartyTransactionService partyTransactionService;
     @Autowired
-    public BillServiceImpl(AdditionalChargesService additionalChargesService , CustomFieldsService customFieldsService ,BillRepository billRepository, BusinessRepository businessRepository, ProductTransactionService productTransactionService, ServiceTransactionService serviceTransactionService, ProductTransactionRepository productTransactionRepository) {
+    public BillServiceImpl(PartyTransactionService partyTransactionService ,AdditionalChargesService additionalChargesService , CustomFieldsService customFieldsService ,BillRepository billRepository, BusinessRepository businessRepository, ProductTransactionService productTransactionService, ServiceTransactionService serviceTransactionService, ProductTransactionRepository productTransactionRepository) {
         this.billRepository = billRepository;
         this.businessRepository = businessRepository;
         this.productTransactionService = productTransactionService;
@@ -39,6 +41,7 @@ public class BillServiceImpl implements BillService {
         this.productTransactionRepository = productTransactionRepository;
         this.customFieldsService = customFieldsService;
         this.additionalChargesService = additionalChargesService;
+        this.partyTransactionService = partyTransactionService;
     }
 
     @Override
@@ -80,6 +83,7 @@ public class BillServiceImpl implements BillService {
         bill.getServiceTransactions().forEach(serviceTransaction -> serviceTransactionService.deleteServiceTransaction(serviceTransaction.getId()));
         bill.getAdditionalCharges().forEach(additionalCharges -> additionalChargesService.deleteAdditionalCharges(additionalCharges));
         bill.getCustomFields().forEach(customFields -> customFieldsService.deleteCustomField(customFields));
+        partyTransactionService.deleteTransaction(bill.getTransaction().getId());
         billRepository.deleteById(id);
     }
 

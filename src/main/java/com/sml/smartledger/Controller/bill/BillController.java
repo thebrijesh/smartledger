@@ -56,7 +56,7 @@ public class BillController {
     PartyTransactionService partyTransactionService;
 
     @Autowired
-    public BillController(CustomFieldsService customFieldsService, AdditionalChargesService additionalChargesService, PartyService partyService, ServiceTransactionService serviceTransactionService, ServicesService serviceService, ProductTransactionService productTransactionService, ProductService productService, BillService billService, UserService userService) {
+    public BillController(PartyTransactionService partyTransactionService,CustomFieldsService customFieldsService, AdditionalChargesService additionalChargesService, PartyService partyService, ServiceTransactionService serviceTransactionService, ServicesService serviceService, ProductTransactionService productTransactionService, ProductService productService, BillService billService, UserService userService) {
         this.billService = billService;
         this.userService = userService;
         this.productService = productService;
@@ -66,6 +66,7 @@ public class BillController {
         this.partyService = partyService;
         this.additionalChargesService = additionalChargesService;
         this.customFieldsService = customFieldsService;
+        this.partyTransactionService = partyTransactionService;
     }
 
     @GetMapping("/{businessId}")
@@ -104,15 +105,7 @@ public class BillController {
         }
         billService.createBill(savedBill);
 
-        PartyTransaction partyTransaction = new PartyTransaction();
-        if(bill.getDueAmount() > 0){
-            partyTransaction.setAmount(bill.getDueAmount());
-            partyTransaction.setParty(savedBill.getParty());
-            partyTransaction.setTransactionType((savedBill.getBillType().toString().equalsIgnoreCase("purchase")) ? TransactionType.CREDIT : TransactionType.DEBIT);
-            partyTransaction.setDate(savedBill.getDate());
-            partyTransaction.setDescription("Bill#" + savedBill.getId());
-            savedBill.setTransaction(partyTransactionService.createTransaction(partyTransaction));
-        }
+
 
         List<ProductTransactionForm> productTransactionFormList = bill.getProducts();
         List<ServiceTransactionForm> serviceTransactionFormList = bill.getServices();
@@ -145,6 +138,8 @@ public class BillController {
             serviceTransactionList.add(serviceTransaction);
         }
 
+
+
         List<AdditionalCharges> additionalChargesList = new ArrayList<>();
         for (chargesForm additionalChargesForm : bill.getAdditionalCharges()) {
             AdditionalCharges additionalCharges = new AdditionalCharges();
@@ -166,6 +161,20 @@ public class BillController {
             customFieldsService.createCustomField(customFields);
             customFieldsList.add(customFields);
         }
+
+        PartyTransaction partyTransaction = new PartyTransaction();
+        if(bill.getDueAmount() > 0){
+            partyTransaction.setAmount(bill.getDueAmount());
+            partyTransaction.setParty(savedBill.getParty());
+            partyTransaction.setTransactionType((savedBill.getBillType().toString().equalsIgnoreCase("purchase")) ? TransactionType.CREDIT : TransactionType.DEBIT);
+            partyTransaction.setDate(savedBill.getDate());
+            partyTransaction.setDescription("Bill#" + savedBill.getId());
+            partyTransaction.setBill(savedBill);
+            partyTransactionService.createTransaction(partyTransaction);
+            savedBill.setTransaction(partyTransaction);
+            billService.updateBill(savedBill);
+        }
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -323,6 +332,9 @@ public class BillController {
             additionalChargesService.deleteAdditionalCharges(additionalCharges);
         }
 
+         if(bill.getTransaction() != null) {
+             partyTransactionService.deleteTransaction(bill.getTransaction().getId());
+         }
         List<CustomFields> oldCustomFieldsList = bill.getCustomFields();
 
         for(CustomFields customFields : oldCustomFieldsList){
@@ -380,7 +392,16 @@ public class BillController {
             customFieldsList.add(customFields);
         }
 
-
+        PartyTransaction partyTransaction = new PartyTransaction();
+        if(billForm.getDueAmount() > 0){
+            partyTransaction.setAmount(billForm.getDueAmount());
+            partyTransaction.setParty(partyService.getPartyById(billForm.getPartyId()));
+            partyTransaction.setTransactionType((billForm.getBillType().equalsIgnoreCase("purchase")) ? TransactionType.CREDIT : TransactionType.DEBIT);
+            partyTransaction.setDate(Helper.convertStringToDate(billForm.getDate()));
+            partyTransaction.setDescription("Bill#" + billForm.getId());
+            partyTransaction.setBill(bill);
+            partyTransactionService.createTransaction(partyTransaction);
+        }
 
     }
 
@@ -442,7 +463,7 @@ public class BillController {
         model.addAttribute("serviceTransactions", serviceTransactionList);
         model.addAttribute("selectedBusiness", business);
 
-        return "/user/bill/add_bill";
+        return "user/bill/add_bill";
     }
 
     @DeleteMapping("/delete-bill/{billId}")

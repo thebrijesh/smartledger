@@ -4,6 +4,7 @@ import com.sml.smartledger.Forms.PartyForm;
 import com.sml.smartledger.Forms.PartyTransactionForm;
 import com.sml.smartledger.Helper.Helper;
 import com.sml.smartledger.Model.User;
+import com.sml.smartledger.Model.bill.Bill;
 import com.sml.smartledger.Model.business.Business;
 import com.sml.smartledger.Model.party.Party;
 import com.sml.smartledger.Model.party.PartyTransaction;
@@ -229,6 +230,16 @@ public class PartyController {
         return "user/party/party_details";
     }
 
+    @GetMapping("/paymentTransaction/{type}")
+    public String paymentTransaction(@PathVariable("type") String type, Model model, Authentication authentication) {
+        String email = getEmailOfLoggedInUser(authentication);
+        User user = userService.getUserByEmail(email);
+
+        model.addAttribute("partyList",partyService.getAllParties(user.getSelectedBusiness().getId()));
+        model.addAttribute("transactionType", type);
+        return "user/party/payment_in_view";
+    }
+
     @PostMapping("/create-party-transaction")
     public String createPartyTransaction(@ModelAttribute PartyTransactionForm partyTransactionForm) {
         Party party = partyService.getPartyById(partyTransactionForm.getPartyId());
@@ -349,5 +360,11 @@ public class PartyController {
         model.addAttribute("dueParties", parties);
         logger.info("Due Parties: " + parties);
         return "user/party/due_parties";
+    }
+
+    @GetMapping("/getpendingbills/{partyId}")
+    public ResponseEntity<List<Bill>> getPendingBills(@PathVariable("partyId") Long partyId) {
+        List<Bill> pendingBills = partyService.getPendingBills(partyId);
+        return new ResponseEntity<>(pendingBills, HttpStatus.OK);
     }
 }

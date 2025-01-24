@@ -20,6 +20,7 @@ import java.util.Map;
 @Setter
 public class Bill extends BaseModel {
     @ManyToOne
+    @JsonIgnore
     Party party;
     @ManyToOne(cascade = CascadeType.ALL)
     @JsonIgnore
@@ -52,6 +53,7 @@ public class Bill extends BaseModel {
     @ElementCollection
     List<String> termsAndConditions;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
     PartyTransaction transaction;
 }

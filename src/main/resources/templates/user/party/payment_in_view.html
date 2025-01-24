@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en" th:replace="~{base ::parent(~{::#content}, ~{::title}, ~{::script})}">
+<head>
+    <title>Customers</title>
+</head>
+<body>
+<div id="content">
+    <div class="pt-5 sm:pl-64">
+        <div class="max-w-lg mx-auto mt-10 bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
+            <!-- Header -->
+            <div class="flex items-center justify-between border-b pb-4 border-gray-200 dark:border-gray-700">
+                <button class="text-green-600 dark:text-green-400 text-lg font-semibold flex items-center">
+                    <span class="mr-2">&larr;</span> You Got
+                </button>
+                <!-- Dark/Light Mode Toggle -->
+
+            </div>
+
+            <!-- Receipt Details -->
+            <div class="mt-4">
+                <div class="flex justify-between">
+                    <div>
+                        <label class="block text-sm text-gray-600 dark:text-gray-400">Date</label>
+                        <div class="flex items-center">
+                            <input type="text" value="24/01/2025" class="bg-transparent border-b border-gray-400 dark:border-gray-500 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring focus:ring-green-300 dark:focus:ring-green-500">
+                            <button class="ml-2">
+                                <svg class="w-5 h-5 text-gray-500 dark:text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12h6m-3-3v6m-9-6H3m3-3v6"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="noUserSelectedLayout" class="mb-4">
+                <label for="party" class="text-gray-500 dark:text-gray-400 text-sm block mb-2">Bill To</label>
+                <div class="relative">
+                    <input id="party" type="text" readonly placeholder="Select Party"
+                           data-drawer-target="drawer-right-select-user"
+                           data-drawer-show="drawer-right-select-user"
+                           aria-controls="drawer-right-select-user"
+                           data-drawer-placement="right"
+                           class="border rounded-lg w-full p-3 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
+                    <i data-feather="search"
+                       class="w-5 h-5 text-gray-400 absolute right-3 top-3 dark:text-gray-500"></i>
+                </div>
+            </div>
+            <!-- User Info -->
+            <div id="UserSelectedLayout" style="display: none" class="mt-4 flex items-center">
+                <div id="firstChar">
+                </div>
+                <div class="ml-4">
+                    <p id="partyName" class="font-semibold text-gray-900 dark:text-gray-100">Brijesh Wi</p>
+                    <p id="partyId" class="hidden"></p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Current Balance ₹ <span id="balance"></span></p>
+                </div>
+            </div>
+
+            <!-- Amount -->
+            <div class="mt-4">
+                <label class="block text-sm text-gray-600 dark:text-gray-400">Amount</label>
+                <input id="amount" type="number" value="0" class="w-full bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring focus:ring-green-300 dark:focus:ring-green-500">
+            </div>
+
+            <!-- Payment Mode -->
+            <div class="mt-4">
+                <label class="block text-sm text-gray-600 dark:text-gray-400">Payment Mode</label>
+                <div class="flex items-center space-x-4 mt-2">
+                    <label class="flex items-center">
+                        <input type="radio" name="payment-mode" checked class="text-green-500 focus:ring-green-300 dark:focus:ring-green-500">
+                        <span class="ml-2 text-gray-900 dark:text-gray-100">Cash</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="payment-mode" class="text-green-500 focus:ring-green-300 dark:focus:ring-green-500">
+                        <span class="ml-2 text-gray-900 dark:text-gray-100">Online</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Details -->
+            <div class="mt-4">
+                <label class="block text-sm text-gray-600 dark:text-gray-400">Enter Details</label>
+                <textarea class="w-full bg-gray-100 dark:bg-gray-700 rounded-md px-4 py-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring focus:ring-green-300 dark:focus:ring-green-500" placeholder="Items, bill no., quantity, etc."></textarea>
+            </div>
+
+            <!-- Pending Invoices -->
+            <div id="PendingInvoice" style="display: none" class="mt-4">
+                <div class="flex justify-between items-center">
+                    <p class="font-medium text-gray-900 dark:text-gray-100">Pending Invoices</p>
+                    <button class="text-blue-500 dark:text-blue-400 hover:underline">Reference Bill No.</button>
+                </div>
+                <div id="pending-invoices-container" class="mt-4 space-y-4">
+                    <!-- Pending invoices will be dynamically injected here -->
+                </div>
+            </div>
+
+            <!-- Save Button -->
+            <div class="mt-6">
+                <button class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2 rounded-md focus:outline-none focus:ring focus:ring-green-300 dark:focus:ring-green-500">
+                    SAVE
+                </button>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{user/party/select_user_drawer ::selectUser}"></div>
+</div>
+</body>
+<script></script>
+<script data-th-src="@{/js/paymentTransaction.js}"></script>
+</html>

@@ -1,6 +1,7 @@
 package com.sml.smartledger.Services.interfaces.party;
 
 
+import com.sml.smartledger.Model.bill.Bill;
 import com.sml.smartledger.Model.party.Party;
 import lombok.NonNull;
 
@@ -27,4 +28,6 @@ public interface PartyService {
     List<Party> getDueParties(@NonNull Long id);
 
     Party getPartyByMobileNumber(String mobileNumber);
+
+    List<Bill> getPendingBills(Long partyId);
 }
