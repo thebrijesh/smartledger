@@ -1,3 +1,13 @@
+const paymentInForm = {
+    partyId: -1,
+    amount: 0,
+    date: new Date(),
+    paymentMode: "CASH",
+    paymentType: "SALE",
+    bills: [],
+};
+
+
 async function setPartyData(element) {
 
     const colorMap = {
@@ -30,6 +40,7 @@ async function setPartyData(element) {
     };
     const partyName = element.getAttribute('data-name');
     const partyId = element.getAttribute('data-id');
+    paymentInForm.partyId = partyId;
     const balance = element.getAttribute('data-balance');
     const firstChar = partyName.charAt(0).toUpperCase();
     const bgColor = colorMap[firstChar] || "bg-gray-500";
@@ -61,11 +72,12 @@ async function setPartyData(element) {
         bills.forEach(bill => {
             const billElement = `
                 <div id="billRow" class="mt-2 bg-gray-100 dark:bg-gray-700 rounded-md p-4">
-                    <p class="text-sm text-red-500 dark:text-red-400">₹ ${bill.amount} out of ₹ ${bill.amount} left to be settled</p>
                     <div class="mt-2">
                         <label class="flex items-center">
-                            <input type="checkbox" class="text-green-500 focus:ring-green-300 dark:focus:ring-green-500">
-                            <span class="ml-2 text-gray-900 dark:text-gray-100">#${bill.id} - ₹ ${bill.amount} (${bill.date})</span>
+                            <input type="checkbox" class="ch text-green-500 focus:ring-green-300 dark:focus:ring-green-500">
+                            <span class="ml-2 text-gray-900 dark:text-gray-100">#${bill.id} - ₹  </span>
+                            <span class="ml-2 text-gray-900 dark:text-gray-100">${bill.amount}</span>
+                            <span class="ml-2 text-gray-900 dark:text-gray-100">(${bill.date})</span>
                         </label>
                     </div>
                 </div>
@@ -83,11 +95,71 @@ document.getElementById('party').addEventListener('change', async (event) => {
 
 });
 
+//i have lots of checkbox with class name ch when user check or uncheck them then i want to add event listner on them
+document.addEventListener('change', function (e) {
+
+    if (e.target.classList.contains('ch')) {
+        paymentInForm.bills = [];
+        const checkboxes = document.getElementsByClassName('ch');
+        let total = 0;
+        for (let i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked) {
+                total += parseInt(checkboxes[i].parentNode.childNodes[4].textContent);
+                console.log(total);
+                let selectedval = total;
+                if(selectedval > document.getElementById('amount').value){
+                    selectedval = document.getElementById('amount').value;
+                }
+                paymentInForm.bills.push(checkboxes[i].parentNode.textContent.match(/#(\d+)/)[1]);
+                document.getElementById('selectedAmount').textContent = selectedval;
+                document.getElementById('totalAmount').textContent = document.getElementById('amount').value;
+            }else{
+                total -= parseInt(checkboxes[i].parentNode.childNodes[3].textContent);
+            }
+        }
+    }
+});
+
+document.getElementById('submitBtn').addEventListener('click', async function () {
+    console.log(JSON.stringify(paymentInForm));
+    fetch('/users/party/createpayment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(paymentInForm),
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text().then(text => {
+                return text ? JSON.parse(text) : {}; // Check if response body is not empty
+            });
+        })
+        .then(data => {
+            console.log('Success:', data);
+            alert('Payment submitted successfully.');
+            // location.reload();
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('Failed to submit payment.');
+        });
+});
+
+
+
+
+
+
 
 document.getElementById('amount').addEventListener('input', function (e) {
     const amount = e.target.value;
     if(amount > 0) {
         document.getElementById('PendingInvoice').style.display = 'block';
     }
+
+    paymentInForm.amount = amount;
 });
 

@@ -11,7 +11,7 @@ const billForm = {
     customFields: [],
     terms: [],
     products: [],
-    services: [],
+    services: [],               
 
 };
 
