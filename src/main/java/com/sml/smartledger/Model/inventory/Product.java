@@ -30,6 +30,7 @@ public class Product extends BaseModel {
     @Enumerated(EnumType.ORDINAL)
     UnitType unitType;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "product", fetch = FetchType.EAGER)
+    @JsonIgnore
     List<ProductTransaction> productTransactions;
     Date date;
     Double totalStockValue;

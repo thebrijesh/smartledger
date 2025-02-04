@@ -23,7 +23,6 @@ public class ProductTransaction extends BaseModel {
     int unit;
     String description;
     @ManyToOne(cascade = CascadeType.ALL)
-    @JsonIgnore
     Product product;
     @Enumerated(EnumType.ORDINAL)
     StockTransactionType stockTransactionType;

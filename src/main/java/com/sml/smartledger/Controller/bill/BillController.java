@@ -226,6 +226,47 @@ public class BillController {
         }
     }
 
+    @GetMapping("/return-bill/{billType}")
+    public String returnBillView(@PathVariable("billType") String billType , Model model, Authentication authentication) {
+        String email = getEmailOfLoggedInUser(authentication);
+        User user = userService.getUserByEmail(email);
+        Business business = user.getSelectedBusiness();
+
+        List<Bill> billList = billService.getAllBills(business.getId());
+
+        for(Bill bill : billList){
+            if(!bill.getBillType().toString().equalsIgnoreCase(billType)){
+                billList.remove(bill);
+            }
+        }
+
+        List<Product> productList = business.getProducts();
+        List<Service> serviceList = business.getServices();
+
+        List<ProductTransaction> productTransactionList = new ArrayList<>();
+        List<ServiceTransaction> serviceTransactionList = new ArrayList<>();
+
+        for (Product product : productList) {
+            ProductTransaction productTransaction = new ProductTransaction();
+            productTransaction.setProduct(product);
+            productTransaction.setUnit(0);
+            productTransactionList.add(productTransaction);
+        }
+        for (Service service : serviceList) {
+            ServiceTransaction serviceTransaction = new ServiceTransaction();
+            serviceTransaction.setService(service);
+            serviceTransaction.setUnit(0);
+            serviceTransactionList.add(serviceTransaction);
+        }
+         model.addAttribute("bills", billList);
+        model.addAttribute("billType", billType);
+        model.addAttribute("productTransactions", productTransactionList);
+        model.addAttribute("serviceTransactions", serviceTransactionList);
+        return "user/bill/bill_return";
+    }
+
+
+
     @GetMapping("/update-bill/{billId}")
     public String updateBill(@PathVariable("billId") Long billId, Model model, Authentication authentication) {
         String email = getEmailOfLoggedInUser(authentication);
