@@ -184,10 +184,29 @@ public class BillController {
         String email = getEmailOfLoggedInUser(authentication);
         User user = userService.getUserByEmail(email);
         Business business = user.getSelectedBusiness();
+        long totalSales = 0;
+        long totalPurchase = 0;
+        long totalExpanse = 0;
+        List<Bill> billList = billService.getAllBills(business.getId());
+        for (Bill bill : billList) {
+            if (bill.getBillType().toString().equalsIgnoreCase("sale")) {
+                totalSales += bill.getAmount();
+            } else if (bill.getBillType().toString().equalsIgnoreCase("purchase")) {
+                totalPurchase += bill.getAmount();
+            } else if(bill.getBillType().toString().equalsIgnoreCase("sale_return")){
+                totalSales -= bill.getAmount();
+            } else if(bill.getBillType().toString().equalsIgnoreCase("purchase_return")) {
+                totalPurchase -= bill.getAmount();
+            }
+        }
 
-        List<Bill> billList = billService.getAllSaleBills(business.getId());
-        model.addAttribute("bills", billList);
+
+        List<Bill> billList1 = billService.getAllSaleBills(business.getId());
+        model.addAttribute("bills", billList1);
         model.addAttribute("billType", "Sales");
+        model.addAttribute("totalSales", totalSales);
+        model.addAttribute("totalPurchase", totalPurchase);
+        model.addAttribute("totalExpanse", totalExpanse);
         return "user/bill/sales";
     }
 
@@ -196,10 +215,27 @@ public class BillController {
         String email = getEmailOfLoggedInUser(authentication);
         User user = userService.getUserByEmail(email);
         Business business = user.getSelectedBusiness();
-
-        List<Bill> billList = billService.getPurchaseBills(business.getId());
-        model.addAttribute("bills", billList);
+        long totalSales = 0;
+        long totalPurchase = 0;
+        long totalExpanse = 0;
+        List<Bill> billList = billService.getAllBills(business.getId());
+        for (Bill bill : billList) {
+            if (bill.getBillType().toString().equalsIgnoreCase("sale")) {
+                totalSales += bill.getAmount();
+            } else if (bill.getBillType().toString().equalsIgnoreCase("purchase")) {
+                totalPurchase += bill.getAmount();
+            } else if(bill.getBillType().toString().equalsIgnoreCase("sale_return")){
+                totalSales -= bill.getAmount();
+            } else if(bill.getBillType().toString().equalsIgnoreCase("purchase_return")) {
+                totalPurchase -= bill.getAmount();
+            }
+        }
+        List<Bill> billList1 = billService.getPurchaseBills(business.getId());
+        model.addAttribute("bills", billList1);
         model.addAttribute("billType", "Purchase");
+        model.addAttribute("totalSales", totalSales);
+        model.addAttribute("totalPurchase", totalPurchase);
+        model.addAttribute("totalExpanse", totalExpanse);
         return "user/bill/purchase";
     }
 
