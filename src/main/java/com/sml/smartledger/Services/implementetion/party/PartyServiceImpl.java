@@ -51,6 +51,7 @@ public class PartyServiceImpl implements PartyService {
     }
 
     @Override
+    @Cacheable(value = "party", key = "#businessId")
     public List<Party> getAllParties(Long businessId) {
         return partyRepository.findByBusinessId(businessId);
     }

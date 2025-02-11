@@ -9,10 +9,10 @@ import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity(name = "ExpansesItem")
+@Entity(name = "ExpensesItem")
 @Getter
 @Setter
-public class ExpansesItem extends BaseModel {
+public class ExpensesItem extends BaseModel {
     String name;
     double price;
     @ManyToOne(cascade = CascadeType.MERGE)
