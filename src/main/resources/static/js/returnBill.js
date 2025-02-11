@@ -17,10 +17,9 @@ const billForm = {
 
 document.addEventListener('DOMContentLoaded', (event) => {
     addItemsList();
-    saveCustomField();
     saveCharge();
-    saveTerms();
 });
+
 
 const handleResponse = async (response) => {
     if (!response.ok) {
@@ -670,9 +669,7 @@ function setProductTransactions() {
     const discountLayout = document.getElementById('DiscountLayout');
     editOrAddItemLayout.style.display = (transactions.length > 0) ? '' : 'none';
     discountLayout.style.display = (transactions.length > 0) ? '' : 'none';
-    document.getElementById('CustomFieldsLayout').style.display = (transactions.length > 0) ? '' : 'none';
-    document.getElementById('TermsAndConditionFieldsLayout').style.display = (transactions.length > 0) ? '' : 'none';
-}
+    AdditionalChargesLayout.style.display = (transactions.length > 0) ? '' : 'none';}
 
 
 function setData() {
@@ -728,107 +725,10 @@ function setTotalDiscount() {
 }
 
 
-let productTransactions = [];
-updateList('productsListLayout');
 
-function updateList(layout) {
-    if (layout === 'ServicesListLayout') {
-        document.getElementById('servicesListLayout').style.display = '';
-        document.getElementById('productsListLayout').style.display = 'none';
-    } else {
-        document.getElementById('servicesListLayout').style.display = 'none';
-        document.getElementById('productsListLayout').style.display = '';
-    }
-}
 
-function addItemsList() {
-    transactions = [];
-    let products = [];
-    let services = [];
-    let productTransactionsList = document.getElementsByClassName('productTransactionsList');
-    Array.from(productTransactionsList).forEach(productTransaction => {
-        let quantity = productTransaction.querySelector('.quantity').value;
-        if (parseInt(quantity) > 0) {
-            let product = {
-                productId: productTransaction.getAttribute('data-product-id'),
-                name: productTransaction.querySelector('#itemName').textContent,
-                stockQuantity: quantity,
-                amount: productTransaction.querySelector('#itemFinalPrice').textContent.split(' ')[1]
-            };
-            transactions.push(product);
-            products.push(product);
-        }
-    });
-    billForm.products = products;
-    console.log(transactions);
 
-    let serviceTransactionsList = document.getElementsByClassName('serviceTransactionsList');
-    Array.from(serviceTransactionsList).forEach(productTransaction => {
-        let quantity = productTransaction.querySelector('.quantity').value;
-        if (parseInt(quantity) > 0) {
-            let service = {
-                serviceId: productTransaction.getAttribute('data-product-id'),
-                name: productTransaction.querySelector('#itemNameService').textContent,
-                stockQuantity: quantity,
-                amount: productTransaction.querySelector('#itemFinalPriceService').textContent.split(' ')[1]
-            };
-            transactions.push(service);
-            services.push(service);
-        }
-    });
-    billForm.services = services;
-    console.log(transactions);
 
-    const itemView = document.getElementById('noItemSelectedLayout');
-    const editOrAddItemLayout = document.getElementById('editOrAddItemLayout');
-    const AdditionalChargesLayout = document.getElementById('AdditionalChargesLayout');
-    const discountLayout = document.getElementById('DiscountLayout');
-
-    itemView.style.display = (transactions.length > 0) ? 'none' : '';
-    editOrAddItemLayout.style.display = (transactions.length < 0) ? 'none' : '';
-    AdditionalChargesLayout.style.display = (transactions.length < 0) ? 'none' : '';
-    discountLayout.style.display = (transactions.length < 0) ? 'none' : '';
-
-    setProductTransactions();
-}
-
-// set the productTransactions data in this view :
-// <div class="flex justify-between items-center mb-2">
-// <p className="text-gray-800 dark:text-gray-200">mouse</p>
-// <p className="text-gray-800 dark:text-gray-200 font-semibold">&#8377; 224</p>
-// </div>
-// <p className="text-sm text-gray-500 dark:text-gray-400">4.0 x &#8377; 56</p>
-//and show this view in the selected item view
-function setProductTransactions() {
-    const selectedItemView = document.querySelector('.selectedItemView');
-    selectedItemView.innerHTML = '';
-    let totalAmount = 0;
-    selectedItemView.classList.add('border-t', 'dark:border-gray-600');
-    transactions.forEach(product => {
-        const div = document.createElement('div');
-        console.log("product " + product);
-        div.className = 'flex justify-between items-center mt-2';
-        div.innerHTML = `<p class="hidden text-gray-800 dark:text-gray-200">${product.productId}</p>
-                             <p class="text-gray-800 dark:text-gray-200">${product.name}</p>
-                             <p class="text-gray-800 dark:text-gray-200 font-semibold">&#8377; ${product.amount * product.stockQuantity}</p>`;
-        selectedItemView.appendChild(div);
-        const p = document.createElement('p');
-        p.className = 'text-sm text-gray-500 dark:text-gray-400 mb-2';
-        p.textContent = `${product.stockQuantity} x ${product.amount}`;
-        console.log("amount" + product.amount);
-        totalAmount += product.amount * product.stockQuantity;
-        selectedItemView.appendChild(p);
-    });
-    document.getElementById('totalAmount').textContent = totalAmount;
-    setTotalBillAmount();
-    const editOrAddItemLayout = document.getElementById('editOrAddItemLayout');
-    const AdditionalChargesLayout = document.getElementById('AdditionalChargesLayout');
-    const discountLayout = document.getElementById('DiscountLayout');
-    editOrAddItemLayout.style.display = (transactions.length > 0) ? '' : 'none';
-    discountLayout.style.display = (transactions.length > 0) ? '' : 'none';
-    document.getElementById('CustomFieldsLayout').style.display = (transactions.length > 0) ? '' : 'none';
-    document.getElementById('TermsAndConditionFieldsLayout').style.display = (transactions.length > 0) ? '' : 'none';
-}
 
 function setTotalBillAmount() {
     const totalAmount = parseInt(document.getElementById('totalAmount').textContent, 0);

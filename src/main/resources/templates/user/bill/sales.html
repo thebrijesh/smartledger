@@ -21,4 +21,18 @@
         });
     }
 </script>
+<script>
+    function redirectToBillReturn(element) {
+        let billType = element.getAttribute('data-bill-type');
+        if(billType === 'Sales'){
+            billType = 'sale';
+        }else{
+            billType = 'purchase';
+        }
+        element.addEventListener('click', function () {
+            window.location.href = "/users/transactions/return-bill/" +billType;
+        });
+    }
+</script>
+<script data-th-src="@{/js/billFilteration.js}"></script>
 </html>
