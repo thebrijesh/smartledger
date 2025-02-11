@@ -1,5 +1,6 @@
 package com.sml.smartledger.Services.implementetion.party;
 
+import com.sml.smartledger.Model.bill.Bill;
 import com.sml.smartledger.Model.business.Business;
 import com.sml.smartledger.Model.party.Party;
 import com.sml.smartledger.Model.party.PartyType;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,6 +51,7 @@ public class PartyServiceImpl implements PartyService {
     }
 
     @Override
+    @Cacheable(value = "party", key = "#businessId")
     public List<Party> getAllParties(Long businessId) {
         return partyRepository.findByBusinessId(businessId);
     }
@@ -87,6 +90,18 @@ public class PartyServiceImpl implements PartyService {
     @Override
     public Party getPartyByMobileNumber(String mobileNumber) {
        return partyRepository.findByMobile(mobileNumber);
+    }
+
+    @Override
+    public List<Bill> getPendingBills(Long partyId) {
+        Party party = partyRepository.findById(partyId).orElseThrow(() -> new RuntimeException("Party not found"));
+        List<Bill> pendingBills = new ArrayList<>();
+        for (Bill bill : party.getBills()) {
+            if (bill.getAmountDue() > 0) {
+                pendingBills.add(bill);
+            }
+        }
+        return pendingBills;
     }
 
 }

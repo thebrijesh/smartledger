@@ -25,11 +25,12 @@ public class Product extends BaseModel {
     int stockQuantity;
     int lowStock;
     @ManyToOne(cascade = CascadeType.ALL)
-            @JsonIgnore
+    @JsonIgnore
     Business business;
     @Enumerated(EnumType.ORDINAL)
     UnitType unitType;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "product", fetch = FetchType.EAGER)
+    @JsonIgnore
     List<ProductTransaction> productTransactions;
     Date date;
     Double totalStockValue;

@@ -1,0 +1,123 @@
+<!-- drawer component -->
+
+
+<div th:fragment="selectUser" id="drawer-right-select-user"
+     class=" fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform translate-x-full bg-white w-auto dark:bg-gray-800"
+     tabindex="-1" aria-labelledby="drawer-right-label">
+
+
+    <div class="max-w-md w-72 md:w-96 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 rounded-lg shadow-lg p-6">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-semibold text-indigo-600 dark:text-indigo-400">Select Party</h2>
+            <button type="button" data-drawer-hide="drawer-right-select-user"
+                    aria-controls="drawer-right-select-user"
+                    class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                     stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+
+
+        <div>
+            <label for="input-search-party" class="sr-only">Search</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                              stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                    </svg>
+                </div>
+                <input type="text" id="input-search-party"
+                       oninput="searchParty(this)"
+                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                       placeholder="Search Unit Type">
+            </div>
+
+            <ul onclick="setPartyData(this)" data-th-each="party : ${partyList}" data-th-object="${party}"
+                th:data-id="*{id}"
+                th:data-name="*{name}"
+                th:data-balance="*{balance}"
+                class="space-y-4 mb-4 mt-4 partyList">
+                <li data-drawer-hide="drawer-right-select-user"
+                    aria-controls="drawer-right-select-user">
+                    <label th:for="partyListView"
+                           class="inline-flex items-center justify-between w-full p-4 text-gray-900 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-500 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-900 hover:bg-gray-100 dark:text-white dark:bg-gray-600 dark:hover:bg-gray-500">
+                        <div class="flex items-center gap-2">
+                            <div id="firstChar"
+                                 class="w-12 h-12 text-black dark:text-white size-4 rounded-full flex justify-center items-center font-medium shadow-md transition-transform transform hover:scale-105"
+                                 th:classappend="${party.name.substring(0,1).toUpperCase() == 'A' ? 'bg-yellow-500' :
+                         party.name.substring(0,1).toUpperCase() == 'B' ? 'bg-blue-500' :
+                         party.name.substring(0,1).toUpperCase() == 'C' ? 'bg-green-500' :
+                         party.name.substring(0,1).toUpperCase() == 'D' ? 'bg-yellow-500' :
+                         party.name.substring(0,1).toUpperCase() == 'E' ? 'bg-indigo-500' :
+                         party.name.substring(0,1).toUpperCase() == 'F' ? 'bg-pink-500' :
+                         party.name.substring(0,1).toUpperCase() == 'G' ? 'bg-purple-500' :
+                         party.name.substring(0,1).toUpperCase() == 'H' ? 'bg-gray-500' :
+                         party.name.substring(0,1).toUpperCase() == 'I' ? 'bg-red-500' :
+                         party.name.substring(0,1).toUpperCase() == 'J' ? 'bg-blue-500' :
+                         party.name.substring(0,1).toUpperCase() == 'K' ? 'bg-green-500' :
+                         party.name.substring(0,1).toUpperCase() == 'L' ? 'bg-yellow-500' :
+                         party.name.substring(0,1).toUpperCase() == 'M' ? 'bg-indigo-500' :
+                         party.name.substring(0,1).toUpperCase() == 'N' ? 'bg-pink-500' :
+                         party.name.substring(0,1).toUpperCase() == 'O' ? 'bg-purple-500' :
+                         party.name.substring(0,1).toUpperCase() == 'P' ? 'bg-gray-500' :
+                         party.name.substring(0,1).toUpperCase() == 'Q' ? 'bg-red-500' :
+                         party.name.substring(0,1).toUpperCase() == 'R' ? 'bg-blue-500' :
+                         party.name.substring(0,1).toUpperCase() == 'S' ? 'bg-green-500' :
+                         party.name.substring(0,1).toUpperCase() == 'T' ? 'bg-yellow-500' :
+                         party.name.substring(0,1).toUpperCase() == 'U' ? 'bg-indigo-500' :
+                         party.name.substring(0,1).toUpperCase() == 'V' ? 'bg-pink-500' :
+                         party.name.substring(0,1).toUpperCase() == 'W' ? 'bg-purple-500' :
+                         party.name.substring(0,1).toUpperCase() == 'X' ? 'bg-gray-500' :
+                         party.name.substring(0,1).toUpperCase() == 'Y' ? 'bg-red-500' :
+                         party.name.substring(0,1).toUpperCase() == 'Z' ? 'bg-blue-500' :
+                         'bg-gray-500'}">
+                                <span class="text-xl" th:text="*{name.substring(0,1).toUpperCase()}"></span>
+                            </div>
+                            <div>
+                                <div class="w-full text-md font-semibold" th:data-name="*{name}" data-th-text="*{name}"></div>
+                                <div class="w-full text-gray-500 dark:text-gray-400" th:data-mobile="*{mobile}" data-th-text="*{mobile}"></div>
+                            </div>
+                        </div>
+                        <svg class="w-4 h-4 ms-3 rtl:rotate-180 text-gray-500 dark:text-gray-400"
+                             aria-hidden="true"
+                             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                        </svg>
+                    </label>
+                </li>
+            </ul>
+
+        </div>
+
+    </div>
+
+    <script>
+        function searchParty() {
+
+            const searchQuery = document.getElementById('input-search-party').value.toLowerCase();
+            const customers = document.getElementsByClassName('partyList');
+
+
+            Array.from(customers).forEach(customer => {
+                const name = customer.querySelector('[data-name]').textContent.toLowerCase();
+                const mobile = customer.querySelector('[data-mobile]').textContent.toLowerCase();
+                let show = true;
+
+                // Apply search filter
+                if (!name.includes(searchQuery) && !mobile.includes(searchQuery)) {
+                    show = false;
+                }
+
+                customer.style.display = show ? '' : 'none';
+            });
+        }
+    </script>
+</div>

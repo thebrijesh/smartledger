@@ -2,6 +2,7 @@ package com.sml.smartledger.Model.party;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sml.smartledger.Model.BaseModel;
+import com.sml.smartledger.Model.bill.Bill;
 import com.sml.smartledger.Model.business.Business;
 import jakarta.persistence.*;
 import lombok.*;
@@ -42,6 +43,10 @@ public class Party extends BaseModel implements Serializable {
     @Builder.Default
     @OneToMany(mappedBy = "party", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     List<PartyTransaction> partyTransactionList = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "party", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    List<Bill> bills = new ArrayList<>();
 
     @Override
     public String toString() {

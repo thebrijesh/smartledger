@@ -1,0 +1,172 @@
+<div data-th-fragment="dexpense_drawer" id="drawer-right-example2"
+     class="fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform translate-x-full bg-white dark:bg-gray-800 w-auto"
+     tabindex="-1" aria-labelledby="drawer-right-label">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-semibold text-indigo-600 dark:text-indigo-400">Create an Expense</h2>
+        <button type="button" data-drawer-hide="drawer-right-example2"
+                aria-controls="drawer-right-example2"
+                class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                 stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+    </div>
+
+    <div class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 w-96">
+
+        <div class="mb-4">
+            <label for="expenseNameInput" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Expense
+                name</label>
+            <input type="text" id="expenseNameInput"
+                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                   placeholder="Expense Name" required/>
+        </div>
+
+        <div class="relative max-w-sm mb-4">
+            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                     xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                </svg>
+            </div>
+            <input id="datepicker-autohide" datepicker datepicker-autohide datepicker-format="dd-mm-yyyy" type="text"
+                   class="bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
+                   placeholder="Select date">
+        </div>
+
+
+        <div class="relative max-w-sm mb-4">
+
+            <div class="mb-2">Select Category</div>
+            <input id="selectedExpenseId" class="hidden"></input>
+            <input id="selectedCategoryId" class="hidden"></input>
+            <input id="categorySelector"
+                   type="text"
+                   readonly
+                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                   placeholder="Select Category">
+        </div>
+        <div id="categoryDropdownSearch" class="z-10 hidden bg-white rounded-lg mt-2 shadow w-60 dark:bg-gray-700">
+            <div class="p-3">
+                <label for="input-group-search" class="sr-only">Search</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                  stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                        </svg>
+                    </div>
+                    <input type="text" id="input-group-search"
+                           oninput="searchCategory(this)"
+                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                           placeholder="Search Unit Type">
+                </div>
+            </div>
+            <div class="h-48 overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-400 hover:scrollbar-thumb-gray-500 scrollbar-track-gray-200 dark:scrollbar-thumb-gray-600 dark:hover:scrollbar-thumb-gray-500 dark:scrollbar-track-gray-800">
+
+                <div id="categorySelectMainLayout"
+                     class="cursor-pointer ps-2 overflow-y-auto text-sm text-gray-700 dark:text-gray-200"
+                     aria-labelledby="categoryDropdownSearchButton">
+
+
+                </div>
+            </div>
+        </div>
+
+        <!-- write a script to open/close categoryDropdownSearch on the click of categorySelector and after selecting unit type by user set selected unit type in categorySelector -->
+        <script>
+
+            const categorySelector = document.getElementById('categorySelector');
+            const categoryDropdownSearch = document.getElementById('categoryDropdownSearch');
+
+            categorySelector.addEventListener('click', () => {
+                categoryDropdownSearch.classList.toggle('hidden');
+            });
+
+            selectCategory();
+
+            //   create a function for  user can select unit type from dropdown
+            function selectCategory(unit) {
+                categorySelector.value = unit.querySelector('#categoryName').textContent;
+                document.getElementById('selectedCategoryId').value = unit.querySelector('#categoryId').textContent;
+                categoryDropdownSearch.classList.add('hidden');
+
+            }
+
+            function searchCategory(input) {
+                const filter = input.value.toLowerCase();
+                const selectCategory = document.querySelectorAll('#selectCategory');
+                for (let i = 0; i < selectCategory.length; i++) {
+                    let fullName = selectCategory[i].querySelector('#categoryName').textContent.toLowerCase();
+                    selectCategory[i].style.display = !fullName.includes(filter) ? 'none' : '';
+                }
+            }
+        </script>
+
+        <div class="mb-4">
+            <label class="block text-gray-700 dark:text-gray-300">Amount Paid</label>
+            <input id="expenseAmountInput" type="number" placeholder="₹ Enter Amount" required
+                   class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md mt-1 outline-none bg-white dark:bg-gray-800 text-gray-900 dark:text-white"/>
+        </div>
+
+        <div class="mb-4">
+            <label for="expenseDescriptionInput" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+            <textarea id="expenseDescriptionInput"
+                      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      placeholder="Description" required></textarea>
+        </div>
+
+        <div class="flex justify-between items-center mb-2">
+            <p id="addNewCategory" class=" text-sm text-gray-500 dark:text-gray-400 bold cursor-pointer">Add New
+                Category</p>
+            <button type="button"
+                    id="removeAddNewCategoryLayout"
+                    class="hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                     stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        <script>
+            document.getElementById('addNewCategory').addEventListener('click', () => {
+                document.getElementById('addCategoryLayout').className = 'block';
+                document.getElementById('removeAddNewCategoryLayout').className = 'block';
+            });
+
+            document.getElementById('removeAddNewCategoryLayout').addEventListener('click', () => {
+                document.getElementById('addCategoryLayout').className = 'hidden';
+                document.getElementById('removeAddNewCategoryLayout').className = 'hidden';
+            });
+        </script>
+        <div class="mb-4 hidden " id="addCategoryLayout">
+
+            <label for="categoryNameInput"
+                   class=" mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Add</label>
+            <div class=" relative">
+                <input type="text" id="categoryNameInput"
+                       class="block w-full p-4  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                       placeholder="Add New Category" required/>
+                <button id="addExpenseCategoryBtn" type="button"
+                        class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    Add
+                </button>
+            </div>
+
+
+        </div>
+
+        <!-- Add Customer Button -->
+        <div>
+            <button id="addExpenseBtn" type="submit"
+                    class="mt-4 w-full bg-blue-600  text-white shadow-md hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 mb-2">
+                Add New Expense
+            </button>
+        </div>
+    </div>
+
+
+</div>

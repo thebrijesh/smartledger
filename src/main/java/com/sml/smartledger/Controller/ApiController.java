@@ -146,6 +146,8 @@ public ResponseEntity<Map<String, List<?>>> getBillTransactions(@PathVariable("i
         party.setBusiness(business);
         party.setMobile(partyRequest.getNumber());
         party.setPartyType(PartyType.valueOf(partyRequest.getPartyType()));
+        party.setBalance(0.0);
+
         partyService.createParty(party);
         // Return the created Party object
         return ResponseEntity.ok(party);

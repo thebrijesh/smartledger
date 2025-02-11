@@ -2,6 +2,7 @@ package com.sml.smartledger.Model.party;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sml.smartledger.Model.BaseModel;
+import com.sml.smartledger.Model.bill.Bill;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,5 +25,7 @@ public class PartyTransaction extends BaseModel implements Serializable {
     @Enumerated(EnumType.ORDINAL)
     TransactionType transactionType;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    Bill bill;
 
 }

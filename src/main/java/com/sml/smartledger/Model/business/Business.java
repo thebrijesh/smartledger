@@ -3,11 +3,12 @@ package com.sml.smartledger.Model.business;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sml.smartledger.Model.BaseModel;
 import com.sml.smartledger.Model.User;
+import com.sml.smartledger.Model.bill.AdditionalCharges;
 import com.sml.smartledger.Model.bill.Bill;
 import com.sml.smartledger.Model.bill.CustomFields;
 import com.sml.smartledger.Model.inventory.Product;
 import com.sml.smartledger.Model.inventory.Service;
-import com.sml.smartledger.Model.bill.Expanses;
+import com.sml.smartledger.Model.bill.Expenses;
 import com.sml.smartledger.Model.party.Party;
 import com.sml.smartledger.Model.staff.StaffMember;
 import jakarta.persistence.*;
@@ -41,13 +42,12 @@ public class Business extends BaseModel implements Serializable {
     List<Party> parties = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "business", fetch = FetchType.EAGER, orphanRemoval = true,cascade = CascadeType.ALL)
     List<Bill> bills = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(cascade = CascadeType.ALL)
-    @JsonIgnore
-    List<Expanses> expansesList = new ArrayList<>();
+    @OneToMany(mappedBy = "business", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    List<Expenses> expensesList = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "business", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
@@ -57,8 +57,13 @@ public class Business extends BaseModel implements Serializable {
     @OneToMany(mappedBy = "business", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     List<Service> services = new ArrayList<>();
 
-    @ElementCollection
-    List<String> customFields = new ArrayList<>();
+    @Builder.Default
+    @OneToMany(mappedBy = "business", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    List<AdditionalCharges> additionalCharges = new ArrayList<>();
+    @Builder.Default
+    @OneToMany(mappedBy = "business", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    List<CustomFields> customFields = new ArrayList<>();
+
     private String logo;
 
     double totalCredit;
@@ -78,7 +83,7 @@ public class Business extends BaseModel implements Serializable {
                 ", staffList=" + staffList.size() +
                 ", parties=" + parties.size() +
                 ", bills=" + bills.size() +
-                ", expansesList=" + expansesList.size() +
+                ", expensesList=" + expensesList.size() +
                 ", products=" + products.size() +
                 ", services=" + services.size() +
                 ", logo='" + logo + '\'' +

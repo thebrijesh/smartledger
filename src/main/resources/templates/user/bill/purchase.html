@@ -9,12 +9,17 @@
 
 
     <div class="pt-20 sm:pl-64">
-        <div class="flex justify-center flex-col items-center">
-            <h1 class="text-5xl"> Welcome to Purchase Bills Page</h1>
-            <p class="mt-4"> Quality time off, leads to quality time on</p>
-        </div>
+        <div th:replace="~{user/bill/bill_fragment ::billFragment}"></div>
     </div>
 
 </div>
+<script>
+    function addBillClickListener(element) {
+        const billType = element.getAttribute('data-bill-type');
+        element.addEventListener('click', function () {
+            window.location.href = "/users/transactions/add-bill/" +billType;
+        });
+    }
+</script>
 <script>console.log("Purchase")</script></body>
 </html>

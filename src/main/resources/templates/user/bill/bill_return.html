@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en" th:replace="~{base ::parent(~{::#content}, ~{::title}, ~{::script})}">
+<head>
+    <title data-th-text="${loggedInUser.name}">Dashboard</title>
+</head>
+<body>
+<div id="content" class="h-screen">
+
+
+    <div class="pt-10 sm:pl-64">
+        <div class="flex justify-center flex-col items-center">
+            <div class="bg-white dark:bg-gray-800 shadow-2xl rounded-lg w-full max-w-xl p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h1 class="text-xl font-bold text-gray-800 dark:text-gray-200">Sale Bill</h1>
+                    <span class="text-sm text-gray-500 dark:text-gray-400 flex items-center space-x-1">
+        <i data-feather="calendar" class="w-4 h-4 text-gray-500 dark:text-gray-400"></i>
+         <div class="relative max-w-sm mt-4">
+                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                    </svg>
+                </div>
+                <input id="datepicker" th:value="${date}" datepicker datepicker-format="dd-mm-yyyy" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date">
+            </div>
+      </span>
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-4 mb-4 dark:border-gray-600">
+                    <div class="mb-4 sm:mb-0">
+                        <span class="text-gray-500 dark:text-gray-400 text-sm">Sale Bill Number</span>
+                        <h2 class="text-2xl font-semibold text-blue-600 dark:text-blue-400">14</h2>
+                        <p id="billtype" data-th-text="${billType}" class="hidden"> </p>
+                    </div>
+                    <button class="text-blue-600 dark:text-blue-400 text-sm flex items-center space-x-1">
+                        <i data-feather="edit" class="w-4 h-4"></i>
+                        <span>Edit</span>
+                    </button>
+                </div>
+
+                <div id="noPartySelectedLayout" class="mb-4">
+                    <label for="party" class="text-gray-500 dark:text-gray-400 text-sm block mb-2">Bill To</label>
+                    <div class="relative">
+                        <input id="party" type="text" readonly placeholder="Search from your parties"
+                               data-drawer-target="drawer-right-select-invoice"
+                               data-drawer-show="drawer-right-select-invoice"
+                               aria-controls="drawer-right-select-invoice"
+                               data-drawer-placement="right"
+                               class="border rounded-lg w-full p-3 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
+                        <i data-feather="search"
+                           class="w-5 h-5 text-gray-400 absolute right-3 top-3 dark:text-gray-500"></i>
+                    </div>
+                    <button data-drawer-target="drawer-right-addPartyBill"
+                            data-drawer-show="drawer-right-addPartyBill"
+                            aria-controls="drawer-right-addPartyBill"
+                            data-drawer-placement="right"
+                            class="text-blue-600 dark:text-blue-400 text-sm mt-2 flex items-center">
+                        <span>+ Add New Party</span>
+                    </button>
+                </div>
+                <div data-th-if="${bill != null}" id = "billId" class="hidden" data-th-text="${bill.getId()}"></div>
+                <div id="showSelectedPartyLayout"
+                     class="hidden inline-flex mb-4 items-center justify-between w-full p-4 text-gray-900 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-500 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-900 hover:bg-gray-100 dark:text-white dark:bg-gray-600 dark:hover:bg-gray-500">
+                    <input type="text" id="partyId" name="selectedPartyId"
+                           class="hidden peer"/>
+                    <div class="flex items-center gap-2">
+                        <div id="firstChar">
+
+                        </div>
+                        <div>
+                            <div id="partyName" class="w-full text-md font-semibold"></div>
+                            <div id="partyMobile" class="w-full text-gray-500 dark:text-gray-400"></div>
+                        </div>
+                        <button id="removePartyBtn" type="button" onclick="removeParty()"
+                                class="ml-auto text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                 stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+
+                <div id="noItemSelectedLayout" class="border-t pt-4 dark:border-gray-600 mb-4">
+                    <label for="item" class="text-gray-500 dark:text-gray-400 text-sm block mb-2">Item </label>
+                    <div class="relative">
+                        <input id="item" type="text" readonly placeholder="Search from your Inventory"
+                               onclick="setData()"
+                               data-drawer-target="drawer-right-add-item-return"
+                               data-drawer-show="drawer-right-add-item-return"
+                               aria-controls="drawer-right-add-item-return"
+                               data-drawer-placement="right"
+                               class="border rounded-lg w-full p-3 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
+                        <i data-feather="search"
+                           class="w-5 h-5 text-gray-400 absolute right-3 top-3 dark:text-gray-500"></i>
+                    </div>
+                    <button data-drawer-target="drawer-right-addItemBill"
+                            data-drawer-show="drawer-right-addItemBill"
+                            aria-controls="drawer-right-addItemBill"
+                            data-drawer-placement="right"
+                            class="text-blue-600 dark:text-blue-400 text-sm mt-2 flex items-center">
+                    </button>
+                </div>
+
+
+                <div class="selectedItemView">
+                </div>
+
+                <div id="editOrAddItemLayout" style="display:none"
+                     class="flex flex-col w-full sm:flex-row justify-between items-start sm:items-center border-t py-4 dark:border-gray-600">
+                    <button data-drawer-target="drawer-right-add-item"
+                            data-drawer-show="drawer-right-add-item"
+                            aria-controls="drawer-right-add-item"
+                            data-drawer-placement="right"
+                            class="text-blue-600 dark:text-blue-400 text-sm flex items-center space-x-1 mb-4 sm:mb-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                             viewBox="0 0 24 24"
+                             stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M15.232 4.232a1 1 0 011.415 0l3.182 3.182a1 1 0 010 1.415l-9.9 9.9a1 1 0 01-.415.263l-3.993 1.033a.25.25 0 01-.307-.308l1.034-3.992a1 1 0 01.263-.415l9.9-9.9z"/>
+                        </svg>
+                        <span>Edit or Add Items</span>
+                    </button>
+                    <div class="flex justify-between">
+                        <p class="font-semibold text-gray-800 dark:text-gray-200">Item Sub-Total: &#8377; </p>
+                        <p id="totalAmount"></p>
+                    </div>
+                </div>
+
+                <div id="AdditionalChargesLayout" style="display:none"
+                     class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-y  dark:border-gray-600 w-full">
+                    <div class="flex-col w-full">
+                        <button data-modal-target="charges-modal" data-modal-toggle="charges-modal"
+                                class="text-gray-800 dark:text-gray-200 text-sm flex items-center space-x-1 py-4 sm:mb-0 w-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" x="0" y="0"
+                                 viewBox="0 0 64 64" xml:space="preserve"><g><g fill="currentColor"><path d="M56.526 16.467H7.474a2.317 2.317 0 0 0-2.316 2.316v26.433a2.317 2.317 0 0 0 2.316 2.316h49.052a2.317 2.317 0 0 0 2.316-2.316V18.783a2.317 2.317 0 0 0-2.316-2.316zm-.409 28.341H7.883V19.192h48.234z" fill="currentColor"></path><path
+                                    d="M32 21.1c-6.02 0-10.9 4.881-10.9 10.9S25.98 42.9 32 42.9 42.9 38.02 42.9 32 38.02 21.1 32 21.1zm4.712 15.849a4.048 4.048 0 0 1-1.215 1.463 5.522 5.522 0 0 1-1.859.883 7.368 7.368 0 0 1-.875.185v1.278h-1.676v-1.172a9.04 9.04 0 0 1-1.215-.109 8.654 8.654 0 0 1-1.232-.289 6.163 6.163 0 0 1-.905-.354 2.267 2.267 0 0 1-.529-.338c-.112-.106-.196-.273-.256-.499s-.09-.561-.09-1.006c0-.292.008-.526.03-.7.019-.177.049-.319.09-.422.041-.106.09-.177.15-.213a.445.445 0 0 1 .226-.052c.112 0 .275.063.491.188.218.125.488.264.809.414.322.153.698.292 1.125.422.428.131.913.196 1.455.196.343 0 .646-.033.913-.104s.499-.172.695-.302c.196-.131.346-.297.447-.499s.15-.433.15-.695c0-.302-.093-.561-.278-.777-.188-.218-.433-.406-.741-.567s-.654-.311-1.041-.452a27.587 27.587 0 0 1-1.194-.469 11.252 11.252 0 0 1-1.191-.589 4.52 4.52 0 0 1-1.044-.815 3.72 3.72 0 0 1-.739-1.164c-.188-.452-.281-.995-.281-1.63 0-.643.125-1.234.379-1.774a3.878 3.878 0 0 1 1.087-1.382c.471-.382 1.049-.679 1.728-.891.302-.093.624-.166.959-.218v-1.259h1.676v1.169a8.961 8.961 0 0 1 1.962.308c.322.09.594.191.815.294.221.106.382.196.477.273.095.076.164.15.202.226a.993.993 0 0 1 .093.273c.019.106.038.237.052.392.016.155.022.349.022.58 0 .273-.005.493-.022.665a1.698 1.698 0 0 1-.076.409c-.035.098-.082.166-.142.202a.416.416 0 0 1-.213.055c-.09 0-.232-.055-.422-.158-.191-.106-.431-.221-.717-.341s-.619-.234-.997-.341a4.768 4.768 0 0 0-1.289-.158c-.343 0-.64.035-.891.106a1.705 1.705 0 0 0-.619.302 1.212 1.212 0 0 0-.362.461 1.316 1.316 0 0 0-.123.564c0 .313.095.575.289.785.191.213.441.398.755.559.311.164.665.313 1.063.455.398.139.801.294 1.207.461.409.166.812.36 1.21.58a4.58 4.58 0 0 1 1.063.815c.313.322.564.709.755 1.155.191.447.286.978.286 1.591.001.771-.141 1.447-.427 2.03z"
+                                    fill="currentColor"></path><circle cx="13.333" cy="32" r="3.633"
+                                                                       fill="currentColor"></circle><circle cx="50.667"
+                                                                                                            cy="32"
+                                                                                                            r="3.633"
+                                                                                                            fill="currentColor"></circle><path
+                                    d="M56.526 16.467H7.474a2.317 2.317 0 0 0-2.316 2.316v26.433a2.317 2.317 0 0 0 2.316 2.316h49.052a2.317 2.317 0 0 0 2.316-2.316V18.783a2.317 2.317 0 0 0-2.316-2.316zm-.409 28.341H7.883V19.192h48.234z"
+                                    fill="currentColor"></path><path
+                                    d="M32 21.1c-6.02 0-10.9 4.881-10.9 10.9S25.98 42.9 32 42.9 42.9 38.02 42.9 32 38.02 21.1 32 21.1zm4.712 15.849a4.048 4.048 0 0 1-1.215 1.463 5.522 5.522 0 0 1-1.859.883 7.368 7.368 0 0 1-.875.185v1.278h-1.676v-1.172a9.04 9.04 0 0 1-1.215-.109 8.654 8.654 0 0 1-1.232-.289 6.163 6.163 0 0 1-.905-.354 2.267 2.267 0 0 1-.529-.338c-.112-.106-.196-.273-.256-.499s-.09-.561-.09-1.006c0-.292.008-.526.03-.7.019-.177.049-.319.09-.422.041-.106.09-.177.15-.213a.445.445 0 0 1 .226-.052c.112 0 .275.063.491.188.218.125.488.264.809.414.322.153.698.292 1.125.422.428.131.913.196 1.455.196.343 0 .646-.033.913-.104s.499-.172.695-.302c.196-.131.346-.297.447-.499s.15-.433.15-.695c0-.302-.093-.561-.278-.777-.188-.218-.433-.406-.741-.567s-.654-.311-1.041-.452a27.587 27.587 0 0 1-1.194-.469 11.252 11.252 0 0 1-1.191-.589 4.52 4.52 0 0 1-1.044-.815 3.72 3.72 0 0 1-.739-1.164c-.188-.452-.281-.995-.281-1.63 0-.643.125-1.234.379-1.774a3.878 3.878 0 0 1 1.087-1.382c.471-.382 1.049-.679 1.728-.891.302-.093.624-.166.959-.218v-1.259h1.676v1.169a8.961 8.961 0 0 1 1.962.308c.322.09.594.191.815.294.221.106.382.196.477.273.095.076.164.15.202.226a.993.993 0 0 1 .093.273c.019.106.038.237.052.392.016.155.022.349.022.58 0 .273-.005.493-.022.665a1.698 1.698 0 0 1-.076.409c-.035.098-.082.166-.142.202a.416.416 0 0 1-.213.055c-.09 0-.232-.055-.422-.158-.191-.106-.431-.221-.717-.341s-.619-.234-.997-.341a4.768 4.768 0 0 0-1.289-.158c-.343 0-.64.035-.891.106a1.705 1.705 0 0 0-.619.302 1.212 1.212 0 0 0-.362.461 1.316 1.316 0 0 0-.123.564c0 .313.095.575.289.785.191.213.441.398.755.559.311.164.665.313 1.063.455.398.139.801.294 1.207.461.409.166.812.36 1.21.58a4.58 4.58 0 0 1 1.063.815c.313.322.564.709.755 1.155.191.447.286.978.286 1.591.001.771-.141 1.447-.427 2.03z"
+                                    fill="currentColor"></path><circle cx="13.333" cy="32" r="3.633"
+                                                                       fill="currentColor"></circle><circle cx="50.667"
+                                                                                                            cy="32"
+                                                                                                            r="3.633"
+                                                                                                            fill="currentColor"></circle></g></g></svg>
+                            <span>Additional Charges</span>
+                        </button>
+
+                        <div id="AdditionalChargeRow"></div>
+                    </div>
+                    <p id="totalCharges" class="hidden">0</p>
+                </div>
+
+                <div id="DiscountLayout" style="display:none"
+                     class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b  dark:border-gray-600 w-full">
+                    <div class="flex-col w-full">
+                        <button data-modal-target="total-discount-modal" data-modal-toggle="total-discount-modal"
+                                class="text-gray-800 dark:text-gray-200 text-sm flex items-center space-x-1 py-4 sm:mb-0 w-full">
+                            + ADD DISCOUNT
+                        </button>
+
+                        <div id="AddDiscount"></div>
+                    </div>
+                </div>
+
+                <div id="SelectDiscountLayout" style="display:none"
+                     class="flex flex-col w-full sm:flex-row justify-between items-start sm:items-center border-t py-4 dark:border-gray-600">
+                    <button data-modal-target="total-discount-modal" data-modal-toggle="total-discount-modal"
+                            class="text-blue-600 dark:text-blue-400 text-sm flex items-center space-x-1 mb-4 sm:mb-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                             viewBox="0 0 24 24"
+                             stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M15.232 4.232a1 1 0 011.415 0l3.182 3.182a1 1 0 010 1.415l-9.9 9.9a1 1 0 01-.415.263l-3.993 1.033a.25.25 0 01-.307-.308l1.034-3.992a1 1 0 01.263-.415l9.9-9.9z"/>
+                        </svg>
+                        <span>Discount</span>
+                    </button>
+                    <div class="flex justify-between">
+                        <p class="font-semibold text-gray-800 dark:text-gray-200">&#8377; </p>
+                        <p id="totalDiscount">0</p>
+                    </div>
+                </div>
+
+
+                <div class="border-b py-4 dark:border-gray-600 w-full">
+
+                    <div class="flex justify-between">
+                        <p>Sale Bill Amount</p>
+                        <p class="text-black dark:text-white text-2xl font-semibold">₹ <span
+                                id="finalPayableBillAmount">0</span></p>
+                    </div>
+
+                </div>
+
+                <div class="w-full  bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-200 dark:border-gray-700 mx-4 sm:mx-0">
+                    <!-- Payment Methods -->
+                    <div id="paymentMethodLayout" class="flex flex-col sm:flex-row justify-between mb-4 gap-3 sm:gap-0">
+                        <label class="flex items-center space-x-2 group">
+                            <input type="radio" name="payment_method" value="unpaid"
+                                   class="w-4 h-4 text-blue-600 focus:ring-blue-500 group-hover:scale-110 transition duration-200">
+                            <span class="text-gray-700 dark:text-gray-300 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition duration-200">Unpaid</span>
+                        </label>
+                        <label class="flex items-center space-x-2 group">
+                            <input type="radio" name="payment_method" value="cash"
+                                   class="w-4 h-4 text-blue-600 focus:ring-blue-500 group-hover:scale-110 transition duration-200">
+                            <span class="text-gray-700 dark:text-gray-300 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition duration-200">Cash</span>
+                        </label>
+                        <label class="flex items-center space-x-2 group">
+                            <input type="radio" name="payment_method" value="online"
+                                   class="w-4 h-4 text-blue-600 focus:ring-blue-500 group-hover:scale-110 transition duration-200">
+                            <span class="text-gray-700 dark:text-gray-300 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition duration-200">Online</span>
+                        </label>
+                    </div>
+
+                    <!-- Notes/Reference -->
+                    <div id="dueDateLayout" style="display: none" class="mb-4">
+                        <a href="#"
+                           class="text-blue-500 dark:text-blue-400 text-sm hover:underline hover:text-blue-700 dark:hover:text-blue-300 transition duration-200">+
+                            DUE DATE</a>
+                    </div>
+
+                    <!-- Received Section -->
+                    <div id="receivedLayout" style="display: none"
+                         class="mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
+                        <label for="received" class="text-gray-700 dark:text-gray-300 text-sm">Received</label>
+                        <input type="number" id="received"
+                               class="w-full sm:w-24 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 hover:border-blue-400 dark:hover:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200"
+                               value="0.0">
+                    </div>
+
+                    <!-- Balance Due -->
+                    <div class="flex justify-between items-center mb-6">
+                        <span class="text-gray-700 dark:text-gray-300 text-sm">Balance Due</span>
+                        <span id="balanceDue" class="text-gray-900 dark:text-gray-200 text-sm font-medium">₹ 0</span>
+                    </div>
+                </div>
+
+                <button id="generateBillBtn" class="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 rounded-lg font-semibold shadow-md hover:from-blue-600 hover:to-blue-700 transition dark:from-blue-700 dark:to-blue-800 dark:hover:from-blue-800 dark:hover:to-blue-900">
+                    Generate Sale Bill &#8377; <span id="finalBillAmount">0 </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{user/bill/discount_modal ::discount_modal}"></div>
+    <div th:replace="~{user/bill/select_invoice_drawer ::selectInvoice}"></div>
+    <div th:replace="~{user/bill/select_invoice_return_drawe ::addReturnItemBillDrawer}"></div>
+    <div th:replace="~{user/bill/charges_modal ::charges_modal}"></div>
+    <div th:replace="~{user/bill/totalDiscountModal ::total_discount_modal}"></div>
+
+
+</div>
+<script>console.log("Dashboard")</script>
+<script data-th-src="@{/js/returnBill.js}"></script>
+
+
+</body>
+</html>

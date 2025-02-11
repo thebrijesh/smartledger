@@ -2,14 +2,18 @@ package com.sml.smartledger.Controller.party;
 
 import com.sml.smartledger.Forms.PartyForm;
 import com.sml.smartledger.Forms.PartyTransactionForm;
+import com.sml.smartledger.Forms.PaymentTransactionForm;
 import com.sml.smartledger.Helper.Helper;
 import com.sml.smartledger.Model.User;
+import com.sml.smartledger.Model.bill.Bill;
 import com.sml.smartledger.Model.business.Business;
 import com.sml.smartledger.Model.party.Party;
 import com.sml.smartledger.Model.party.PartyTransaction;
 import com.sml.smartledger.Model.party.PartyType;
 import com.sml.smartledger.Model.party.TransactionType;
+import com.sml.smartledger.Repository.bill.BillRepository;
 import com.sml.smartledger.Services.interfaces.UserService;
+import com.sml.smartledger.Services.interfaces.bill.BillService;
 import com.sml.smartledger.Services.interfaces.business.BusinessService;
 import com.sml.smartledger.Services.interfaces.party.PartyService;
 import com.sml.smartledger.Services.interfaces.party.PartyTransactionService;
@@ -33,6 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -47,13 +52,15 @@ public class PartyController {
     private final UserService userService;
     private final BusinessService businessService;
     private final Logger logger = LoggerFactory.getLogger(PartyController.class);
+    private final BillService billService;
 
     @Autowired
-    public PartyController(PartyService partyService, PartyTransactionService partyTransactionService, UserService userService, BusinessService businessService) {
+    public PartyController(PartyService partyService, PartyTransactionService partyTransactionService, UserService userService, BusinessService businessService, BillService billService) {
         this.partyService = partyService;
         this.partyTransactionService = partyTransactionService;
         this.userService = userService;
         this.businessService = businessService;
+        this.billService = billService;
     }
 
     @PostMapping("/createParty")
@@ -229,6 +236,16 @@ public class PartyController {
         return "user/party/party_details";
     }
 
+    @GetMapping("/paymentTransaction/{type}")
+    public String paymentTransaction(@PathVariable("type") String type, Model model, Authentication authentication) {
+        String email = getEmailOfLoggedInUser(authentication);
+        User user = userService.getUserByEmail(email);
+
+        model.addAttribute("partyList",partyService.getAllParties(user.getSelectedBusiness().getId()));
+        model.addAttribute("transactionType", type);
+        return "user/party/payment_in_view";
+    }
+
     @PostMapping("/create-party-transaction")
     public String createPartyTransaction(@ModelAttribute PartyTransactionForm partyTransactionForm) {
         Party party = partyService.getPartyById(partyTransactionForm.getPartyId());
@@ -259,6 +276,30 @@ public class PartyController {
 
         PartyTransaction updatedTransaction = partyTransactionService.updateTransaction(newPartyTransaction);
         return "redirect:/users/party/view/" + partyTransaction.getParty().getId();
+    }
+
+    @PostMapping("createpayment")
+    public ResponseEntity<Void> createPayment(@RequestBody PaymentTransactionForm partyTransactionForm) throws ParseException {
+        System.out.println("partyyy" + partyTransactionForm);
+
+        Party party = partyService.getPartyById(partyTransactionForm.getPartyId());
+        PartyTransaction transaction = new PartyTransaction();
+        transaction.setAmount(partyTransactionForm.getAmount());
+        transaction.setParty(party);
+        System.out.println("dateeeee" + Helper.convertStringToDate(partyTransactionForm.getDate()));
+        transaction.setTransactionDate(Helper.convertStringToDate(partyTransactionForm.getDate()));
+        transaction.setTransactionType((partyTransactionForm.getPaymentType().equals("SALE") ? TransactionType.CREDIT : TransactionType.DEBIT));
+        transaction.setDescription("Payment In");
+        partyTransactionService.createTransaction(transaction);
+        int total = (int) partyTransactionForm.getAmount();
+        for (Long billId : partyTransactionForm.getBills()) {
+            Bill bill = billService.getBillById(billId);
+            int amountPaid = (total > bill.getAmountDue()) ? (int) bill.getAmountDue() : total;
+            bill.setAmountDue(bill.getAmountDue() - amountPaid);
+            billService.updateBill(bill);
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/set-due-date")
@@ -349,5 +390,11 @@ public class PartyController {
         model.addAttribute("dueParties", parties);
         logger.info("Due Parties: " + parties);
         return "user/party/due_parties";
+    }
+
+    @GetMapping("/getpendingbills/{partyId}")
+    public ResponseEntity<List<Bill>> getPendingBills(@PathVariable("partyId") Long partyId) {
+        List<Bill> pendingBills = partyService.getPendingBills(partyId);
+        return new ResponseEntity<>(pendingBills, HttpStatus.OK);
     }
 }

@@ -125,7 +125,7 @@ public class ProductController {
         model.addAttribute("productForm", productForm);
         model.addAttribute("selectedBusiness", business);
 
-        return "/user/item/products";
+        return "user/item/products";
     }
 
 
@@ -189,7 +189,4 @@ public class ProductController {
         productService.deleteProduct(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-
-
 }

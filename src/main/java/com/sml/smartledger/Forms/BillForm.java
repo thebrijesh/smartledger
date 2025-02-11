@@ -15,12 +15,20 @@ import java.util.Map;
 @ToString
 public class BillForm {
 
+    private Long id;
     private Long partyId;
     private double amount;
     private String date;
     private String paymentType;
+    private double dueAmount;
+    private double paidAmount;
+    private List<String> terms;
+    private List<chargesForm> additionalCharges;
+    private List<customFieldsForm> customFields;
+    private double totalDiscount;
+    private String discountType;
     private String billType;
-    private List<ProductTransaction> products;
-    private List<ServiceTransaction> services;
+    private List<ProductTransactionForm> products;
+    private List<ServiceTransactionForm> services;
 
 }

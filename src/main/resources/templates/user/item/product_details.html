@@ -286,11 +286,11 @@
         let url = null;
         if (value === 'productTransaction') {
             const transactionId = document.getElementById('editProductTransactionId').value;
-            url = 'http://localhost:8184/users/inventory/productTransaction/delete-product-transactions/' + transactionId;
+            url = '/users/inventory/productTransaction/delete-product-transactions/' + transactionId;
             console.log(url);
         } else {
             const productId = document.getElementById('productId').value;
-            url = 'http://localhost:8184/users/inventory/products/delete/' + productId;
+            url = '/users/inventory/products/delete/' + productId;
             console.log(url);
         }
 
@@ -308,7 +308,7 @@
                     if (value === 'productTransaction') {
                         window.location.reload();
                     } else {
-                        window.location.href = 'http://localhost:8184/users/inventory/products/view';
+                        window.location.href = '/users/inventory/products/view';
                     }
 
                 })
