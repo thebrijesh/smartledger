@@ -46,7 +46,7 @@ public class BusinessController {
         User user = userService.getUserByEmail(userName);
            List<Business> businessList = businessService.getAllBusiness(user.getId());
               model.addAttribute("businessList", businessList);
-           return "redirect:/users/dashboard";
+           return "redirect:/users/party/customer";
     }
     @PostMapping("/create-business")
     public String createBusiness(@ModelAttribute BusinessForm businessForm, Authentication authentication) {

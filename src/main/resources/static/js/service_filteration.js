@@ -2,6 +2,7 @@ function filterService() {
     let itemSearch = document.getElementById('itemSearchInput').value.toLowerCase();
     const items = document.querySelectorAll('.serviceList');
     console.log(itemSearch);
+    let itemSoldCount = 0;
     items.forEach(item => {
         const itemName = item.querySelector('.serviceName').textContent.toLowerCase();
         console.log(itemName);
@@ -10,6 +11,7 @@ function filterService() {
             show = false;
             console.log(itemName);
         }
+
         //item style display
         item.style.display = show ? '' : 'none';
     });

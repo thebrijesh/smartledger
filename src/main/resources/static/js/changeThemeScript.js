@@ -39,7 +39,7 @@ function setTheme(theme) {
 //get theme from localstorage
 function getTheme() {
     let theme = localStorage.getItem("theme");
-    return theme ? theme : "light";
+    return theme ? theme : "dark";
 }
 
 //change current page theme

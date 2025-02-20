@@ -48,7 +48,7 @@ public class PageController {
     @GetMapping("/")
     public String homes(Model model) {
         model.addAttribute("isPublicPage", true);
-        return "redirect:/home";
+        return "redirect:/login";
     }
 
     @RequestMapping("/home")

@@ -683,7 +683,7 @@ function addItemsList() {
         let quantity = productTransaction.querySelector('.quantity').value;
         if (parseInt(quantity) > 0) {
             let service = {
-                serviceId: productTransaction.getAttribute('data-product-id'),
+                serviceId: productTransaction.getAttribute('data-service-id'),
                 name: productTransaction.querySelector('#itemNameService').textContent,
                 stockQuantity: quantity,
                 amount: productTransaction.querySelector('#itemFinalPriceService').textContent.split(' ')[1]

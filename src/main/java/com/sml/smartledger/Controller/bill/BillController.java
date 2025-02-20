@@ -78,7 +78,7 @@ public class BillController {
 
     @PostMapping("/create-bill")
     public ResponseEntity<Void> createBill(@RequestBody BillForm bill) throws ParseException {
-        System.out.println("billll" + bill);
+        System.out.println("billll: " + bill);
 
         List<String> terms = bill.getTerms();
         Business business = partyService.getPartyById(bill.getPartyId()).getBusiness();
@@ -131,7 +131,7 @@ public class BillController {
             serviceTransaction.setAmount(serviceTransactionForm.getAmount());
             serviceTransaction.setUnit(serviceTransactionForm.getStockQuantity());
             serviceTransaction.setServiceTransactionType(ServiceTransactionType.SALE);
-            serviceTransaction.setDescription(serviceTransactionForm.getDescription());
+            serviceTransaction.setDescription("sale bill" + savedBill.getId());
             serviceTransaction.setDate(savedBill.getDate());
             serviceTransaction.setBill(savedBill);
             serviceTransactionService.addServiceTransaction(serviceTransaction);
