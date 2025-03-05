@@ -177,7 +177,7 @@ document.getElementById('generateBillBtn').addEventListener('click', (event) => 
             console.log('Success:', data);
               const redirectValue = document.getElementById('billtype').textContent;
               console.log(redirectValue);
-            window.location.href = ( redirectValue === 'Sales' ) ? '/users/transactions/sales' : '/users/transactions/purchases';
+            window.location.href = ( redirectValue === 'Sales' ) ? '/users/transactions/sales' : '/users/transactions/purchase';
         })
         .catch(error => {
             console.error('Error:', error);
