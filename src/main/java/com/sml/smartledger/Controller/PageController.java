@@ -114,7 +114,6 @@ public class PageController {
 
         Party party = partyService.getPartyByShortCode(shortCode);
         model.addAttribute("party", party);
-
         return "transaction_view";
     }
 
