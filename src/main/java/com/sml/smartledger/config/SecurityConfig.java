@@ -28,11 +28,16 @@ public class SecurityConfig {
 //        var inMemoryUserDetailsManager = new InMemoryUserDetailsManager(user);
 //        return inMemoryUserDetailsManager;
 //    }
-    @Autowired
     private SecurityCustomUserDetailService securityCustomUserDetailService;
 
-    @Autowired
+
     OAuthAuthenticationSuccessHandler oAuthAuthenticationSuccessHandler;
+
+    @Autowired
+    public SecurityConfig(SecurityCustomUserDetailService securityCustomUserDetailService, OAuthAuthenticationSuccessHandler oAuthAuthenticationSuccessHandler) {
+        this.securityCustomUserDetailService = securityCustomUserDetailService;
+        this.oAuthAuthenticationSuccessHandler = oAuthAuthenticationSuccessHandler;
+    }
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
@@ -63,7 +68,7 @@ public class SecurityConfig {
             formLogin.usernameParameter("email");
             formLogin.passwordParameter("password");
             formLogin.failureUrl("/login?error=true");
-            formLogin.defaultSuccessUrl("/users/party/customer");
+            formLogin.defaultSuccessUrl("/users/dashboard");
         });
 
         httpSecurity.csrf(AbstractHttpConfigurer::disable);

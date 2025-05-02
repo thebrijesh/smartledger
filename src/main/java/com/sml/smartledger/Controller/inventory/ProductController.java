@@ -29,9 +29,6 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -125,7 +122,7 @@ public class ProductController {
         model.addAttribute("productForm", productForm);
         model.addAttribute("selectedBusiness", business);
 
-        return "user/item/products";
+        return "/user/products";
     }
 
 

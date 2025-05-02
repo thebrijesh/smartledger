@@ -1,0 +1,111 @@
+<!-- drawer component -->
+<div data-th-fragment="expense_drawer" id="drawer-right-example" class="fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform translate-x-full bg-white w-80 dark:bg-gray-800" tabindex="-1" aria-labelledby="drawer-right-label">
+    <!-- Header -->
+    <header class="bg-blue-500 text-white p-4">
+        <h1 class="text-center text-2xl font-bold">Expense Tracker</h1>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto mt-6 p-4 bg-white rounded shadow">
+        <!-- Categories Section -->
+        <section>
+            <h2 class="text-xl font-bold mb-4">Categories</h2>
+            <button id="addCategoryBtn" class="bg-green-500 text-white px-4 py-2 rounded mb-4" onclick="document.getElementById('categoryModal').classList.remove('hidden')">Add Category</button>
+            <table class="table-auto w-full text-left border-collapse border border-gray-200">
+                <thead>
+                <tr>
+                    <th class="border px-4 py-2">Name</th>
+                    <th class="border px-4 py-2">Description</th>
+                    <th class="border px-4 py-2">Actions</th>
+                </tr>
+                </thead>
+                <tbody id="categoriesTable" class="text-sm">
+                <!-- Categories will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Expenses Section -->
+        <section class="mt-8">
+            <h2 class="text-xl font-bold mb-4">Expenses</h2>
+            <button id="addExpenseBtn1" class="bg-green-500 text-white px-4 py-2 rounded mb-4" onclick="document.getElementById('expenseModal').classList.remove('hidden')">Add Expense</button>
+            <table class="table-auto w-full text-left border-collapse border border-gray-200">
+                <thead>
+                <tr>
+                    <th class="border px-4 py-2">Name</th>
+                    <th class="border px-4 py-2">Amount</th>
+                    <th class="border px-4 py-2">Date</th>
+                    <th class="border px-4 py-2">Category</th>
+                    <th class="border px-4 py-2">Description</th>
+                    <th class="border px-4 py-2">Actions</th>
+                </tr>
+                </thead>
+                <tbody id="expensesTable" class="text-sm">
+                <!-- Expenses will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <!-- Add/Edit Category Modal -->
+    <div id="categoryModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+        <div class="bg-white p-6 rounded shadow-md w-96">
+            <h3 class="text-lg font-bold mb-4">Add/Edit Category</h3>
+            <form id="categoryForm">
+                <p id="selectedCategoryId" class="hidden"></p>
+                <div class="mb-4">
+                    <label for="categoryNameInput1" class="block font-medium">Name</label>
+                    <input type="text" id="categoryNameInput1" class="border rounded w-full p-2">
+                </div>
+                <div class="mb-4">
+                    <label for="categoryDescriptionInput" class="block font-medium">Description</label>
+                    <textarea id="categoryDescriptionInput" class="border rounded w-full p-2"></textarea>
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2" onclick="cancelBtnOfCategoryClickListener()">Cancel</button>
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Expense Modal -->
+    <div id="expenseModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+        <div class="bg-white p-6 rounded shadow-md w-96">
+            <h3 class="text-lg font-bold mb-4">Add/Edit Expense</h3>
+            <form id="expenseForm">
+                <p id="selectedExpenseId1" class="hidden"></p>
+
+                <div class="mb-4">
+                    <label for="expenseNameInput1" class="block font-medium">Name</label>
+                    <input type="text" id="expenseNameInput1" class="border rounded w-full p-2">
+                </div>
+                <div class="mb-4">
+                    <label for="expenseAmountInput1" class="block font-medium">Amount</label>
+                    <input type="number" id="expenseAmountInput1" class="border rounded w-full p-2">
+                </div>
+                <div class="mb-4">
+                    <label for="expenseDateInput" class="block font-medium">Date</label>
+                    <input type="date" id="expenseDateInput" class="border rounded w-full p-2">
+                </div>
+                <div class="mb-4">
+                    <label for="expenseCategoryInput" class="block font-medium">Category</label>
+                    <select id="expenseCategoryInput" class="border rounded w-full p-2">
+                        <option th:each="category : ${expensesCategoryList}" th:value="${category.id}" th:text="${category.name}">
+
+                        </option>
+                        <!-- Categories will be dynamically inserted here -->
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="expenseDescriptionInput1" class="block font-medium">Description</label>
+                    <textarea id="expenseDescriptionInput1" class="border rounded w-full p-2"></textarea>
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2" onclick="cancelBtnOfExpenseClickListener()">Cancel</button>
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
