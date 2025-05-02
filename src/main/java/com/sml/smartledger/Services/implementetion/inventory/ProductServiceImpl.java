@@ -63,7 +63,7 @@ public class ProductServiceImpl implements ProductService {
         productDB.setUnitType(product.getUnitType());
         productDB.setPurchasePrice(product.getPurchasePrice());
         productDB.setDate(product.getDate());
-        productDB.setStockQuantity(product.getStockQuantity());
+//        productDB.setStockQuantity(product.getStockQuantity());
         if(product.getImage() != null) {
             productDB.setCloudinaryImagePublicId(product.getCloudinaryImagePublicId());
             productDB.setImage(product.getImage());

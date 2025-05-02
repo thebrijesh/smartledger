@@ -177,7 +177,7 @@ document.getElementById('generateBillBtn').addEventListener('click', (event) => 
             console.log('Success:', data);
               const redirectValue = document.getElementById('billtype').textContent;
               console.log(redirectValue);
-            window.location.href = ( redirectValue === 'Sales' ) ? '/users/transactions/sales' : '/users/transactions/purchases';
+            window.location.href = ( redirectValue === 'Sales' ) ? '/users/transactions/sales' : '/users/transactions/purchase';
         })
         .catch(error => {
             console.error('Error:', error);
@@ -683,7 +683,7 @@ function addItemsList() {
         let quantity = productTransaction.querySelector('.quantity').value;
         if (parseInt(quantity) > 0) {
             let service = {
-                serviceId: productTransaction.getAttribute('data-product-id'),
+                serviceId: productTransaction.getAttribute('data-service-id'),
                 name: productTransaction.querySelector('#itemNameService').textContent,
                 stockQuantity: quantity,
                 amount: productTransaction.querySelector('#itemFinalPriceService').textContent.split(' ')[1]

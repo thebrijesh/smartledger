@@ -35,12 +35,14 @@ public class ExpensesController {
     private final ExpenseCategoryService expenseCategoryService;
     ExpensesService expensesService;
     UserService userService;
+    BillService billService;
 
     @Autowired
-    public ExpensesController(ExpensesService expensesService, UserService userService, ExpenseCategoryService expenseCategoryService) {
+    public ExpensesController(BillService billService,ExpensesService expensesService, UserService userService, ExpenseCategoryService expenseCategoryService) {
         this.expensesService = expensesService;
         this.userService = userService;
         this.expenseCategoryService = expenseCategoryService;
+        this.billService = billService;
     }
 
     @GetMapping("/all")
@@ -82,11 +84,34 @@ public class ExpensesController {
         String email = getEmailOfLoggedInUser(authentication);
         User user = userService.getUserByEmail(email);
         Business business = user.getSelectedBusiness();
+        long totalSales = 0;
+        long totalPurchase = 0;
+        long totalExpanse = 0;
+        List<Bill> billList = billService.getAllBills(business.getId());
+        for (Bill bill : billList) {
+            if (bill.getBillType().toString().equalsIgnoreCase("sale")) {
+                totalSales += bill.getAmount();
+            } else if (bill.getBillType().toString().equalsIgnoreCase("purchase")) {
+                totalPurchase += bill.getAmount();
+            } else if(bill.getBillType().toString().equalsIgnoreCase("sale_return")){
+                totalSales -= bill.getAmount();
+            } else if(bill.getBillType().toString().equalsIgnoreCase("purchase_return")) {
+                totalPurchase -= bill.getAmount();
+            }
+        }
+
+        List<Expenses> expensesList1 = business.getExpensesList();
+        for (Expenses expenses : expensesList1) {
+            totalExpanse += expenses.getAmount();
+        }
         List<Expenses> expensesList = expensesService.getAllExpenses(business.getId());
         List<ExpensesCategory> expensesCategoryList = expenseCategoryService.getAllExpensesCategory(business.getId());
         model.addAttribute("expensesCategoryList", expensesCategoryList);
         model.addAttribute("billType", "Expense");
         model.addAttribute("expensesList", expensesList);
+        model.addAttribute("totalSales", totalSales);
+        model.addAttribute("totalPurchase", totalPurchase);
+        model.addAttribute("totalExpanse", totalExpanse);
         return "user/bill/expense";
     }
 

@@ -48,7 +48,7 @@ public class PageController {
     @GetMapping("/")
     public String homes(Model model) {
         model.addAttribute("isPublicPage", true);
-        return "redirect:/home";
+        return "redirect:/login";
     }
 
     @RequestMapping("/home")
@@ -114,7 +114,6 @@ public class PageController {
 
         Party party = partyService.getPartyByShortCode(shortCode);
         model.addAttribute("party", party);
-
         return "transaction_view";
     }
 

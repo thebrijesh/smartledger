@@ -53,7 +53,7 @@ public class UserController {
         }
 
 
-        return "user/dashboard";
+        return "redirect:/users/party/customer";
     }
 
     @GetMapping("/profile")

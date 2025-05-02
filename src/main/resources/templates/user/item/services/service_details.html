@@ -102,7 +102,7 @@
                             <tbody id="transactionContainer" class="container cursor-pointer"
                                    data-th-each="transaction : ${service.getServiceTransactions()}"
                                    onclick="setEditProduct(this)"
-                                   th:data-transaction-type="${transaction.getType().toString()}"
+                                   th:data-transaction-type="${transaction.getServiceTransactionType().toString()}"
                                    th:data-amount="${transaction.getAmount()}"
                                    th:data-stock-quantity="${transaction.getUnit()}"
                                    th:data-transaction-id="${transaction.getId()}"
@@ -112,9 +112,9 @@
                                    data-drawer-show="drawer-right-edit-stock-in-out"
                                    aria-controls="drawer-right-edit-stock-in-out"
                                    data-drawer-placement="right">
-                            <tr data-th-if="${transaction.getType().toString() == 'SALE'}"
+                            <tr data-th-if="${transaction.getServiceTransactionType().toString() == 'SALE'}"
                                 th:data-amount="${transaction.getAmount()}"
-                                th:data-type="${transaction.getType().toString()}"
+                                th:data-type="${transaction.getServiceTransactionType().toString()}"
                                 th:data-unit="${transaction.getUnit()}"
                                 th:data-sales="${service.getServicePrice()}"
                                 th:data-date="${#dates.format(transaction.getDate(), 'dd-MM-yyyy')}"
@@ -133,7 +133,7 @@
                                 </td>
                                 <td class="py-4 px-6"></td>
                             </tr>
-                            <tr data-th-if="${transaction.getType().toString() == 'SALE_RETURN'}"
+                            <tr data-th-if="${transaction.getServiceTransactionType().toString() == 'SALE_RETURN'}"
 
                                 class="transactionList hover:bg-gray-50 dark:hover:bg-gray-700">
                                 <td class="serviceTransaction-date py-4 px-6 text-gray-800 dark:text-gray-300"

@@ -78,7 +78,7 @@ public class BillController {
 
     @PostMapping("/create-bill")
     public ResponseEntity<Void> createBill(@RequestBody BillForm bill) throws ParseException {
-        System.out.println("billll" + bill);
+        System.out.println("billll: " + bill);
 
         List<String> terms = bill.getTerms();
         Business business = partyService.getPartyById(bill.getPartyId()).getBusiness();
@@ -131,14 +131,12 @@ public class BillController {
             serviceTransaction.setAmount(serviceTransactionForm.getAmount());
             serviceTransaction.setUnit(serviceTransactionForm.getStockQuantity());
             serviceTransaction.setServiceTransactionType(ServiceTransactionType.SALE);
-            serviceTransaction.setDescription(serviceTransactionForm.getDescription());
+            serviceTransaction.setDescription("sale bill" + savedBill.getId());
             serviceTransaction.setDate(savedBill.getDate());
             serviceTransaction.setBill(savedBill);
             serviceTransactionService.addServiceTransaction(serviceTransaction);
             serviceTransactionList.add(serviceTransaction);
         }
-
-
 
         List<AdditionalCharges> additionalChargesList = new ArrayList<>();
         for (chargesForm additionalChargesForm : bill.getAdditionalCharges()) {
@@ -200,6 +198,10 @@ public class BillController {
             }
         }
 
+        List<Expenses> expensesList = business.getExpensesList();
+        for (Expenses expenses : expensesList) {
+            totalExpanse += expenses.getAmount();
+        }
 
         List<Bill> billList1 = billService.getAllSaleBills(business.getId());
         model.addAttribute("bills", billList1);
@@ -230,6 +232,12 @@ public class BillController {
                 totalPurchase -= bill.getAmount();
             }
         }
+
+        List<Expenses> expensesList = business.getExpensesList();
+        for (Expenses expenses : expensesList) {
+            totalExpanse += expenses.getAmount();
+        }
+
         List<Bill> billList1 = billService.getPurchaseBills(business.getId());
         model.addAttribute("bills", billList1);
         model.addAttribute("billType", "Purchase");
@@ -269,12 +277,18 @@ public class BillController {
         Business business = user.getSelectedBusiness();
 
         List<Bill> billList = billService.getAllBills(business.getId());
+        System.out.println("billList: " + billList);
+        Iterator<Bill> iterator = billList.iterator();
 
-        for(Bill bill : billList){
-            if(!bill.getBillType().toString().equalsIgnoreCase(billType)){
-                billList.remove(bill);
+        while (iterator.hasNext()) {
+            Bill bill = iterator.next();
+            if (!bill.getBillType().toString().equalsIgnoreCase(billType)) {
+                System.out.println(bill.getBillType().toString());
+                System.out.println(billType);
+                iterator.remove(); // Safe removal using iterator
             }
         }
+        System.out.println("billList: " + billList);
 
         List<Product> productList = business.getProducts();
         List<Service> serviceList = business.getServices();
