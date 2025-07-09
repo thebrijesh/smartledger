@@ -1,0 +1,180 @@
+# ════════════════════════════════════════════════════════════════════════════════════
+# Docker Compose Configuration for SmartLedger Application
+# ════════════════════════════════════════════════════════════════════════════════════
+# This file defines and runs multi-container Docker applications
+# It coordinates: Spring Boot App + MySQL + Redis + Nginx
+
+# ═══════════════════════════════════════════════════════════════════════════════════
+# NETWORKS - Define custom networks for container communication
+# ═══════════════════════════════════════════════════════════════════════════════════
+networks:
+  smartledger-network:
+    driver: bridge
+    # Custom network allows containers to communicate by service name
+    # More secure than using default network
+
+# ═══════════════════════════════════════════════════════════════════════════════════
+# VOLUMES - Persistent data storage
+# ═══════════════════════════════════════════════════════════════════════════════════
+volumes:
+  mysql-data:
+    # Named volume for MySQL data persistence
+    # Data survives container restarts/removals
+  redis-data:
+    # Named volume for Redis data persistence
+  app-logs:
+    # Volume for application logs
+
+# ═══════════════════════════════════════════════════════════════════════════════════
+# SERVICES - Define all containers
+# ═══════════════════════════════════════════════════════════════════════════════════
+services:
+  
+  # ───────────────────────────────────────────────────────────────────────────────
+  # MySQL Database Service
+  # ───────────────────────────────────────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: smartledger-mysql
+    restart: unless-stopped
+    
+    environment:
+      MYSQL_ROOT_PASSWORD: 395010
+      MYSQL_DATABASE: khatabook
+      MYSQL_USER: smartledger
+      MYSQL_PASSWORD: smartledger123
+      # Time zone setting
+      TZ: Asia/Kolkata
+    
+    ports:
+      - "3307:3306"  # Host:Container - Avoid conflict with local MySQL
+    
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+      # Mount initialization scripts (if any)
+    
+    networks:
+      - smartledger-network
+    
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+      interval: 30s
+      start_period: 40s
+    
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --innodb-buffer-pool-size=256M
+      --max-connections=100
+
+  # ───────────────────────────────────────────────────────────────────────────────
+  # Redis Cache Service
+  # ───────────────────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: smartledger-redis
+    restart: unless-stopped
+    
+    ports:
+      - "6380:6379"  # Host:Container - Avoid conflict with local Redis
+    
+    volumes:
+      - redis-data:/data
+      - ./docker/redis/redis.conf:/usr/local/etc/redis/redis.conf
+    
+    networks:
+      - smartledger-network
+    
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 3s
+      retries: 5
+    
+    command: redis-server /usr/local/etc/redis/redis.conf --appendonly yes
+
+  # ───────────────────────────────────────────────────────────────────────────────
+  # Spring Boot Application Service
+  # ───────────────────────────────────────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: smartledger-app
+    restart: unless-stopped
+    
+    environment:
+      # Database Configuration
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/khatabook
+      SPRING_DATASOURCE_USERNAME: smartledger
+      SPRING_DATASOURCE_PASSWORD: smartledger123
+      
+      # Redis Configuration
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      
+      # Application Configuration
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 5000
+      
+      # JVM Configuration
+      JAVA_OPTS: -Xmx512m -Xms256m -Dspring.profiles.active=docker
+      
+      # Security (set strong values in production)
+      JWT_SECRET: your-secret-key-here-make-it-strong
+      
+    ports:
+      - "5000:5000"
+    
+    volumes:
+      - app-logs:/app/logs
+      - ./uploads:/app/uploads  # For file uploads if any
+    
+    networks:
+      - smartledger-network
+    
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # ───────────────────────────────────────────────────────────────────────────────
+  # Nginx Reverse Proxy (Optional but Recommended for Production)
+  # ───────────────────────────────────────────────────────────────────────────────
+  nginx:
+    image: nginx:alpine
+    container_name: smartledger-nginx
+    restart: unless-stopped
+    
+    ports:
+      - "80:80"
+      - "443:443"
+    
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/nginx/ssl:/etc/nginx/ssl
+      - ./src/main/resources/static:/var/www/static
+    
+    networks:
+      - smartledger-network
+    
+    depends_on:
+      - app
+    
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

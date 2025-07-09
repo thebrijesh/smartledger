@@ -1,0 +1,76 @@
+# ════════════════════════════════════════════════════════════════════════════════════
+# .dockerignore - Excludes files from Docker build context
+# ════════════════════════════════════════════════════════════════════════════════════
+# This file works like .gitignore but for Docker builds
+# Excluding unnecessary files makes builds faster and images smaller
+
+# ═══════════════════════════════════════════════════════════════════════════════════
+# Version Control & IDE Files
+# ═══════════════════════════════════════════════════════════════════════════════════
+.git
+.gitignore
+.gitattributes
+.github/
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
+
+# ═══════════════════════════════════════════════════════════════════════════════════
+# Build Artifacts & Dependencies
+# ═══════════════════════════════════════════════════════════════════════════════════
+target/
+!target/*.jar
+*.jar
+*.war
+*.ear
+*.class
+
+# Node.js dependencies (we'll install fresh in container)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ═══════════════════════════════════════════════════════════════════════════════════
+# Documentation & Non-Essential Files
+# ═══════════════════════════════════════════════════════════════════════════════════
+README.md
+HELP.md
+docs/
+*.md
+LICENSE
+.gitattributes
+
+# ═══════════════════════════════════════════════════════════════════════════════════
+# Docker & Container Files
+# ═══════════════════════════════════════════════════════════════════════════════════
+Dockerfile
+.dockerignore
+docker-compose*.yml
+.docker/
+
+# ═══════════════════════════════════════════════════════════════════════════════════
+# Environment & Configuration (will be mounted or set via environment)
+# ═══════════════════════════════════════════════════════════════════════════════════
+.env
+.env.local
+.env.*.local
+application-local.properties
+application-dev.properties
+
+# ═══════════════════════════════════════════════════════════════════════════════════
+# Testing & Coverage Reports
+# ═══════════════════════════════════════════════════════════════════════════════════
+**/test-results/
+coverage/
+*.log
+
+# ═══════════════════════════════════════════════════════════════════════════════════
+# Temporary Files
+# ═══════════════════════════════════════════════════════════════════════════════════
+*.tmp
+*.temp
+.cache/
+.sass-cache/

@@ -1,0 +1,68 @@
+# ════════════════════════════════════════════════════════════════════════════════════
+# Development Docker Compose Configuration
+# ════════════════════════════════════════════════════════════════════════════════════
+# This is a lighter configuration for development with hot reloading
+
+networks:
+  smartledger-dev:
+    driver: bridge
+
+volumes:
+  mysql-dev-data:
+  redis-dev-data:
+
+services:
+  
+  # ───────────────────────────────────────────────────────────────────────────────
+  # MySQL Database (Development)
+  # ───────────────────────────────────────────────────────────────────────────────
+  mysql-dev:
+    image: mysql:8.0
+    container_name: smartledger-mysql-dev
+    restart: unless-stopped
+    
+    environment:
+      MYSQL_ROOT_PASSWORD: 395010
+      MYSQL_DATABASE: khatabook
+      MYSQL_USER: smartledger
+      MYSQL_PASSWORD: smartledger123
+      TZ: Asia/Kolkata
+    
+    ports:
+      - "3307:3306"
+    
+    volumes:
+      - mysql-dev-data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+    
+    networks:
+      - smartledger-dev
+    
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+
+  # ───────────────────────────────────────────────────────────────────────────────
+  # Redis Cache (Development)
+  # ───────────────────────────────────────────────────────────────────────────────
+  redis-dev:
+    image: redis:7-alpine
+    container_name: smartledger-redis-dev
+    restart: unless-stopped
+    
+    ports:
+      - "6380:6379"
+    
+    volumes:
+      - redis-dev-data:/data
+    
+    networks:
+      - smartledger-dev
+
+  # ───────────────────────────────────────────────────────────────────────────────
+  # Application runs on host for hot reloading
+  # To connect to these services, use:
+  # - Database: localhost:3307
+  # - Redis: localhost:6380
+  # ───────────────────────────────────────────────────────────────────────────────
